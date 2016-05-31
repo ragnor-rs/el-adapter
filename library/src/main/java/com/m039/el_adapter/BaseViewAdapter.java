@@ -26,14 +26,19 @@ import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
  * <p/>
  * Created by m039 on 3/3/16.
  */
-public abstract class BaseViewAdapter extends RecyclerView.Adapter<BaseViewAdapter.ViewHolder<?>> {
+public abstract class BaseViewAdapter<B extends CommandBuilder> extends RecyclerView.Adapter<BaseViewAdapter.ViewHolder<?>>
+
+{
 
     public static final int DEFAULT_VIEW_TYPE = 0;
 
     public static class ViewHolder<V extends View> extends RecyclerView.ViewHolder {
 
+        public V itemView; // parameterize
+
         public ViewHolder(V itemView) {
             super(itemView);
+            this.itemView = itemView;
         }
 
     }
@@ -61,6 +66,7 @@ public abstract class BaseViewAdapter extends RecyclerView.Adapter<BaseViewAdapt
          * @return should be a new created viewHolder
          */
         ViewHolder<V> onCreateViewHolder(ViewGroup parent);
+
     }
 
     protected static class DefaultViewHolderCreator<V extends View> implements ViewHolderCreator<V> {
@@ -94,6 +100,16 @@ public abstract class BaseViewAdapter extends RecyclerView.Adapter<BaseViewAdapt
 
     }
 
+    final protected CommandBuilder commandBuilder;
+
+    protected BaseViewAdapter(Class<? extends CommandBuilder> clazz) {
+        try {
+            commandBuilder = clazz.getConstructor(BaseViewAdapter.class).newInstance(this);
+        } catch (Exception e) {
+            throw new RuntimeException("Can't instantiate the class", e);
+        }
+    }
+
     private final ViewTypeHelper mViewTypeHelper = new ViewTypeHelper();
     private final Map<Integer, ViewHolderCreator> mOnCreteViewHolderByViewType = new HashMap<>();
 
@@ -119,8 +135,11 @@ public abstract class BaseViewAdapter extends RecyclerView.Adapter<BaseViewAdapt
      *                    exist yet, and for this viewType <code>viewCreator</code> will be used
      * @param viewCreator creator of views
      */
-    protected <T> void addViewCreator(Class<T> clazz, ViewCreator<?> viewCreator) {
+    @SuppressWarnings("unchecked")
+    public <I, V extends View>
+    B addViewCreator(Class<I> clazz, ViewCreator<V> viewCreator) {
         addViewHolderCreator(clazz, new DefaultViewHolderCreator<>(viewCreator));
+        return (B) commandBuilder;
     }
 
     /**
@@ -131,8 +150,11 @@ public abstract class BaseViewAdapter extends RecyclerView.Adapter<BaseViewAdapt
      *                        types for same <code>clazz</code>
      * @param viewCreator     creator of views
      */
-    protected void addViewCreator(Class<?> clazz, int viewTypeOfClass, ViewCreator<?> viewCreator) {
+    @SuppressWarnings("unchecked")
+    public <I, V extends View>
+    B addViewCreator(Class<I> clazz, int viewTypeOfClass, ViewCreator<V> viewCreator) {
         addViewHolderCreator(clazz, viewTypeOfClass, new DefaultViewHolderCreator<>(viewCreator));
+        return (B) commandBuilder;
     }
 
     /**
@@ -142,24 +164,36 @@ public abstract class BaseViewAdapter extends RecyclerView.Adapter<BaseViewAdapt
      * @param viewType    viewType for which <code>viewCreator</code> will be used
      * @param viewCreator creator of views
      */
-    protected void addViewCreator(int viewType, ViewCreator<?> viewCreator) {
+    @SuppressWarnings("unchecked")
+    public <I, V extends View>
+    B addViewCreator(int viewType, ViewCreator<V> viewCreator) {
         addViewHolderCreator(viewType, new DefaultViewHolderCreator<>(viewCreator));
+        return (B) commandBuilder;
     }
 
-    protected void addViewHolderCreator(Class<?> clazz, ViewHolderCreator<?> viewHolderCreator) {
+    @SuppressWarnings("unchecked")
+    public <I, V extends View>
+    B addViewHolderCreator(Class<I> clazz, ViewHolderCreator<V> viewHolderCreator) {
         addViewHolderCreator(clazz, DEFAULT_VIEW_TYPE, viewHolderCreator);
+        return (B) commandBuilder;
     }
 
-    protected void addViewHolderCreator(Class<?> clazz, int viewTypeOfClass, ViewHolderCreator<?> viewHolderCreator) {
+    @SuppressWarnings("unchecked")
+    public <I, V extends View>
+    B addViewHolderCreator(Class<I> clazz, int viewTypeOfClass, ViewHolderCreator<V> viewHolderCreator) {
         addViewHolderCreator(getItemViewType(clazz, viewTypeOfClass), viewHolderCreator);
+        return (B) commandBuilder;
     }
 
     /**
      * @param viewType for which <code>viewHolderCreator</code> will be used
      * @param viewHolderCreator creator of viewHolders
      */
-    protected void addViewHolderCreator(int viewType, ViewHolderCreator<?> viewHolderCreator) {
+    @SuppressWarnings("unchecked")
+    public <I, V extends View>
+    B addViewHolderCreator(int viewType, ViewHolderCreator<V> viewHolderCreator) {
         mOnCreteViewHolderByViewType.put(viewType, viewHolderCreator);
+        return (B) commandBuilder;
     }
 
     /**

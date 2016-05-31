@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 import android.view.View;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,10 +13,10 @@ import java.util.Map;
  * todo javadoc
  * Created by m039 on 3/21/16.
  */
-public class ItemViewAdapter extends BaseViewAdapter {
+public class ItemViewAdapter extends BaseViewAdapter<ItemViewCommandBuilder> {
 
     private final ArrayList<Object> mItems = new ArrayList<>();
-    private final Map<Integer, ItemViewBinder<?, ?>> mItemViewBinderByViewType = new HashMap<>();
+    /* package */ final Map<Integer, ItemViewHolderBinder<?, ?>> mItemViewHolderBinderByViewType = new HashMap<>();
 
     /**
      * Same logic as in ItemViewManager.
@@ -25,11 +26,46 @@ public class ItemViewAdapter extends BaseViewAdapter {
      * @param <I> type of the object to bind
      */
     public interface ItemViewBinder<I, V extends View>  {
+
         /**
          * @param view view to bind to
          * @param item item used for binding
          */
         void onBindView(V view, I item);
+
+    }
+
+    public interface ItemViewHolderBinder<I, V extends View> {
+
+        void onBindViewHolder(ViewHolder<V> viewHolder, I item);
+
+    }
+
+    protected static class DefaultItemViewHolderBinder<I, V extends View>
+            implements ItemViewHolderBinder<I, V> {
+
+        @NonNull
+        private final ItemViewBinder<I, V> mItemViewBinder;
+
+        public DefaultItemViewHolderBinder(@NonNull ItemViewBinder<I, V> itemViewBinder) {
+            mItemViewBinder = itemViewBinder;
+        }
+
+        @NonNull
+        public ItemViewBinder<I, V> getItemViewBinder() {
+            return mItemViewBinder;
+        }
+
+        @SuppressWarnings("unchecked")
+        @Override
+        public void onBindViewHolder(ViewHolder<V> viewHolder, I item) {
+            mItemViewBinder.onBindView((V) viewHolder.itemView, item);
+        }
+
+    }
+
+    public ItemViewAdapter() {
+        super(ItemViewCommandBuilder.class);
     }
 
     @SuppressWarnings("unchecked")
@@ -37,42 +73,32 @@ public class ItemViewAdapter extends BaseViewAdapter {
     public void onBindViewHolder(ViewHolder holder, int position) {
         Object object = mItems.get(position);
 
-        ItemViewBinder<Object, View> itemViewBinder = (ItemViewBinder<Object, View>) mItemViewBinderByViewType
-                .get(getItemViewType(object.getClass(), getViewTypeOfClass(position)));
+        Class<?> clazz = object.getClass();
+        int viewTypeOfClass = getViewTypeOfClass(position);
+        int viewType = getItemViewType(clazz, viewTypeOfClass);
 
-        itemViewBinder.onBindView(holder.itemView, object);
+        ItemViewHolderBinder<Object, View> itemViewHolderBinder = (ItemViewHolderBinder<Object, View>)
+                mItemViewHolderBinderByViewType.get(viewType);
+
+        if (itemViewHolderBinder == null) {
+            throw new IllegalStateException("Can't find binder for " + position + " position. " +
+                    "Tried for " + clazz.getSimpleName() + " with viewTypeOfClass = " + viewTypeOfClass +
+                    " and resulting viewType = " + viewType
+            );
+        }
+
+        itemViewHolderBinder.onBindViewHolder(holder, object);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public <I, V extends View> ItemViewCommandBuilder<I, V> addViewCreator(Class<I> clazz, ViewCreator<V> viewCreator) {
+        return super.addViewCreator(clazz, viewCreator);
     }
 
     @Override
     public int getItemCount() {
         return mItems.size();
-    }
-
-    protected <T, V extends View> void addCreatorAndBinder(
-            Class<T> clazz,
-            ViewCreator<V> viewCreator,
-            ItemViewBinder<T, V> itemViewBinder
-    ) {
-        addViewCreator(clazz, viewCreator);
-        addViewBinder(clazz, itemViewBinder);
-    }
-
-    protected <T, V extends View> void addCreatorAndBinder(
-            Class<T> clazz,
-            int viewTypeOfClass,
-            ViewCreator<V> viewCreator,
-            ItemViewBinder<T, V> itemViewBinder
-    ) {
-        addViewCreator(getItemViewType(clazz, viewTypeOfClass), viewCreator);
-        mItemViewBinderByViewType.put(getItemViewType(clazz, viewTypeOfClass), itemViewBinder);
-    }
-
-    protected <T, V extends View> void addViewBinder(Class<T> clazz, ItemViewBinder<T, V> itemViewBinder) {
-        mItemViewBinderByViewType.put(getItemViewType(clazz), itemViewBinder);
-    }
-
-    protected <T, V extends View> void addViewBinder(Class<T> clazz, int viewTypeOfClass, ItemViewBinder<T, V> itemViewBinder) {
-        mItemViewBinderByViewType.put(getItemViewType(clazz, viewTypeOfClass), itemViewBinder);
     }
 
     public void removeItem(int position) {
@@ -101,6 +127,12 @@ public class ItemViewAdapter extends BaseViewAdapter {
     public <I> void addItems(@NonNull List<I> items) {
         if (!items.isEmpty()) {
             mItems.addAll(items);
+        }
+    }
+
+    public <I> void addItems(@NonNull I items[]) {
+        if (items.length > 0) {
+            mItems.addAll(Arrays.asList(items));
         }
     }
 
