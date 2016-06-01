@@ -22,7 +22,7 @@ cons:
 Example
 -------
 
-ElAdapter is very easy to use, but you should use java 8 lambdas to write more consice code. I bet you won't write any shorter:
+I bet you won't write any shorter (with lambdas):
 
 ```java
 ListItemAdapter listAdapter = new ListItemAdapter();
@@ -36,6 +36,8 @@ listAdapter
   
 recyclerView.setAdapter(listAdapter);
 ```
+
+ElAdapter is intended to use with java 8 (or retrolambda)
 
 License
 -------
