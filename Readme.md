@@ -22,7 +22,7 @@ cons:
 Example
 -------
 
-I bet you won't write any shorter (with lambdas):
+I bet you won't write any shorter:
 
 ```java
 ListItemAdapter listAdapter = new ListItemAdapter();
