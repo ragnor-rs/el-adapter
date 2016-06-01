@@ -15,16 +15,12 @@ public class SimpleDemoFragment extends DemoFragment {
         ListItemAdapter listAdapter = new ListItemAdapter();
 
         listAdapter
-                .addViewCreator(String.class, parent -> new TextView(getActivity()))
+                .addViewCreator(Integer.class, parent -> new TextView(getActivity()))
                 .addViewBinder((view, item) -> view.setText(String.valueOf(item)));
 
         for (int i = 0; i < 1000; i++) {
-            listAdapter
-                    .addItem(String.valueOf(i));
+            listAdapter.addItem(i);
         }
-
-        listAdapter
-                .notifyDataSetChanged();
 
         recycler.setAdapter(listAdapter);
     }

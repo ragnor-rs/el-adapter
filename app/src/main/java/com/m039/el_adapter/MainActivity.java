@@ -17,7 +17,6 @@ public class MainActivity extends AppCompatActivity {
                     .add(android.R.id.content, new DemosFragment())
                     .commit();
         }
-
     }
 
 }

@@ -18,13 +18,14 @@ public class TypeOfBindDemoFragment extends DemoFragment {
             protected int getTypeOfBind(int position) {
                 return position % 3;
             }
+
         };
 
         listAdapter
                 .addViewCreator(Integer.class, parent -> new TextView(getActivity()))
-                .addViewBinder(0, ((view, item) -> view.setText("0 -> " + item)))
-                .addViewBinder(1, ((view, item) -> view.setText("1 -> " + item)))
-                .addViewBinder(2, ((view, item) -> view.setText("2 -> " + item)));
+                .addViewBinder(0, (view, item) -> view.setText("0 -> " + item))
+                .addViewBinder(1, (view, item) -> view.setText("1 -> " + item))
+                .addViewBinder(2, (view, item) -> view.setText("2 -> " + item));
 
         for (int i = 0; i < 1000; i++) {
             listAdapter.addItem(i);

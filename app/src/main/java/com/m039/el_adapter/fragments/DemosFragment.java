@@ -42,8 +42,7 @@ public class DemosFragment extends DemoFragment {
                             .commit();
                 });
 
-        listAdapter
-                .addItems(DEMOS);
+        listAdapter.addItems(DEMOS);
 
         recycler.setAdapter(listAdapter);
     }

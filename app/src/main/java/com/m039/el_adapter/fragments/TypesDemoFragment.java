@@ -45,17 +45,17 @@ public class TypesDemoFragment extends DemoFragment {
 
         listAdapter
                 .addViewCreator(Integer.class, 0, parent -> new RedTextView(activity))
-                .addViewBinder((view, item) -> view.setText(getMessage(0, -1, item)));
+                .addViewBinder((view, item) -> view.setText(getText(0, -1, item)));
 
         listAdapter
                 .addViewCreator(Integer.class, 1, parent -> new GreenTextView(activity))
-                .addViewBinder((view, item) -> view.setText(getMessage(1, -1, item)));
+                .addViewBinder((view, item) -> view.setText(getText(1, -1, item)));
 
         listAdapter
                 .addViewCreator(Integer.class, 2, parent -> new BlueTextView(activity))
-                .addViewBinder(0, (view, item) -> view.setText(getMessage(2, 0, item)))
-                .addViewBinder(1, (view, item) -> view.setText(getMessage(2, 1, item)))
-                .addViewBinder(2, (view, item) -> view.setText(getMessage(2, 2, item)));
+                .addViewBinder(0, (view, item) -> view.setText(getText(2, 0, item)))
+                .addViewBinder(1, (view, item) -> view.setText(getText(2, 1, item)))
+                .addViewBinder(2, (view, item) -> view.setText(getText(2, 2, item)));
 
         for (int i = 0; i < 50; i++) {
             listAdapter.addItem(i);
@@ -64,7 +64,7 @@ public class TypesDemoFragment extends DemoFragment {
         recycler.setAdapter(listAdapter);
     }
 
-    private String getMessage(int typeOfClass, int typeOfBind, int item) {
+    private String getText(int typeOfClass, int typeOfBind, int item) {
         return String.format("typeOfClass = %s, typeOfBind = %s for %s",
                 typeOfClass, typeOfBind, item);
     }
