@@ -16,7 +16,7 @@ pros:
 * generics
 
 cons:
-* early stage of development (not all functions are implementd)
+* early stage of development (not all functions are implemented)
 
 
 Example
