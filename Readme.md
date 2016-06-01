@@ -11,7 +11,7 @@ Features
 pros:
 * modular code
 * flyent interface for creating and binding views
-* decoupling all inner logic of RecylerView's adapter to interfaces
+* decoupling all inner logic of RecylerView's adapter into interfaces
 * very easy to use
 
 cons:
