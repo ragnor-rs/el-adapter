@@ -1,5 +1,5 @@
-El Adapter
-==========
+ElAdapter
+=========
 
 ElAdapter library allows you to decouple RecylerView's adapters code in more handy, simple and beatiful way.
 
