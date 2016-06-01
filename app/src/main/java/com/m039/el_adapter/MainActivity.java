@@ -28,12 +28,14 @@ public class MainActivity extends AppCompatActivity {
 
         mItemViewAdapter
                 .addViewCreator(String.class, parent -> new Button(this))
-                .addViewHolderBinder(String.class, ((viewHolder, item) -> {
+                .addViewHolderBinder(((viewHolder, item) -> {
                     viewHolder.itemView.setText(item);
                     viewHolder.itemView.setOnClickListener(view -> onButtonClick(viewHolder));
-                }))
+                }));
+
+        mItemViewAdapter
                 .addViewCreator(Integer.class, parent -> new TextView(this))
-                .addViewBinder(Integer.class, (view, item) -> {
+                .addViewBinder((view, item) -> {
                     view.setText(String.valueOf(item));
                 });
 

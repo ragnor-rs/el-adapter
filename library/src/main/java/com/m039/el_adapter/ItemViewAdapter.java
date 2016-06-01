@@ -16,7 +16,7 @@ import java.util.Map;
 public class ItemViewAdapter extends BaseViewAdapter<ItemViewCommandBuilder> {
 
     private final ArrayList<Object> mItems = new ArrayList<>();
-    /* package */ final Map<Integer, ItemViewHolderBinder<?, ?>> mItemViewHolderBinderByViewType = new HashMap<>();
+    private final Map<Integer, ItemViewHolderBinder<?, ?>> mItemViewHolderBinderByViewType = new HashMap<>();
 
     /**
      * Same logic as in ItemViewManager.
@@ -90,12 +90,6 @@ public class ItemViewAdapter extends BaseViewAdapter<ItemViewCommandBuilder> {
         itemViewHolderBinder.onBindViewHolder(holder, object);
     }
 
-    @SuppressWarnings("unchecked")
-    @Override
-    public <I, V extends View> ItemViewCommandBuilder<I, V> addViewCreator(Class<I> clazz, ViewCreator<V> viewCreator) {
-        return super.addViewCreator(clazz, viewCreator);
-    }
-
     @Override
     public int getItemCount() {
         return mItems.size();
@@ -142,6 +136,16 @@ public class ItemViewAdapter extends BaseViewAdapter<ItemViewCommandBuilder> {
         }
     }
 
+    public <I, V extends View>
+    void addViewHolderBinder(
+            Class<I> clazz,
+            int viewTypeOfClass,
+            ItemViewHolderBinder<I, V> itemViewHolderBinder
+    ) {
+        int viewType = getItemViewType(clazz, viewTypeOfClass);
+        mItemViewHolderBinderByViewType.put(viewType, itemViewHolderBinder);
+    }
+
     public ArrayList<Object> getItems() {
         return mItems;
     }
@@ -160,4 +164,49 @@ public class ItemViewAdapter extends BaseViewAdapter<ItemViewCommandBuilder> {
         return DEFAULT_VIEW_TYPE;
     }
 
+    //
+    // Parametrization
+    //
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public <I, V extends View>
+    ItemViewCommandBuilder<I, V> addViewCreator(Class<I> clazz, ViewCreator<V> viewCreator) {
+        return (ItemViewCommandBuilder<I, V>) super.addViewCreator(clazz, viewCreator);
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public <I, V extends View>
+    ItemViewCommandBuilder<I, V> addViewCreator(Class<I> clazz, int viewTypeOfClass, ViewCreator<V> viewCreator) {
+        return (ItemViewCommandBuilder<I, V>) super.addViewCreator(clazz, viewTypeOfClass, viewCreator);
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public <I, V extends View>
+    ItemViewCommandBuilder<I, V> addViewCreator(int viewType, ViewCreator<V> viewCreator) {
+        return (ItemViewCommandBuilder<I, V>) super.addViewCreator(viewType, viewCreator);
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public <I, V extends View>
+    ItemViewCommandBuilder<I, V> addViewHolderCreator(Class<I> clazz, ViewHolderCreator<V> viewHolderCreator) {
+        return (ItemViewCommandBuilder<I, V>) super.addViewHolderCreator(clazz, viewHolderCreator);
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public <I, V extends View>
+    ItemViewCommandBuilder<I, V> addViewHolderCreator(Class<I> clazz, int viewTypeOfClass, ViewHolderCreator<V> viewHolderCreator) {
+        return (ItemViewCommandBuilder<I, V>) super.addViewHolderCreator(clazz, viewTypeOfClass, viewHolderCreator);
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public <I, V extends View>
+    ItemViewCommandBuilder<I, V> addViewHolderCreator(int viewType, ViewHolderCreator<V> viewHolderCreator) {
+        return (ItemViewCommandBuilder<I, V>) super.addViewHolderCreator(viewType, viewHolderCreator);
+    }
 }

@@ -1,23 +1,31 @@
 package com.m039.el_adapter;
 
+import android.view.View;
+
 import com.m039.el_adapter.BaseViewAdapter.ViewCreator;
 import com.m039.el_adapter.BaseViewAdapter.ViewHolderCreator;
 
 /**
  * Created by m039 on 6/1/16.
  */
-public interface ViewCreatorDelegate<B extends CommandBuilder> {
+/* package */ interface ViewCreatorDelegate<B extends CommandBuilder> {
 
-    B addViewCreator(Class clazz, ViewCreator viewCreator);
+    <I, V extends View>
+    B addViewCreator(Class<I> clazz, ViewCreator<V> viewCreator);
 
-    B addViewCreator(Class clazz, int viewTypeOfClass, ViewCreator viewCreator);
+    <I, V extends View>
+    B addViewCreator(Class<I> clazz, int viewTypeOfClass, ViewCreator<V> viewCreator);
 
-    B addViewCreator(int viewType, ViewCreator viewCreator);
+    <I, V extends View>
+    B addViewCreator(int viewType, ViewCreator<V> viewCreator);
 
-    B addViewHolderCreator(Class clazz, ViewHolderCreator viewHolderCreator);
+    <I, V extends View>
+    B addViewHolderCreator(Class<I> clazz, ViewHolderCreator<V> viewHolderCreator);
 
-    B addViewHolderCreator(Class clazz, int viewTypeOfClass, ViewHolderCreator viewHolderCreator);
+    <I, V extends View>
+    B addViewHolderCreator(Class<I> clazz, int viewTypeOfClass, ViewHolderCreator<V> viewHolderCreator);
 
-    B addViewHolderCreator(int viewType, ViewHolderCreator viewHolderCreator);
+    <I, V extends View>
+    B addViewHolderCreator(int viewType, ViewHolderCreator<V> viewHolderCreator);
 
 }

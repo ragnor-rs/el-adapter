@@ -1,5 +1,6 @@
 package com.m039.el_adapter;
 
+import android.support.annotation.Nullable;
 import android.view.View;
 
 /**
@@ -9,8 +10,12 @@ import android.view.View;
 
     final protected BaseViewAdapter adapter;
 
-    public CommandBuilder(BaseViewAdapter adapter) {
+    @Nullable
+    final protected Class<I> clazz;
+
+    public CommandBuilder(BaseViewAdapter adapter, @Nullable Class<I> clazz) {
         this.adapter = adapter;
+        this.clazz = clazz;
     }
 
 }

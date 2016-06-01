@@ -27,7 +27,7 @@ import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
  * Created by m039 on 3/3/16.
  */
 public abstract class BaseViewAdapter<B extends CommandBuilder> extends RecyclerView.Adapter<BaseViewAdapter.ViewHolder<?>>
-
+        implements ViewCreatorDelegate<B>
 {
 
     public static final int DEFAULT_VIEW_TYPE = 0;
@@ -100,11 +100,18 @@ public abstract class BaseViewAdapter<B extends CommandBuilder> extends Recycler
 
     }
 
-    final protected CommandBuilder commandBuilder;
+    private final Class<? extends B> mCommandBuilderClass;
 
-    protected BaseViewAdapter(Class<? extends CommandBuilder> clazz) {
+    protected BaseViewAdapter(Class<B> clazz) {
+        mCommandBuilderClass = clazz;
+    }
+
+    @SuppressWarnings("unchecked")
+    protected <I> B getCommandBuilder(Class<I> clazz) {
         try {
-            commandBuilder = clazz.getConstructor(BaseViewAdapter.class).newInstance(this);
+            return mCommandBuilderClass
+                    .getConstructor(BaseViewAdapter.class, Class.class)
+                    .newInstance(this, clazz);
         } catch (Exception e) {
             throw new RuntimeException("Can't instantiate the class", e);
         }
@@ -135,11 +142,11 @@ public abstract class BaseViewAdapter<B extends CommandBuilder> extends Recycler
      *                    exist yet, and for this viewType <code>viewCreator</code> will be used
      * @param viewCreator creator of views
      */
-    @SuppressWarnings("unchecked")
+    @Override
     public <I, V extends View>
     B addViewCreator(Class<I> clazz, ViewCreator<V> viewCreator) {
         addViewHolderCreator(clazz, new DefaultViewHolderCreator<>(viewCreator));
-        return (B) commandBuilder;
+        return getCommandBuilder(clazz);
     }
 
     /**
@@ -150,11 +157,11 @@ public abstract class BaseViewAdapter<B extends CommandBuilder> extends Recycler
      *                        types for same <code>clazz</code>
      * @param viewCreator     creator of views
      */
-    @SuppressWarnings("unchecked")
+    @Override
     public <I, V extends View>
     B addViewCreator(Class<I> clazz, int viewTypeOfClass, ViewCreator<V> viewCreator) {
         addViewHolderCreator(clazz, viewTypeOfClass, new DefaultViewHolderCreator<>(viewCreator));
-        return (B) commandBuilder;
+        return getCommandBuilder(clazz);
     }
 
     /**
@@ -164,36 +171,36 @@ public abstract class BaseViewAdapter<B extends CommandBuilder> extends Recycler
      * @param viewType    viewType for which <code>viewCreator</code> will be used
      * @param viewCreator creator of views
      */
-    @SuppressWarnings("unchecked")
+    @Override
     public <I, V extends View>
     B addViewCreator(int viewType, ViewCreator<V> viewCreator) {
         addViewHolderCreator(viewType, new DefaultViewHolderCreator<>(viewCreator));
-        return (B) commandBuilder;
+        return getCommandBuilder(null);
     }
 
-    @SuppressWarnings("unchecked")
+    @Override
     public <I, V extends View>
     B addViewHolderCreator(Class<I> clazz, ViewHolderCreator<V> viewHolderCreator) {
         addViewHolderCreator(clazz, DEFAULT_VIEW_TYPE, viewHolderCreator);
-        return (B) commandBuilder;
+        return getCommandBuilder(clazz);
     }
 
-    @SuppressWarnings("unchecked")
+    @Override
     public <I, V extends View>
     B addViewHolderCreator(Class<I> clazz, int viewTypeOfClass, ViewHolderCreator<V> viewHolderCreator) {
         addViewHolderCreator(getItemViewType(clazz, viewTypeOfClass), viewHolderCreator);
-        return (B) commandBuilder;
+        return getCommandBuilder(clazz);
     }
 
     /**
      * @param viewType for which <code>viewHolderCreator</code> will be used
      * @param viewHolderCreator creator of viewHolders
      */
-    @SuppressWarnings("unchecked")
+    @Override
     public <I, V extends View>
     B addViewHolderCreator(int viewType, ViewHolderCreator<V> viewHolderCreator) {
         mOnCreteViewHolderByViewType.put(viewType, viewHolderCreator);
-        return (B) commandBuilder;
+        return getCommandBuilder(null);
     }
 
     /**
