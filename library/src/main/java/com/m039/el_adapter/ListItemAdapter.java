@@ -36,12 +36,6 @@ public class ListItemAdapter extends ItemViewAdapter<ItemViewBindingBuilder> {
         super(ItemViewBindingBuilder.class);
     }
 
-    @SuppressWarnings("unchecked")
-    @Override
-    protected void onBindViewHolder(ViewHolder holder, int position, ItemViewHolderBinder binder) {
-        binder.onBindViewHolder(holder, mItems.get(position));
-    }
-
     @Override
     public int getItemCount() {
         return mItems.size();

@@ -117,10 +117,8 @@ public abstract class ItemViewAdapter<B extends ItemViewBindingBuilder> extends 
             );
         }
 
-        onBindViewHolder(holder, position, binder);
+        binder.onBindViewHolder(holder, getItemAt(position));
     }
-
-    protected abstract void onBindViewHolder(ViewHolder holder, int position, ItemViewHolderBinder binder);
 
     protected abstract Object getItemAt(int position);
 
