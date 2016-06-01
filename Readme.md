@@ -1,7 +1,7 @@
 El Adapter
 ==========
 
-Modular adapter for RecyclerView
+Modular adapters for RecyclerView
 
 License
 -------
