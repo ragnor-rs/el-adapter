@@ -3,17 +3,20 @@ El Adapter
 
 ElAdapter library allows you to decouple RecylerView's adapters code in more handy, simple and beatiful way.
 
+If you have a lot of adapters in your project you should definitely give this library a try!
+
 Features
 --------
 
 pros:
 * modular code
-* flyent interface for creating and bindig views
+* flyent interface for creating and binding views
 * decoupling all inner logic of RecylerView's adapter to interfaces
 * very easy to use
 
 cons:
 * early stage of development (not all functions are implementd)
+
 
 Example
 -------
