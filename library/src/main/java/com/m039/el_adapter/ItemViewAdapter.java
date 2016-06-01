@@ -105,7 +105,7 @@ public abstract class ItemViewAdapter<B extends ItemViewBindingBuilder> extends 
 
         if (binders == null) {
             throw new IllegalStateException(
-                    "Can't find binders for " + position + ":" + viewType + ":" + typeOfBind + " ."
+                    "Can't find binders for " + position + ":" + viewType + ":" + typeOfBind + "."
             );
         }
 
@@ -196,7 +196,7 @@ public abstract class ItemViewAdapter<B extends ItemViewBindingBuilder> extends 
     /**
      * Same as {@link #getItemViewType(Class, int)} but with <code>typeOfClasss</code> is 0.
      */
-    protected <T> int getItemViewType(Class<T> clazz) {
+    protected <I> int getItemViewType(Class<I> clazz) {
         return getItemViewType(clazz, DEFAULT_TYPE_OF_CLASS);
     }
 
@@ -204,7 +204,7 @@ public abstract class ItemViewAdapter<B extends ItemViewBindingBuilder> extends 
      * This function will create or get viewType based on <code>class</code> and
      * <code>typeOfClass</code>
      */
-    protected <T> int getItemViewType(Class<T> clazz, int typeOfClass) {
+    protected <I> int getItemViewType(Class<I> clazz, int typeOfClass) {
         return getViewTypeOffset() + mViewTypeHelper.getViewType(clazz, typeOfClass);
     }
 
@@ -219,7 +219,6 @@ public abstract class ItemViewAdapter<B extends ItemViewBindingBuilder> extends 
         return 0;
     }
 
-    @SuppressWarnings("unused")
     protected int getTypeOfClass(int position) {
         return DEFAULT_TYPE_OF_CLASS;
     }
