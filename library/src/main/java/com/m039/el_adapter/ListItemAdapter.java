@@ -75,6 +75,7 @@ public class ListItemAdapter extends ItemViewAdapter<ItemViewBindingBuilder> {
         return mItems;
     }
 
+    @Override
     public Object getItemAt(int position) {
         return mItems.get(position);
     }

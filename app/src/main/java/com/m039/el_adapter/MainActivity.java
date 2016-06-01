@@ -26,16 +26,23 @@ public class MainActivity extends AppCompatActivity {
 
         mRecyclerView.setAdapter(mListItemAdapter = new ListItemAdapter());
 
-        // todo sample (with wrapper, with no wrapper)
-        mListItemAdapter
-                .addViewCreator(Long.class, parent -> new TextView(this))
-                .addViewBinder(0, null)
-                .addViewBinder(1, null);
+//        // todo sample (with wrapper, with no wrapper)
+//        mListItemAdapter
+//                .addViewCreator(Long.class, parent -> new TextView(this))
+//                .addViewBinder(0, null)
+//                .addViewBinder(1, null);
 
         // todo custom ViewHolder typization
         mListItemAdapter
                 .addViewHolderCreator(Long.class, parent -> new ViewHolder<>(new TextView(this)))
                 .addViewBinder(((viewHolder, item) -> viewHolder.setText("1")));
+
+        mListItemAdapter
+                .addViewCreator(Long.class, parent -> new TextView(this))
+                .addViewBinder((view, item) -> view.setText(String.valueOf(item)))
+                .addOnItemViewClickListener((view, item) -> {
+                    Toast.makeText(this, "Long click on " + item, Toast.LENGTH_SHORT).show();
+                });
 
         mListItemAdapter
                 .addViewCreator(String.class, parent -> new Button(this))
@@ -52,6 +59,7 @@ public class MainActivity extends AppCompatActivity {
 
         mListItemAdapter.addItems(EXAMPLES);
         mListItemAdapter.addItem(42);
+        mListItemAdapter.addItem(13L);
         mListItemAdapter.notifyDataSetChanged();
     }
 

@@ -173,7 +173,7 @@ public abstract class BaseViewAdapter<B extends ViewBindingBuilder> extends Recy
     /**
      * @return viewHolderCreator associated this <code>viewType</code> or null
      */
-    protected ViewHolderCreator<?> getViewHolderCreator(int viewType) {
+    protected ViewHolderCreator getViewHolderCreator(int viewType) {
         return mOnCreteViewHolderByViewType.get(viewType);
     }
 

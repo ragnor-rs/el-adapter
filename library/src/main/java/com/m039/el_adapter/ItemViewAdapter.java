@@ -95,6 +95,8 @@ public abstract class ItemViewAdapter<B extends ItemViewBindingBuilder> extends 
 
     protected abstract void onBindViewHolder(ViewHolder holder, int position, ItemViewHolderBinder binder);
 
+    protected abstract Object getItemAt(int position);
+
     public <I, V extends View>
     void addViewHolderBinder(
             int viewType,
