@@ -11,12 +11,12 @@ import java.util.List;
  * todo javadoc
  * Created by m039 on 3/21/16.
  */
-public class ListItemViewAdapter extends BaseItemViewAdapter<ItemViewBindingBuilder> {
+public class ListItemViewAdapter extends ItemViewAdapter<ItemViewViewBindingBuilder> {
 
     private final List<Object> mItems = new ArrayList<>();
 
     public ListItemViewAdapter() {
-        super(ItemViewBindingBuilder.class);
+        super(ItemViewViewBindingBuilder.class);
     }
 
     @SuppressWarnings("unchecked")
@@ -96,42 +96,42 @@ public class ListItemViewAdapter extends BaseItemViewAdapter<ItemViewBindingBuil
     @Override
     @SuppressWarnings("unchecked")
     public <I, V extends View>
-    ItemViewBindingBuilder<I, V> addViewCreator(Class<I> clazz, ViewCreator<V> viewCreator) {
-        return (ItemViewBindingBuilder<I, V>) super.addViewCreator(clazz, viewCreator);
+    ItemViewViewBindingBuilder<I, V> addViewCreator(Class<I> clazz, ViewCreator<V> viewCreator) {
+        return (ItemViewViewBindingBuilder<I, V>) super.addViewCreator(clazz, viewCreator);
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public <I, V extends View>
-    ItemViewBindingBuilder<I, V> addViewCreator(Class<I> clazz, int viewTypeOfClass, ViewCreator<V> viewCreator) {
-        return (ItemViewBindingBuilder<I, V>) super.addViewCreator(clazz, viewTypeOfClass, viewCreator);
+    ItemViewViewBindingBuilder<I, V> addViewCreator(Class<I> clazz, int viewTypeOfClass, ViewCreator<V> viewCreator) {
+        return (ItemViewViewBindingBuilder<I, V>) super.addViewCreator(clazz, viewTypeOfClass, viewCreator);
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public <V extends View>
-    ItemViewBindingBuilder<Void, V> addViewCreator(int viewType, ViewCreator<V> viewCreator) {
-        return (ItemViewBindingBuilder<Void, V>) super.addViewCreator(viewType, viewCreator);
+    ItemViewViewBindingBuilder<Void, V> addViewCreator(int viewType, ViewCreator<V> viewCreator) {
+        return (ItemViewViewBindingBuilder<Void, V>) super.addViewCreator(viewType, viewCreator);
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public <I, V extends View>
-    ItemViewBindingBuilder<I, V> addViewHolderCreator(Class<I> clazz, ViewHolderCreator<V> viewHolderCreator) {
-        return (ItemViewBindingBuilder<I, V>) super.addViewHolderCreator(clazz, viewHolderCreator);
+    ItemViewViewBindingBuilder<I, V> addViewHolderCreator(Class<I> clazz, ViewHolderCreator<V> viewHolderCreator) {
+        return (ItemViewViewBindingBuilder<I, V>) super.addViewHolderCreator(clazz, viewHolderCreator);
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public <I, V extends View>
-    ItemViewBindingBuilder<I, V> addViewHolderCreator(Class<I> clazz, int viewTypeOfClass, ViewHolderCreator<V> viewHolderCreator) {
-        return (ItemViewBindingBuilder<I, V>) super.addViewHolderCreator(clazz, viewTypeOfClass, viewHolderCreator);
+    ItemViewViewBindingBuilder<I, V> addViewHolderCreator(Class<I> clazz, int viewTypeOfClass, ViewHolderCreator<V> viewHolderCreator) {
+        return (ItemViewViewBindingBuilder<I, V>) super.addViewHolderCreator(clazz, viewTypeOfClass, viewHolderCreator);
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public <V extends View>
-    ItemViewBindingBuilder<Void, V> addViewHolderCreator(int viewType, ViewHolderCreator<V> viewHolderCreator) {
-        return (ItemViewBindingBuilder<Void, V>) super.addViewHolderCreator(viewType, viewHolderCreator);
+    ItemViewViewBindingBuilder<Void, V> addViewHolderCreator(int viewType, ViewHolderCreator<V> viewHolderCreator) {
+        return (ItemViewViewBindingBuilder<Void, V>) super.addViewHolderCreator(viewType, viewHolderCreator);
     }
 }

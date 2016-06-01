@@ -9,8 +9,10 @@ import java.util.Map;
 /**
  * Created by m039 on 6/1/16.
  */
-public abstract class BaseItemViewAdapter<B extends ItemBindingBuilder> extends BaseViewAdapter<B>
+public abstract class ItemViewAdapter<B extends ItemViewViewBindingBuilder> extends BaseViewAdapter<B>
         implements ItemViewCreatorDelegate<B> {
+
+    public static final int DEFAULT_VIEW_TYPE = 0;
 
     /**
      * Same logic as in ItemViewManager.
@@ -58,29 +60,30 @@ public abstract class BaseItemViewAdapter<B extends ItemBindingBuilder> extends 
 
     }
 
-    public static final int DEFAULT_VIEW_TYPE = 0;
-
     private final ViewTypeHelper mViewTypeHelper = new ViewTypeHelper();
     private final Map<Integer, ItemViewHolderBinder<?, ?>> mItemViewHolderBinderByViewType = new HashMap<>();
 
-    public BaseItemViewAdapter(Class<B> clazz) {
+    public ItemViewAdapter(Class<B> clazz) {
         super(clazz);
     }
 
     @SuppressWarnings("unchecked")
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
+        int viewType = getItemViewType(position);
         ItemViewHolderBinder<Object, View> itemViewHolderBinder = (ItemViewHolderBinder<Object, View>)
-                mItemViewHolderBinderByViewType.get(getItemViewType(position));
+                mItemViewHolderBinderByViewType.get(viewType);
 
         if (itemViewHolderBinder == null) {
-            throw new IllegalStateException("Can't find binder for " + position + " position. ");
+            throw new IllegalStateException(
+                    "Can't find binder for " + position + " position, for " + viewType + " ."
+            );
         }
 
         onBindViewHolder(holder, position, itemViewHolderBinder);
     }
 
-    protected abstract void onBindViewHolder(ViewHolder holder, int position, ItemViewHolderBinder<?, ?> binder);
+    protected abstract void onBindViewHolder(ViewHolder holder, int position, ItemViewHolderBinder binder);
 
     public <I, V extends View>
     void addViewHolderBinder(

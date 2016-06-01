@@ -26,7 +26,7 @@ import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
  * <p/>
  * Created by m039 on 3/3/16.
  */
-public abstract class BaseViewAdapter<B extends BindingBuilder> extends RecyclerView.Adapter<BaseViewAdapter.ViewHolder<?>>
+public abstract class BaseViewAdapter<B extends ViewBindingBuilder> extends RecyclerView.Adapter<BaseViewAdapter.ViewHolder<?>>
         implements ViewCreatorDelegate<B>
 {
 
