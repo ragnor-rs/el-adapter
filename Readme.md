@@ -3,7 +3,7 @@ ElAdapter
 
 ElAdapter library allows you to decouple RecylerView's adapters code in more handy, simple and beatiful way.
 
-If you have a lot of adapters in your project you should definitely give this library a try!
+If you have a lot of adapters in your project you should definitely give it a try!
 
 Features
 --------
