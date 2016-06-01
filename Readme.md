@@ -13,6 +13,7 @@ pros:
 * flyent interface for creating and binding views
 * decoupling all inner logic of RecylerView's adapter to interfaces
 * very easy to use
+* generics
 
 cons:
 * early stage of development (not all functions are implementd)
