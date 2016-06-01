@@ -22,6 +22,8 @@ import java.util.Map;
      * @return merged viewType of class and typeOfClass
      */
     public int getViewType(Class clazz, int typeOfClass) {
+        // todo issue with different class names
+
         String key = clazz.getName() + ";" + typeOfClass;
         Integer viewType = mCachedViewTypes.get(key);
 

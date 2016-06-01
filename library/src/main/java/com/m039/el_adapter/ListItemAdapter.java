@@ -5,6 +5,7 @@ import android.view.View;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -53,7 +54,7 @@ public class ListItemAdapter extends ItemViewAdapter<ItemViewBindingBuilder> {
         mItems.add(index, item);
     }
 
-    public <I> void addItems(@NonNull List<I> items) {
+    public <I> void addItems(@NonNull Collection<I> items) {
         if (!items.isEmpty()) {
             mItems.addAll(items);
         }

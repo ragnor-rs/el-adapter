@@ -15,12 +15,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * todo custom ViewHolder typization
+ *
  * Created by m039 on 6/1/16.
  */
-/* package */ class ItemViewBindingBuilder<I, V extends View>
+public class ItemViewBindingBuilder<I, V extends View>
         extends ViewBindingBuilder<V> {
 
-    protected static class ClickableBindingBuilder<I, V extends View> extends ItemViewBindingBuilder<I, V> {
+    public static class ClickableBindingBuilder<I, V extends View> extends ItemViewBindingBuilder<I, V> {
 
         private static class ClickableViewHolderCreator<I, V extends View> implements ViewHolderCreator<V> {
 
