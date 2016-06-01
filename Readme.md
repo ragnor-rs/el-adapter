@@ -22,7 +22,7 @@ cons:
 Example
 -------
 
-ElAdapter is very easy to use, but you should use java 8 lambdas to write more consice code.
+ElAdapter is very easy to use, but you should use java 8 lambdas to write more consice code. You can't get even shorter:
 
 ```java
 ListItemAdapter listAdapter = new ListItemAdapter();
