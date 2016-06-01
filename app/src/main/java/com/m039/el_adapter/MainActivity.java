@@ -16,7 +16,7 @@ public class MainActivity extends AppCompatActivity {
     };
 
     RecyclerView mRecyclerView;
-    ItemViewAdapter mItemViewAdapter;
+    ListItemViewAdapter mListItemViewAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,24 +24,35 @@ public class MainActivity extends AppCompatActivity {
 
         setContentView(mRecyclerView = new DemoRecyclerView(this));
 
-        mRecyclerView.setAdapter(mItemViewAdapter = new ItemViewAdapter());
+        mRecyclerView.setAdapter(mListItemViewAdapter = new ListItemViewAdapter());
 
-        mItemViewAdapter
+        // todo sample
+        mListItemViewAdapter
+                .addViewCreator(Long.class, parent1 -> new TextView(this))
+                .addViewBinder(0, null)
+                .addViewBinder(1, null);
+
+        // todo custom ViewHolder typization
+        mListItemViewAdapter
+                .addViewHolderCreator(Long.class, parent -> new ViewHolder<>(new TextView(this)))
+                .addViewBinder(((viewHolder, item) -> viewHolder.setText("1")));
+
+        mListItemViewAdapter
                 .addViewCreator(String.class, parent -> new Button(this))
                 .addViewHolderBinder(((viewHolder, item) -> {
                     viewHolder.itemView.setText(item);
                     viewHolder.itemView.setOnClickListener(view -> onButtonClick(viewHolder));
                 }));
 
-        mItemViewAdapter
+        mListItemViewAdapter
                 .addViewCreator(Integer.class, parent -> new TextView(this))
                 .addViewBinder((view, item) -> {
                     view.setText(String.valueOf(item));
                 });
 
-        mItemViewAdapter.addItems(EXAMPLES);
-        mItemViewAdapter.addItem(42);
-        mItemViewAdapter.notifyDataSetChanged();
+        mListItemViewAdapter.addItems(EXAMPLES);
+        mListItemViewAdapter.addItem(42);
+        mListItemViewAdapter.notifyDataSetChanged();
     }
 
     void onButtonClick(ViewHolder<Button> viewHolder) {

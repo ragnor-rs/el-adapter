@@ -30,8 +30,6 @@ public abstract class BaseViewAdapter<B extends BindingBuilder> extends Recycler
         implements ViewCreatorDelegate<B>
 {
 
-    public static final int DEFAULT_VIEW_TYPE = 0;
-
     public static class ViewHolder<V extends View> extends RecyclerView.ViewHolder {
 
         public V itemView; // parameterize
@@ -106,18 +104,6 @@ public abstract class BaseViewAdapter<B extends BindingBuilder> extends Recycler
         mCommandBuilderClass = clazz;
     }
 
-    @SuppressWarnings("unchecked")
-    protected <I> B getCommandBuilder(Class<I> clazz) {
-        try {
-            return mCommandBuilderClass
-                    .getConstructor(BaseViewAdapter.class, Class.class)
-                    .newInstance(this, clazz);
-        } catch (Exception e) {
-            throw new RuntimeException("Can't instantiate the class", e);
-        }
-    }
-
-    private final ViewTypeHelper mViewTypeHelper = new ViewTypeHelper();
     private final Map<Integer, ViewHolderCreator> mOnCreteViewHolderByViewType = new HashMap<>();
 
     @Override
@@ -137,59 +123,13 @@ public abstract class BaseViewAdapter<B extends BindingBuilder> extends Recycler
         return viewHolderCreator.onCreateViewHolder(parent);
     }
 
-    /**
-     * @param clazz       <code>clazz</code> will be used to create new view type if if doesn't
-     *                    exist yet, and for this viewType <code>viewCreator</code> will be used
-     * @param viewCreator creator of views
-     */
-    @Override
-    public <I, V extends View>
-    B addViewCreator(Class<I> clazz, ViewCreator<V> viewCreator) {
-        addViewHolderCreator(clazz, new DefaultViewHolderCreator<>(viewCreator));
-        return getCommandBuilder(clazz);
-    }
-
-    /**
-     * @param clazz           <code>clazz</code> and <code>viewTypeOfClass</code> will be used
-     *                        to create new view type if if doesn't exist yet and for this viewType
-     *                        <code>viewCreator</code> will be used
-     * @param viewTypeOfClass viewType of <code>clazz</code>. This is additional type to make more
-     *                        types for same <code>clazz</code>
-     * @param viewCreator     creator of views
-     */
-    @Override
-    public <I, V extends View>
-    B addViewCreator(Class<I> clazz, int viewTypeOfClass, ViewCreator<V> viewCreator) {
-        addViewHolderCreator(clazz, viewTypeOfClass, new DefaultViewHolderCreator<>(viewCreator));
-        return getCommandBuilder(clazz);
-    }
-
-    /**
-     * The main method to add viewCreator to this class, other methods like
-     * {@link #addViewCreator(Class, int, ViewCreator)} uses helper class to create or get viewType.
-     *
-     * @param viewType    viewType for which <code>viewCreator</code> will be used
-     * @param viewCreator creator of views
-     */
-    @Override
-    public <I, V extends View>
-    B addViewCreator(int viewType, ViewCreator<V> viewCreator) {
-        addViewHolderCreator(viewType, new DefaultViewHolderCreator<>(viewCreator));
-        return getCommandBuilder(null);
-    }
-
-    @Override
-    public <I, V extends View>
-    B addViewHolderCreator(Class<I> clazz, ViewHolderCreator<V> viewHolderCreator) {
-        addViewHolderCreator(clazz, DEFAULT_VIEW_TYPE, viewHolderCreator);
-        return getCommandBuilder(clazz);
-    }
-
-    @Override
-    public <I, V extends View>
-    B addViewHolderCreator(Class<I> clazz, int viewTypeOfClass, ViewHolderCreator<V> viewHolderCreator) {
-        addViewHolderCreator(getItemViewType(clazz, viewTypeOfClass), viewHolderCreator);
-        return getCommandBuilder(clazz);
+    @SuppressWarnings("unchecked")
+    protected B newCommandBuilder() {
+        try {
+            return mCommandBuilderClass.getConstructor(BaseViewAdapter.class).newInstance(this);
+        } catch (Exception e) {
+            throw new RuntimeException("Can't instantiate the class", e);
+        }
     }
 
     /**
@@ -197,10 +137,23 @@ public abstract class BaseViewAdapter<B extends BindingBuilder> extends Recycler
      * @param viewHolderCreator creator of viewHolders
      */
     @Override
-    public <I, V extends View>
+    public <V extends View>
     B addViewHolderCreator(int viewType, ViewHolderCreator<V> viewHolderCreator) {
         mOnCreteViewHolderByViewType.put(viewType, viewHolderCreator);
-        return getCommandBuilder(null);
+        return newCommandBuilder();
+    }
+
+    /**
+     * The main method to add viewCreator to this class
+     *
+     * @param viewType    viewType for which <code>viewCreator</code> will be used
+     * @param viewCreator creator of views
+     */
+    @Override
+    public <V extends View>
+    B addViewCreator(int viewType, ViewCreator<V> viewCreator) {
+        addViewHolderCreator(viewType, new DefaultViewHolderCreator<>(viewCreator));
+        return newCommandBuilder();
     }
 
     /**
@@ -220,32 +173,6 @@ public abstract class BaseViewAdapter<B extends BindingBuilder> extends Recycler
      */
     protected ViewHolderCreator<?> getViewHolderCreator(int viewType) {
         return mOnCreteViewHolderByViewType.get(viewType);
-    }
-
-    /**
-     * Same as {@link #getItemViewType(Class, int)} but with <code>viewTypeOfClass</code> is 0.
-     */
-    protected <T> int getItemViewType(Class<T> clazz) {
-        return getItemViewType(clazz, DEFAULT_VIEW_TYPE);
-    }
-
-    /**
-     * This function will create or get viewType based on <code>class</code> and
-     * <code>viewTypeOfClass</code>
-     */
-    protected <T> int getItemViewType(Class<T> clazz, int viewTypeOfClass) {
-        return getViewTypeOffset() + mViewTypeHelper.getViewType(clazz, viewTypeOfClass);
-    }
-
-    /**
-     * You will need this function if you have custom viewTypes and you need that others values
-     * doesn't clash with them.
-     *
-     * @return offset from which functions like {@link #getItemViewType(Class, int)} or
-     * {@link #getItemViewType(Class)} will return the value.
-     */
-    protected int getViewTypeOffset() {
-        return 0;
     }
 
 }
