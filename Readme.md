@@ -1,7 +1,37 @@
 El Adapter
 ==========
 
-Modular adapters for RecyclerView
+ElAdapter library allows you to decouple RecylerView's adapters code in more handy, simple and beatiful way.
+
+Features
+--------
+
+pros:
+* modular code
+* flyent interface for creating and bindig views
+* decoupling all inner logic of RecylerView's adapter to interfaces
+* very easy to use
+
+cons:
+* early stage of development (not all functions are implementd)
+
+Example
+-------
+
+ElAdapter is very easy to use, but you should use java 8 lambdas to write more consice code.
+
+```java
+ListItemAdapter listAdapter = new ListItemAdapter();
+
+listAdapter
+  .addViewCreator(String.class, parent -> new TextView(getActivity()))
+  .addViewBinder((view, item) -> view.setText(item));
+
+listAdapter
+  .addItem("Hello");
+  
+recyclerView.setAdapter(listAdapter);
+```
 
 License
 -------
