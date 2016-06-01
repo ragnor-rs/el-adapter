@@ -14,17 +14,17 @@ import android.support.annotation.Nullable;
  * Limits:
  *
  * <ul>
- * <li>Per page data number is hardcoded to amount of {@link PerPageListItemViewAdapter#LIMIT}</li>
+ * <li>Per page data number is hardcoded to amount of {@link PerPageListItemAdapter#LIMIT}</li>
  * </ul>
  */
-public class PerPageListItemViewAdapter extends ListItemViewAdapter {
+public class PerPageListItemAdapter extends ListItemAdapter {
 
     public static final int LIMIT = 20;
 
     @Nullable
     private final PageLoader mPageLoader;
 
-    public PerPageListItemViewAdapter(@Nullable PageLoader pageLoader) {
+    public PerPageListItemAdapter(@Nullable PageLoader pageLoader) {
         mPageLoader = pageLoader;
     }
 

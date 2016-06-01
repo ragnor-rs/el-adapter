@@ -9,17 +9,15 @@ import java.util.Map;
 /**
  * Created by m039 on 6/1/16.
  */
-public abstract class ItemViewAdapter<B extends ItemViewViewBindingBuilder> extends BaseViewAdapter<B>
+public abstract class ItemViewAdapter<B extends ItemViewBindingBuilder> extends BaseViewAdapter<B>
         implements ItemViewCreatorDelegate<B> {
 
-    public static final int DEFAULT_VIEW_TYPE = 0;
+    public static final int DEFAULT_VIEW_TYPE_OF_CLASS = DEFAULT_VIEW_TYPE;
 
     /**
-     * Same logic as in ItemViewManager.
-     * <p>
-     * This interface should be used when is needed binding of item to view and nothing else.
      *
-     * @param <I> type of the object to bind
+     * Bind an item to a view
+     *
      */
     public interface ItemViewBinder<I, V extends View> {
 
@@ -34,6 +32,18 @@ public abstract class ItemViewAdapter<B extends ItemViewViewBindingBuilder> exte
     public interface ItemViewHolderBinder<I, V extends View> {
 
         void onBindViewHolder(ViewHolder<V> viewHolder, I item);
+
+    }
+
+    public interface OnItemViewClickListener<I, V extends View> {
+
+        void onItemViewClick(V view, I item);
+
+    }
+
+    public interface OnItemViewHolderClickListener<I, V extends View> {
+
+        void onItemViewHolderClick(ViewHolder<V> viewHolder, I item);
 
     }
 
@@ -107,8 +117,7 @@ public abstract class ItemViewAdapter<B extends ItemViewViewBindingBuilder> exte
     @Override
     public <I, V extends View>
     B addViewCreator(Class<I> clazz, ViewCreator<V> viewCreator) {
-        addViewHolderCreator(clazz, new DefaultViewHolderCreator<>(viewCreator));
-        return newCommandBuilder(clazz);
+        return addViewHolderCreator(clazz, new DefaultViewHolderCreator<>(viewCreator));
     }
 
     /**
@@ -122,34 +131,28 @@ public abstract class ItemViewAdapter<B extends ItemViewViewBindingBuilder> exte
     @Override
     public <I, V extends View>
     B addViewCreator(Class<I> clazz, int viewTypeOfClass, ViewCreator<V> viewCreator) {
-        addViewHolderCreator(clazz, viewTypeOfClass, new DefaultViewHolderCreator<>(viewCreator));
-        return newCommandBuilder(clazz);
+        return addViewHolderCreator(clazz, viewTypeOfClass, new DefaultViewHolderCreator<>(viewCreator));
     }
 
     @Override
     public <I, V extends View>
     B addViewHolderCreator(Class<I> clazz, ViewHolderCreator<V> viewHolderCreator) {
-        addViewHolderCreator(clazz, DEFAULT_VIEW_TYPE, viewHolderCreator);
-        return newCommandBuilder(clazz);
-    }
-
-    @Override
-    public <I, V extends View>
-    B addViewHolderCreator(Class<I> clazz, int viewTypeOfClass, ViewHolderCreator<V> viewHolderCreator) {
-        addViewHolderCreator(getItemViewType(clazz, viewTypeOfClass), viewHolderCreator);
-        return newCommandBuilder(clazz);
+        return addViewHolderCreator(clazz, DEFAULT_VIEW_TYPE_OF_CLASS, viewHolderCreator);
     }
 
     @SuppressWarnings("unchecked")
-    protected <I> B newCommandBuilder(Class<I> clazz) {
-        return (B) super.newCommandBuilder().setClass(clazz);
+    @Override
+    public <I, V extends View>
+    B addViewHolderCreator(Class<I> clazz, int viewTypeOfClass, ViewHolderCreator<V> viewHolderCreator) {
+        int viewType = getItemViewType(clazz, viewTypeOfClass);
+        return (B) addViewHolderCreator(viewType, viewHolderCreator).setClass(clazz);
     }
 
     /**
      * Same as {@link #getItemViewType(Class, int)} but with <code>viewTypeOfClass</code> is 0.
      */
     protected <T> int getItemViewType(Class<T> clazz) {
-        return getItemViewType(clazz, DEFAULT_VIEW_TYPE);
+        return getItemViewType(clazz, DEFAULT_VIEW_TYPE_OF_CLASS);
     }
 
     /**

@@ -8,9 +8,11 @@ import android.view.View;
 /* package */ abstract class ViewBindingBuilder<V extends View> {
 
     final protected BaseViewAdapter adapter;
+    final protected int viewType;
 
-    public ViewBindingBuilder(BaseViewAdapter adapter) {
+    public ViewBindingBuilder(BaseViewAdapter adapter, int viewType) {
         this.adapter = adapter;
+        this.viewType = viewType;
     }
 
 }

@@ -16,7 +16,7 @@ public class MainActivity extends AppCompatActivity {
     };
 
     RecyclerView mRecyclerView;
-    ListItemViewAdapter mListItemViewAdapter;
+    ListItemAdapter mListItemAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,35 +24,35 @@ public class MainActivity extends AppCompatActivity {
 
         setContentView(mRecyclerView = new DemoRecyclerView(this));
 
-        mRecyclerView.setAdapter(mListItemViewAdapter = new ListItemViewAdapter());
+        mRecyclerView.setAdapter(mListItemAdapter = new ListItemAdapter());
 
-        // todo sample
-        mListItemViewAdapter
-                .addViewCreator(Long.class, parent1 -> new TextView(this))
+        // todo sample (with wrapper, with no wrapper)
+        mListItemAdapter
+                .addViewCreator(Long.class, parent -> new TextView(this))
                 .addViewBinder(0, null)
                 .addViewBinder(1, null);
 
         // todo custom ViewHolder typization
-        mListItemViewAdapter
+        mListItemAdapter
                 .addViewHolderCreator(Long.class, parent -> new ViewHolder<>(new TextView(this)))
                 .addViewBinder(((viewHolder, item) -> viewHolder.setText("1")));
 
-        mListItemViewAdapter
+        mListItemAdapter
                 .addViewCreator(String.class, parent -> new Button(this))
                 .addViewHolderBinder(((viewHolder, item) -> {
                     viewHolder.itemView.setText(item);
                     viewHolder.itemView.setOnClickListener(view -> onButtonClick(viewHolder));
                 }));
 
-        mListItemViewAdapter
+        mListItemAdapter
                 .addViewCreator(Integer.class, parent -> new TextView(this))
                 .addViewBinder((view, item) -> {
                     view.setText(String.valueOf(item));
                 });
 
-        mListItemViewAdapter.addItems(EXAMPLES);
-        mListItemViewAdapter.addItem(42);
-        mListItemViewAdapter.notifyDataSetChanged();
+        mListItemAdapter.addItems(EXAMPLES);
+        mListItemAdapter.addItem(42);
+        mListItemAdapter.notifyDataSetChanged();
     }
 
     void onButtonClick(ViewHolder<Button> viewHolder) {

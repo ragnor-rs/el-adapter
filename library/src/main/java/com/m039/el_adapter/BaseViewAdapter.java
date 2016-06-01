@@ -30,6 +30,8 @@ public abstract class BaseViewAdapter<B extends ViewBindingBuilder> extends Recy
         implements ViewCreatorDelegate<B>
 {
 
+    public static final int DEFAULT_VIEW_TYPE = 0;
+
     public static class ViewHolder<V extends View> extends RecyclerView.ViewHolder {
 
         public V itemView; // parameterize
@@ -124,23 +126,13 @@ public abstract class BaseViewAdapter<B extends ViewBindingBuilder> extends Recy
     }
 
     @SuppressWarnings("unchecked")
-    protected B newCommandBuilder() {
+    protected B newCommandBuilder(int viewType) {
         try {
-            return mCommandBuilderClass.getConstructor(BaseViewAdapter.class).newInstance(this);
+            return mCommandBuilderClass.getConstructor(BaseViewAdapter.class, int.class)
+                    .newInstance(this, viewType);
         } catch (Exception e) {
             throw new RuntimeException("Can't instantiate the class", e);
         }
-    }
-
-    /**
-     * @param viewType for which <code>viewHolderCreator</code> will be used
-     * @param viewHolderCreator creator of viewHolders
-     */
-    @Override
-    public <V extends View>
-    B addViewHolderCreator(int viewType, ViewHolderCreator<V> viewHolderCreator) {
-        mOnCreteViewHolderByViewType.put(viewType, viewHolderCreator);
-        return newCommandBuilder();
     }
 
     /**
@@ -152,8 +144,18 @@ public abstract class BaseViewAdapter<B extends ViewBindingBuilder> extends Recy
     @Override
     public <V extends View>
     B addViewCreator(int viewType, ViewCreator<V> viewCreator) {
-        addViewHolderCreator(viewType, new DefaultViewHolderCreator<>(viewCreator));
-        return newCommandBuilder();
+        return addViewHolderCreator(viewType, new DefaultViewHolderCreator<>(viewCreator));
+    }
+
+    /**
+     * @param viewType for which <code>viewHolderCreator</code> will be used
+     * @param viewHolderCreator creator of viewHolders
+     */
+    @Override
+    public <V extends View>
+    B addViewHolderCreator(int viewType, ViewHolderCreator<V> viewHolderCreator) {
+        mOnCreteViewHolderByViewType.put(viewType, viewHolderCreator);
+        return newCommandBuilder(viewType);
     }
 
     /**

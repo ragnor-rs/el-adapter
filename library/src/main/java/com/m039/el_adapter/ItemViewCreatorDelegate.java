@@ -5,7 +5,7 @@ import android.view.View;
 /**
  * Created by m039 on 6/1/16.
  */
-/* package */ interface ItemViewCreatorDelegate<B extends ItemViewViewBindingBuilder>
+/* package */ interface ItemViewCreatorDelegate<B extends ItemViewBindingBuilder>
         extends ViewCreatorDelegate<B> {
 
     <I, V extends View>
