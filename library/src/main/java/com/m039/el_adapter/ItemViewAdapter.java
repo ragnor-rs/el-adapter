@@ -227,4 +227,8 @@ public abstract class ItemViewAdapter<B extends ItemViewBindingBuilder> extends 
         return DEFAULT_TYPE_OF_BIND;
     }
 
+    /* package */ String findClassName(int viewType) {
+        return mViewTypeHelper.findClassName(viewType);
+    }
+
 }

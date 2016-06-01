@@ -51,4 +51,20 @@ import java.util.Map;
         return viewType;
     }
 
+    /**
+     * Try to find name of a class for a specified typeOfClass
+     *
+     * @param viewType type of a class
+     * @return name of a class or null
+     */
+    /* package */ String findClassName(int viewType) {
+        for (Map.Entry<String, Integer> e: mCachedViewTypes.entrySet()) {
+            if (e.getValue() == viewType) {
+                return e.getKey();
+            }
+        }
+
+        return null;
+    }
+
 }
