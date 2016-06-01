@@ -16,7 +16,38 @@ public class MainActivity extends AppCompatActivity {
     };
 
     RecyclerView mRecyclerView;
-    ListItemAdapter mListItemAdapter;
+    ListItemAdapter mListItemAdapter = new ListItemAdapter() {
+
+        @Override
+        protected int getTypeOfBind(int position) {
+            Object object = getItemAt(position);
+
+            if (object instanceof Title) {
+                Title title = (Title) object;
+
+                if (title.takedown) {
+                    return 1;
+                } else {
+                    return 0;
+                }
+            }
+
+            return super.getTypeOfBind(position);
+        }
+
+    };
+
+    private static class Title {
+
+        String title;
+        boolean takedown;
+
+        public Title(String title, boolean takedown) {
+            this.title = title;
+            this.takedown = takedown;
+        }
+
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,8 +55,17 @@ public class MainActivity extends AppCompatActivity {
 
         setContentView(mRecyclerView = new DemoRecyclerView(this));
 
-        mRecyclerView.setAdapter(mListItemAdapter = new ListItemAdapter());
+        mRecyclerView.setAdapter(mListItemAdapter);
 
+        mListItemAdapter
+                .addViewCreator(Title.class, parent -> new TextView(this))
+                .addViewBinder(0, (view, item) -> view.setText(item.title + " - "))
+                .addViewBinder(1, (view, item) -> view.setText(item.title + " + "));
+
+        mListItemAdapter.addItem(new Title("Not takedown", false));
+        mListItemAdapter.addItem(new Title("Takedown", true));
+
+        // sample for viewTypeOfClass/typeOfClass, viewTypeOfBind/typeOfBind
 //        // todo sample (with wrapper, with no wrapper)
 //        mListItemAdapter
 //                .addViewCreator(Long.class, parent -> new TextView(this))

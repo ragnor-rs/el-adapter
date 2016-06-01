@@ -12,7 +12,8 @@ import java.util.Map;
 public abstract class ItemViewAdapter<B extends ItemViewBindingBuilder> extends BaseViewAdapter<B>
         implements ItemViewCreatorDelegate<B> {
 
-    public static final int DEFAULT_VIEW_TYPE_OF_CLASS = DEFAULT_VIEW_TYPE;
+    public static final int DEFAULT_TYPE_OF_CLASS = DEFAULT_VIEW_TYPE;
+    public static final int DEFAULT_TYPE_OF_BIND = DEFAULT_VIEW_TYPE;
 
     /**
      *
@@ -71,7 +72,7 @@ public abstract class ItemViewAdapter<B extends ItemViewBindingBuilder> extends 
     }
 
     private final ViewTypeHelper mViewTypeHelper = new ViewTypeHelper();
-    private final Map<Integer, ItemViewHolderBinder<?, ?>> mItemViewHolderBinderByViewType = new HashMap<>();
+    private final Map<Integer, Map<Integer, ItemViewHolderBinder>> mItemViewHolderBindersByViewType = new HashMap<>();
 
     public ItemViewAdapter(Class<B> clazz) {
         super(clazz);
@@ -81,16 +82,26 @@ public abstract class ItemViewAdapter<B extends ItemViewBindingBuilder> extends 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         int viewType = getItemViewType(position);
-        ItemViewHolderBinder<Object, View> itemViewHolderBinder = (ItemViewHolderBinder<Object, View>)
-                mItemViewHolderBinderByViewType.get(viewType);
+        int typeOfBind = getTypeOfBind(position);
 
-        if (itemViewHolderBinder == null) {
+        Map<Integer, ItemViewHolderBinder> binders =
+                mItemViewHolderBindersByViewType.get(viewType);
+
+        if (binders == null) {
             throw new IllegalStateException(
-                    "Can't find binder for " + position + " position, for " + viewType + " ."
+                    "Can't find binders for " + position + ":" + viewType + ":" + typeOfBind + " ."
             );
         }
 
-        onBindViewHolder(holder, position, itemViewHolderBinder);
+        ItemViewHolderBinder binder = binders.get(typeOfBind);
+
+        if (binder == null) {
+            throw new IllegalStateException(
+                    "Can't find binder for " + position + ":" + viewType + ":" + typeOfBind + "."
+            );
+        }
+
+        onBindViewHolder(holder, position, binder);
     }
 
     protected abstract void onBindViewHolder(ViewHolder holder, int position, ItemViewHolderBinder binder);
@@ -100,15 +111,31 @@ public abstract class ItemViewAdapter<B extends ItemViewBindingBuilder> extends 
     public <I, V extends View>
     void addViewHolderBinder(
             int viewType,
+            int typeOfBind,
             @NonNull ItemViewHolderBinder<I, V> itemViewHolderBinder
     ) {
-        mItemViewHolderBinderByViewType.put(viewType, itemViewHolderBinder);
+        Map<Integer, ItemViewHolderBinder> binders =
+                mItemViewHolderBindersByViewType.get(viewType);
+
+        if (binders == null) {
+            binders = new HashMap<>();
+            mItemViewHolderBindersByViewType.put(viewType, binders);
+        }
+
+        binders.put(typeOfBind, itemViewHolderBinder);
     }
 
     @SuppressWarnings("unchecked")
     public <I, V extends View>
-    ItemViewHolderBinder<I, V> getViewHolderBinder(int viewType) {
-        return (ItemViewHolderBinder<I, V>) mItemViewHolderBinderByViewType.get(viewType);
+    ItemViewHolderBinder<I, V> getViewHolderBinder(int viewType, int typeOfBind) {
+        Map<Integer, ItemViewHolderBinder> binders =
+                mItemViewHolderBindersByViewType.get(viewType);
+
+        if (binders != null) {
+            return binders.get(typeOfBind);
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -123,46 +150,46 @@ public abstract class ItemViewAdapter<B extends ItemViewBindingBuilder> extends 
     }
 
     /**
-     * @param clazz           <code>clazz</code> and <code>viewTypeOfClass</code> will be used
+     * @param clazz           <code>clazz</code> and <code>typeOfClass</code> will be used
      *                        to create new view type if if doesn't exist yet and for this viewType
      *                        <code>viewCreator</code> will be used
-     * @param viewTypeOfClass viewType of <code>clazz</code>. This is additional type to make more
+     * @param typeOfClass viewType of <code>clazz</code>. This is additional type to make more
      *                        types for same <code>clazz</code>
      * @param viewCreator     creator of views
      */
     @Override
     public <I, V extends View>
-    B addViewCreator(Class<I> clazz, int viewTypeOfClass, ViewCreator<V> viewCreator) {
-        return addViewHolderCreator(clazz, viewTypeOfClass, new DefaultViewHolderCreator<>(viewCreator));
+    B addViewCreator(Class<I> clazz, int typeOfClass, ViewCreator<V> viewCreator) {
+        return addViewHolderCreator(clazz, typeOfClass, new DefaultViewHolderCreator<>(viewCreator));
     }
 
     @Override
     public <I, V extends View>
     B addViewHolderCreator(Class<I> clazz, ViewHolderCreator<V> viewHolderCreator) {
-        return addViewHolderCreator(clazz, DEFAULT_VIEW_TYPE_OF_CLASS, viewHolderCreator);
+        return addViewHolderCreator(clazz, DEFAULT_TYPE_OF_CLASS, viewHolderCreator);
     }
 
     @SuppressWarnings("unchecked")
     @Override
     public <I, V extends View>
-    B addViewHolderCreator(Class<I> clazz, int viewTypeOfClass, ViewHolderCreator<V> viewHolderCreator) {
-        int viewType = getItemViewType(clazz, viewTypeOfClass);
+    B addViewHolderCreator(Class<I> clazz, int typeOfClass, ViewHolderCreator<V> viewHolderCreator) {
+        int viewType = getItemViewType(clazz, typeOfClass);
         return (B) addViewHolderCreator(viewType, viewHolderCreator).setClass(clazz);
     }
 
     /**
-     * Same as {@link #getItemViewType(Class, int)} but with <code>viewTypeOfClass</code> is 0.
+     * Same as {@link #getItemViewType(Class, int)} but with <code>typeOfClasss</code> is 0.
      */
     protected <T> int getItemViewType(Class<T> clazz) {
-        return getItemViewType(clazz, DEFAULT_VIEW_TYPE_OF_CLASS);
+        return getItemViewType(clazz, DEFAULT_TYPE_OF_CLASS);
     }
 
     /**
      * This function will create or get viewType based on <code>class</code> and
-     * <code>viewTypeOfClass</code>
+     * <code>typeOfClass</code>
      */
-    protected <T> int getItemViewType(Class<T> clazz, int viewTypeOfClass) {
-        return getViewTypeOffset() + mViewTypeHelper.getViewType(clazz, viewTypeOfClass);
+    protected <T> int getItemViewType(Class<T> clazz, int typeOfClass) {
+        return getViewTypeOffset() + mViewTypeHelper.getViewType(clazz, typeOfClass);
     }
 
     /**
@@ -174,6 +201,15 @@ public abstract class ItemViewAdapter<B extends ItemViewBindingBuilder> extends 
      */
     protected int getViewTypeOffset() {
         return 0;
+    }
+
+    @SuppressWarnings("unused")
+    protected int getTypeOfClass(int position) {
+        return DEFAULT_TYPE_OF_CLASS;
+    }
+
+    protected int getTypeOfBind(int position) {
+        return DEFAULT_TYPE_OF_BIND;
     }
 
 }

@@ -24,7 +24,7 @@ import java.util.Map;
 
         private static class ClickableViewHolderCreator<I, V extends View> implements ViewHolderCreator<V> {
 
-            Map<Integer, OnItemViewHolderClickListener> listenersByBindedViewType = new HashMap<>();
+            Map<Integer, OnItemViewHolderClickListener> listenersByTypeOfBind = new HashMap<>();
             final ViewHolderCreator<V> viewHolderCreator;
             final ItemViewAdapter adapter;
 
@@ -42,9 +42,9 @@ import java.util.Map;
                     @Override
                     public void onClick(View v) {
                         int position = viewHolder.getAdapterPosition();
-                        int viewType = adapter.getItemViewType(position);
+                        int typeOfBind = adapter.getTypeOfBind(position);
 
-                        OnItemViewHolderClickListener<I, V> listener = listenersByBindedViewType.get(viewType);
+                        OnItemViewHolderClickListener<I, V> listener = listenersByTypeOfBind.get(typeOfBind);
                         if (listener != null) {
                             I item = (I) adapter.getItemAt(position);
                             listener.onItemViewHolderClick(viewHolder, item);
@@ -58,9 +58,12 @@ import java.util.Map;
 
         }
 
-        public ClickableBindingBuilder(BaseViewAdapter adapter, Class<I> clazz, int viewType) {
+        int typeOfBind;
+
+        public ClickableBindingBuilder(BaseViewAdapter adapter, Class<I> clazz, int viewType, int typeOfBind) {
             super(adapter, viewType);
             this.clazz = clazz;
+            this.typeOfBind = typeOfBind;
         }
 
         public ClickableBindingBuilder<I, V> addOnItemViewClickListener(final OnItemViewClickListener<I, V> listener) {
@@ -88,7 +91,7 @@ import java.util.Map;
                 adapter.addViewHolderCreator(viewType, clickableViewHolderCreator);
             }
 
-            clickableViewHolderCreator.listenersByBindedViewType.put(viewType, listener);
+            clickableViewHolderCreator.listenersByTypeOfBind.put(typeOfBind, listener);
 
             return this;
         }
@@ -114,15 +117,29 @@ import java.util.Map;
         return addViewHolderBinder(new DefaultItemViewHolderBinder<>(itemViewBinder));
     }
 
+    public ClickableBindingBuilder<I, V> addViewBinder(
+            int typeOfBind,
+            ItemViewBinder<I, V> itemViewBinder
+    ) {
+        return addViewHolderBinder(typeOfBind, new DefaultItemViewHolderBinder<I, V>(itemViewBinder));
+    }
+
     public ClickableBindingBuilder<I, V> addViewHolderBinder(
+            ItemViewHolderBinder<I, V> itemViewHolderBinder
+    ) {
+        return addViewHolderBinder(ItemViewAdapter.DEFAULT_TYPE_OF_BIND, itemViewHolderBinder);
+    }
+
+    public ClickableBindingBuilder<I, V> addViewHolderBinder(
+            int typeOfBind,
             ItemViewHolderBinder<I, V> itemViewHolderBinder
     ) {
         if (clazz == null) {
             throw new IllegalArgumentException(ListItemAdapter.class.getSimpleName() + " doesn't support binding for no class");
         }
 
-        adapter.addViewHolderBinder(viewType, itemViewHolderBinder);
+        adapter.addViewHolderBinder(viewType, typeOfBind, itemViewHolderBinder);
 
-        return new ClickableBindingBuilder<I, V>(adapter, clazz, viewType);
+        return new ClickableBindingBuilder<I, V>(adapter, clazz, viewType, typeOfBind);
     }
 }

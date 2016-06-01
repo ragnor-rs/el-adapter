@@ -82,12 +82,7 @@ public class ListItemAdapter extends ItemViewAdapter<ItemViewBindingBuilder> {
 
     @Override
     public int getItemViewType(int position) {
-        return getItemViewType(mItems.get(position).getClass(), getViewTypeOfClass(position));
-    }
-
-    @SuppressWarnings("unused")
-    protected int getViewTypeOfClass(int position) {
-        return DEFAULT_VIEW_TYPE_OF_CLASS;
+        return getItemViewType(mItems.get(position).getClass(), getTypeOfClass(position));
     }
 
     //
@@ -104,8 +99,8 @@ public class ListItemAdapter extends ItemViewAdapter<ItemViewBindingBuilder> {
     @Override
     @SuppressWarnings("unchecked")
     public <I, V extends View>
-    ItemViewBindingBuilder<I, V> addViewCreator(Class<I> clazz, int viewTypeOfClass, ViewCreator<V> viewCreator) {
-        return (ItemViewBindingBuilder<I, V>) super.addViewCreator(clazz, viewTypeOfClass, viewCreator);
+    ItemViewBindingBuilder<I, V> addViewCreator(Class<I> clazz, int typeOfClass, ViewCreator<V> viewCreator) {
+        return (ItemViewBindingBuilder<I, V>) super.addViewCreator(clazz, typeOfClass, viewCreator);
     }
 
     @Override
@@ -125,8 +120,8 @@ public class ListItemAdapter extends ItemViewAdapter<ItemViewBindingBuilder> {
     @Override
     @SuppressWarnings("unchecked")
     public <I, V extends View>
-    ItemViewBindingBuilder<I, V> addViewHolderCreator(Class<I> clazz, int viewTypeOfClass, ViewHolderCreator<V> viewHolderCreator) {
-        return (ItemViewBindingBuilder<I, V>) super.addViewHolderCreator(clazz, viewTypeOfClass, viewHolderCreator);
+    ItemViewBindingBuilder<I, V> addViewHolderCreator(Class<I> clazz, int typeOfClass, ViewHolderCreator<V> viewHolderCreator) {
+        return (ItemViewBindingBuilder<I, V>) super.addViewHolderCreator(clazz, typeOfClass, viewHolderCreator);
     }
 
     @Override

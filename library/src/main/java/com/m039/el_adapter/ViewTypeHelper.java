@@ -17,12 +17,12 @@ import java.util.Map;
     private int mLastViewType = 0;
 
     /**
-     * @param clazz           for which find viewType
-     * @param viewTypeOfClass viewType of this class
-     * @return merged viewType of class and viewTypeOfClass
+     * @param clazz       for which find viewType
+     * @param typeOfClass type of this class
+     * @return merged viewType of class and typeOfClass
      */
-    public int getViewType(Class clazz, int viewTypeOfClass) {
-        String key = clazz.getName() + ";" + viewTypeOfClass;
+    public int getViewType(Class clazz, int typeOfClass) {
+        String key = clazz.getName() + ";" + typeOfClass;
         Integer viewType = mCachedViewTypes.get(key);
 
         if (viewType == null) {

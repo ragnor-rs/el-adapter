@@ -12,12 +12,12 @@ import android.view.View;
     B addViewCreator(Class<I> clazz, BaseViewAdapter.ViewCreator<V> viewCreator);
 
     <I, V extends View>
-    B addViewCreator(Class<I> clazz, int viewTypeOfClass, BaseViewAdapter.ViewCreator<V> viewCreator);
+    B addViewCreator(Class<I> clazz, int typeOfClass, BaseViewAdapter.ViewCreator<V> viewCreator);
 
     <I, V extends View>
     B addViewHolderCreator(Class<I> clazz, BaseViewAdapter.ViewHolderCreator<V> viewHolderCreator);
 
     <I, V extends View>
-    B addViewHolderCreator(Class<I> clazz, int viewTypeOfClass, BaseViewAdapter.ViewHolderCreator<V> viewHolderCreator);
+    B addViewHolderCreator(Class<I> clazz, int typeOfClass, BaseViewAdapter.ViewHolderCreator<V> viewHolderCreator);
 
 }
