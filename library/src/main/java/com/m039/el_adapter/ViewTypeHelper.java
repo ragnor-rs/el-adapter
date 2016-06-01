@@ -40,7 +40,7 @@ import java.util.Map;
     public int getViewType(Class clazz, int typeOfClass) {
         // todo issue with different class names
 
-        String key = clazz.getName() + ";" + typeOfClass;
+        String key = clazz.getName() + ":" + typeOfClass;
         Integer viewType = mCachedViewTypes.get(key);
 
         if (viewType == null) {

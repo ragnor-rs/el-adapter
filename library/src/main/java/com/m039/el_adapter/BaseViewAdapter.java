@@ -135,7 +135,7 @@ public abstract class BaseViewAdapter<B extends ViewBindingBuilder> extends Recy
             }
 
             throw new IllegalStateException("Can't create view of type " +
-                    viewType + (className != null? " or " + className : "") + "." +
+                    viewType + (className != null ? " or '" + className : "'") + "." +
                     " You should register " +
                     ViewCreator.class.getSimpleName() +
                     " or " +
