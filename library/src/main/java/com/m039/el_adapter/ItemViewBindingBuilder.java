@@ -5,9 +5,9 @@ import android.view.View;
 /**
  * Created by m039 on 6/1/16.
  */
-/* package */ class ItemViewCommandBuilder<I, V extends View> extends CommandBuilder<I, V> {
+/* package */ class ItemViewBindingBuilder<I, V extends View> extends BindingBuilder<I, V> {
 
-    public ItemViewCommandBuilder(BaseViewAdapter adapter, Class<I> clazz) {
+    public ItemViewBindingBuilder(BaseViewAdapter adapter, Class<I> clazz) {
         super(adapter, clazz);
     }
 
@@ -15,24 +15,24 @@ import android.view.View;
         return (ItemViewAdapter) adapter;
     }
 
-    public ItemViewCommandBuilder<I, V> addViewBinder(ItemViewAdapter.ItemViewBinder<I, V> itemViewBinder) {
+    public ItemViewBindingBuilder<I, V> addViewBinder(ItemViewAdapter.ItemViewBinder<I, V> itemViewBinder) {
         addViewHolderBinder(new ItemViewAdapter.DefaultItemViewHolderBinder<>(itemViewBinder));
         return this;
     }
 
-    public ItemViewCommandBuilder<I, V> addViewBinder(int viewTypeOfClass, ItemViewAdapter.ItemViewBinder<I, V> itemViewBinder) {
+    public ItemViewBindingBuilder<I, V> addViewBinder(int viewTypeOfClass, ItemViewAdapter.ItemViewBinder<I, V> itemViewBinder) {
         addViewHolderBinder(viewTypeOfClass, new ItemViewAdapter.DefaultItemViewHolderBinder<>(itemViewBinder));
         return this;
     }
 
-    public ItemViewCommandBuilder<I, V> addViewHolderBinder(
+    public ItemViewBindingBuilder<I, V> addViewHolderBinder(
             ItemViewAdapter.ItemViewHolderBinder<I, V> itemViewHolderBinder
     ) {
         addViewHolderBinder(BaseViewAdapter.DEFAULT_VIEW_TYPE, itemViewHolderBinder);
         return this;
     }
 
-    public ItemViewCommandBuilder<I, V> addViewHolderBinder(
+    public ItemViewBindingBuilder<I, V> addViewHolderBinder(
             int viewTypeOfClass,
             ItemViewAdapter.ItemViewHolderBinder<I, V> itemViewHolderBinder
     ) {

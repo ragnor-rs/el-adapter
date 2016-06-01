@@ -13,7 +13,7 @@ import java.util.Map;
  * todo javadoc
  * Created by m039 on 3/21/16.
  */
-public class ItemViewAdapter extends BaseViewAdapter<ItemViewCommandBuilder> {
+public class ItemViewAdapter extends BaseViewAdapter<ItemViewBindingBuilder> {
 
     private final ArrayList<Object> mItems = new ArrayList<>();
     private final Map<Integer, ItemViewHolderBinder<?, ?>> mItemViewHolderBinderByViewType = new HashMap<>();
@@ -65,7 +65,7 @@ public class ItemViewAdapter extends BaseViewAdapter<ItemViewCommandBuilder> {
     }
 
     public ItemViewAdapter() {
-        super(ItemViewCommandBuilder.class);
+        super(ItemViewBindingBuilder.class);
     }
 
     @SuppressWarnings("unchecked")
@@ -142,6 +142,10 @@ public class ItemViewAdapter extends BaseViewAdapter<ItemViewCommandBuilder> {
             int viewTypeOfClass,
             ItemViewHolderBinder<I, V> itemViewHolderBinder
     ) {
+        if (clazz == null) {
+            throw new IllegalArgumentException(ItemViewAdapter.class.getSimpleName() + " doesn't support binding for no class");
+        }
+
         int viewType = getItemViewType(clazz, viewTypeOfClass);
         mItemViewHolderBinderByViewType.put(viewType, itemViewHolderBinder);
     }
@@ -171,42 +175,42 @@ public class ItemViewAdapter extends BaseViewAdapter<ItemViewCommandBuilder> {
     @Override
     @SuppressWarnings("unchecked")
     public <I, V extends View>
-    ItemViewCommandBuilder<I, V> addViewCreator(Class<I> clazz, ViewCreator<V> viewCreator) {
-        return (ItemViewCommandBuilder<I, V>) super.addViewCreator(clazz, viewCreator);
+    ItemViewBindingBuilder<I, V> addViewCreator(Class<I> clazz, ViewCreator<V> viewCreator) {
+        return (ItemViewBindingBuilder<I, V>) super.addViewCreator(clazz, viewCreator);
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public <I, V extends View>
-    ItemViewCommandBuilder<I, V> addViewCreator(Class<I> clazz, int viewTypeOfClass, ViewCreator<V> viewCreator) {
-        return (ItemViewCommandBuilder<I, V>) super.addViewCreator(clazz, viewTypeOfClass, viewCreator);
+    ItemViewBindingBuilder<I, V> addViewCreator(Class<I> clazz, int viewTypeOfClass, ViewCreator<V> viewCreator) {
+        return (ItemViewBindingBuilder<I, V>) super.addViewCreator(clazz, viewTypeOfClass, viewCreator);
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public <I, V extends View>
-    ItemViewCommandBuilder<I, V> addViewCreator(int viewType, ViewCreator<V> viewCreator) {
-        return (ItemViewCommandBuilder<I, V>) super.addViewCreator(viewType, viewCreator);
+    ItemViewBindingBuilder<I, V> addViewCreator(int viewType, ViewCreator<V> viewCreator) {
+        return (ItemViewBindingBuilder<I, V>) super.addViewCreator(viewType, viewCreator);
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public <I, V extends View>
-    ItemViewCommandBuilder<I, V> addViewHolderCreator(Class<I> clazz, ViewHolderCreator<V> viewHolderCreator) {
-        return (ItemViewCommandBuilder<I, V>) super.addViewHolderCreator(clazz, viewHolderCreator);
+    ItemViewBindingBuilder<I, V> addViewHolderCreator(Class<I> clazz, ViewHolderCreator<V> viewHolderCreator) {
+        return (ItemViewBindingBuilder<I, V>) super.addViewHolderCreator(clazz, viewHolderCreator);
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public <I, V extends View>
-    ItemViewCommandBuilder<I, V> addViewHolderCreator(Class<I> clazz, int viewTypeOfClass, ViewHolderCreator<V> viewHolderCreator) {
-        return (ItemViewCommandBuilder<I, V>) super.addViewHolderCreator(clazz, viewTypeOfClass, viewHolderCreator);
+    ItemViewBindingBuilder<I, V> addViewHolderCreator(Class<I> clazz, int viewTypeOfClass, ViewHolderCreator<V> viewHolderCreator) {
+        return (ItemViewBindingBuilder<I, V>) super.addViewHolderCreator(clazz, viewTypeOfClass, viewHolderCreator);
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public <I, V extends View>
-    ItemViewCommandBuilder<I, V> addViewHolderCreator(int viewType, ViewHolderCreator<V> viewHolderCreator) {
-        return (ItemViewCommandBuilder<I, V>) super.addViewHolderCreator(viewType, viewHolderCreator);
+    ItemViewBindingBuilder<I, V> addViewHolderCreator(int viewType, ViewHolderCreator<V> viewHolderCreator) {
+        return (ItemViewBindingBuilder<I, V>) super.addViewHolderCreator(viewType, viewHolderCreator);
     }
 }
