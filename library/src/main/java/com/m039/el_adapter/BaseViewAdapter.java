@@ -117,12 +117,11 @@ public abstract class BaseViewAdapter<B extends ViewBindingBuilder> extends Recy
     }
 
     private final Class<? extends B> mCommandBuilderClass;
+    private final Map<Integer, ViewHolderCreator> mOnCreteViewHolderByViewType = new HashMap<>();
 
     protected BaseViewAdapter(Class<B> clazz) {
         mCommandBuilderClass = clazz;
     }
-
-    private final Map<Integer, ViewHolderCreator> mOnCreteViewHolderByViewType = new HashMap<>();
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
