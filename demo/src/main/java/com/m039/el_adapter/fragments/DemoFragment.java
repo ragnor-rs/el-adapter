@@ -25,7 +25,7 @@ public abstract class DemoFragment extends Fragment {
         recycler = new RecyclerView(activity);
         recycler.setLayoutManager(new LinearLayoutManager(activity));
 
-        return recycler = recycler;
+        return recycler;
     }
 
     @Override
