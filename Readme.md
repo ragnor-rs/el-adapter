@@ -19,6 +19,24 @@ pros:
 cons:
 * early stage of development (not all functions are implemented)
 
+Installation
+------------
+
+Add it in your root build.gradle at the end of repositories:
+```gradle
+allprojects {
+    repositories {
+        maven { url "https://jitpack.io" }
+    }
+}
+```
+And add the dependency:
+
+```gradle
+dependencies {
+    compile 'com.github.m039:el-adapter:v0.1'
+}
+```
 
 Example
 -------
