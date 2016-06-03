@@ -30,7 +30,7 @@ allprojects {
     }
 }
 ```
-And the dependency:
+Add the dependency:
 
 ```gradle
 dependencies {
