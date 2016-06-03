@@ -1,6 +1,6 @@
 ElAdapter
 =========
-[![](https://jitpack.io/v/m039/el-adapter.svg)](https://jitpack.io/#m039/el-adapter)
+[![](https://img.shields.io/badge/JitPack-v0.1-blue.svg?style=flat)](https://jitpack.io/#m039/el-adapter)
 
 ElAdapter library allows you to decouple RecylerView's adapters code in more handy, simple and beatiful way.
 
