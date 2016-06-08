@@ -33,7 +33,12 @@ public class ListItemAdapter extends ItemViewAdapter<ItemViewBindingBuilder> {
     private final List<Object> mItems = new ArrayList<>();
 
     public ListItemAdapter() {
-        super(ItemViewBindingBuilder.class);
+        super(new ViewBindingBuilderCreator() {
+            @Override
+            public ViewBindingBuilder newBindingBuilder(BaseViewAdapter adapter, int viewType) {
+                return new ItemViewBindingBuilder(adapter, viewType);
+            }
+        });
     }
 
     @Override

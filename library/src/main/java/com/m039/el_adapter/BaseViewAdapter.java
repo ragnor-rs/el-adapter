@@ -116,11 +116,11 @@ public abstract class BaseViewAdapter<B extends ViewBindingBuilder> extends Recy
 
     }
 
-    private final Class<? extends B> mCommandBuilderClass;
+    private final ViewBindingBuilderCreator<B> bindingBuilderCreator;
     private final Map<Integer, ViewHolderCreator> mOnCreteViewHolderByViewType = new HashMap<>();
 
-    protected BaseViewAdapter(Class<B> clazz) {
-        mCommandBuilderClass = clazz;
+    protected BaseViewAdapter(ViewBindingBuilderCreator<B> bindingBuilderCreator) {
+        this.bindingBuilderCreator = bindingBuilderCreator;
     }
 
     @Override
@@ -149,12 +149,12 @@ public abstract class BaseViewAdapter<B extends ViewBindingBuilder> extends Recy
 
     @SuppressWarnings("unchecked")
     protected B newCommandBuilder(int viewType) {
-        try {
-            return mCommandBuilderClass.getConstructor(BaseViewAdapter.class, int.class)
-                    .newInstance(this, viewType);
-        } catch (Exception e) {
-            throw new RuntimeException("Can't instantiate the class", e);
-        }
+        return bindingBuilderCreator.newBindingBuilder(this, viewType);
+    }
+
+
+    public interface ViewBindingBuilderCreator<C extends ViewBindingBuilder> {
+        C newBindingBuilder(BaseViewAdapter<C> adapter, int viewType);
     }
 
     /**
@@ -170,7 +170,7 @@ public abstract class BaseViewAdapter<B extends ViewBindingBuilder> extends Recy
     }
 
     /**
-     * @param viewType for which <code>viewHolderCreator</code> will be used
+     * @param viewType          for which <code>viewHolderCreator</code> will be used
      * @param viewHolderCreator creator of viewHolders
      */
     @Override
