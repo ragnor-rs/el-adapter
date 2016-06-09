@@ -188,7 +188,7 @@ public abstract class ItemViewAdapter<B extends ItemViewCreatorChainer> extends 
     public <I, V extends View>
     B addViewHolderCreator(Class<I> clazz, int typeOfClass, ViewHolderCreator<V> viewHolderCreator) {
         int viewType = getItemViewType(clazz, typeOfClass);
-        return (B) addViewHolderCreator(viewType, viewHolderCreator).setClass(clazz);
+        return addViewHolderCreator(viewType, viewHolderCreator);
     }
 
     /**

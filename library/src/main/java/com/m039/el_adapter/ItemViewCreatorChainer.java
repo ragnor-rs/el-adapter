@@ -84,9 +84,8 @@ public class ItemViewCreatorChainer<I, V extends View>
 
         int typeOfBind;
 
-        public ItemViewBinderChainer(BaseViewAdapter adapter, Class<I> clazz, int viewType, int typeOfBind) {
+        public ItemViewBinderChainer(BaseViewAdapter adapter, int viewType, int typeOfBind) {
             super(adapter, viewType);
-            this.clazz = clazz;
             this.typeOfBind = typeOfBind;
         }
 
@@ -123,16 +122,10 @@ public class ItemViewCreatorChainer<I, V extends View>
     }
 
     final protected ItemViewAdapter adapter; // parametarization
-    protected Class<I> clazz;
 
     public ItemViewCreatorChainer(BaseViewAdapter adapter, int viewType) {
         super(adapter, viewType);
         this.adapter = (ItemViewAdapter) adapter;
-    }
-
-    public ItemViewCreatorChainer<I, V> setClass(Class<I> clazz) {
-        this.clazz = clazz;
-        return this;
     }
 
     public ItemViewBinderChainer<I, V> addViewBinder(
@@ -145,7 +138,7 @@ public class ItemViewCreatorChainer<I, V extends View>
             int typeOfBind,
             ItemViewBinder<I, V> itemViewBinder
     ) {
-        return addViewHolderBinder(typeOfBind, new DefaultItemViewHolderBinder<I, V>(itemViewBinder));
+        return addViewHolderBinder(typeOfBind, new DefaultItemViewHolderBinder<>(itemViewBinder));
     }
 
     public ItemViewBinderChainer<I, V> addViewHolderBinder(
@@ -158,12 +151,9 @@ public class ItemViewCreatorChainer<I, V extends View>
             int typeOfBind,
             ItemViewHolderBinder<I, V> itemViewHolderBinder
     ) {
-        if (clazz == null) {
-            throw new IllegalArgumentException(ListItemAdapter.class.getSimpleName() + " doesn't support binding for no class");
-        }
 
         adapter.addViewHolderBinder(viewType, typeOfBind, itemViewHolderBinder);
 
-        return new ItemViewBinderChainer<I, V>(adapter, clazz, viewType, typeOfBind);
+        return new ItemViewBinderChainer<>(adapter, viewType, typeOfBind);
     }
 }
