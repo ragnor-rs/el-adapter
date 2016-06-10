@@ -26,7 +26,8 @@ import java.util.Map;
  * Created by m039 on 6/1/16.
  */
 public abstract class ItemViewAdapter<B extends ItemViewCreatorChainer> extends BaseViewAdapter<B>
-        implements IItemViewCreator<B> {
+        implements IItemViewCreator<B>
+{
 
     public static final int DEFAULT_TYPE_OF_CLASS = DEFAULT_VIEW_TYPE;
     public static final int DEFAULT_TYPE_OF_BIND = DEFAULT_VIEW_TYPE;
