@@ -9,6 +9,9 @@ android:
     - extra-google-m2repository
     - extra-android-m2repository
 
+notifications:
+  email: false
+
 script:
   - ./gradlew clean assembleDebug testDebug -p library
 
