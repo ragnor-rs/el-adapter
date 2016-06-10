@@ -20,11 +20,18 @@ public class DemosFragment extends DemoFragment {
     private static List<Pair<String, DemoFragment>> DEMOS = new ArrayList<>();
 
     static {
-        DEMOS.add(create("Simple", new SimpleDemoFragment()));
-        DEMOS.add(create("typeOfClass example", new TypeOfClassDemoFragment()));
-        DEMOS.add(create("typeOfClass example (wrapper)", new TypeOfClassWrapperDemoFragment()));
-        DEMOS.add(create("typeOfBind example", new TypeOfBindDemoFragment()));
-        DEMOS.add(create("typeOfBind and typeOfClass example", new TypesDemoFragment()));
+        DEMOS.add(create("Simple example",
+                new SimpleDemoFragment()));
+        DEMOS.add(create("typeOfClass example",
+                new TypeOfClassDemoFragment()));
+        DEMOS.add(create("typeOfClass (wrapper) example",
+                new TypeOfClassWrapperDemoFragment()));
+        DEMOS.add(create("typeOfBind example",
+                new TypeOfBindDemoFragment()));
+        DEMOS.add(create("typeOfBind and typeOfClass example",
+                new TypesDemoFragment()));
+        DEMOS.add(create("clicks example",
+                new ClicksDemoFragment()));
     }
 
     @Override

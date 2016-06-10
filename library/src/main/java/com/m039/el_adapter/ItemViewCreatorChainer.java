@@ -16,6 +16,7 @@
 
 package com.m039.el_adapter;
 
+import android.support.annotation.IdRes;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -46,40 +47,58 @@ public class ItemViewCreatorChainer<I, V extends View>
      */
     public static class ItemViewBinderChainer<I, V extends View> extends ItemViewCreatorChainer<I, V> {
 
-        private static class ClickableViewHolderCreator<I, V extends View> implements ViewHolderCreator<V> {
+        private static final int NO_ID = 0;
 
-            Map<Integer, OnItemViewHolderClickListener> listenersByTypeOfBind = new HashMap<>();
-            final ViewHolderCreator<V> viewHolderCreator;
-            final ItemViewAdapter adapter;
+        private static final class ClickableItemViewHolderBinder<I, V extends View>
+                implements ItemViewHolderBinder<I, V> {
 
-            public ClickableViewHolderCreator(ItemViewAdapter itemViewAdapter, ViewHolderCreator<V> viewHolderCreator) {
-                this.viewHolderCreator = viewHolderCreator;
-                this.adapter = itemViewAdapter;
+            Map<Integer, OnItemViewHolderClickListener> listenersById = new HashMap<>();
+            ItemViewHolderBinder<I, V> parentBinder;
+
+            ClickableItemViewHolderBinder(ItemViewHolderBinder<I, V> binder) {
+                parentBinder = binder;
             }
 
             @SuppressWarnings("unchecked")
             @Override
-            public ViewHolder<V> onCreateViewHolder(ViewGroup parent) {
-                final ViewHolder<V> viewHolder = viewHolderCreator.onCreateViewHolder(parent);
-                viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+            public void onBindViewHolder(final ViewHolder<V> viewHolder, final I item) {
+                if (parentBinder != null) {
+                    parentBinder.onBindViewHolder(viewHolder, item);
+                }
 
-                    @Override
-                    public void onClick(View v) {
-                        int position = viewHolder.getAdapterPosition();
-                        int typeOfBind = adapter.getTypeOfBind(position);
+                V view = viewHolder.itemView;
 
-                        OnItemViewHolderClickListener<I, V> listener = listenersByTypeOfBind.get(typeOfBind);
-                        if (listener != null) {
-                            I item = (I) adapter.getItemAt(position);
-                            listener.onItemViewHolderClick(viewHolder, item);
+                for (Map.Entry<Integer, OnItemViewHolderClickListener> entry: listenersById.entrySet()) {
+                    int id = entry.getKey();
+                    final OnItemViewHolderClickListener viewHolderClickListener = entry.getValue();
+
+                    /**
+                     * WARN:
+                     *
+                     * Performance bottleneck - a lot of calls to new
+                     */
+
+                    View.OnClickListener clickListener = new View.OnClickListener() {
+
+                        @Override
+                        public void onClick(View v) {
+                            viewHolderClickListener.onItemViewHolderClick(viewHolder, item);
                         }
+
+                    };
+
+                    if (id == NO_ID) {
+                        view.setOnClickListener(clickListener);
+                    } else {
+                        view.findViewById(id).setOnClickListener(clickListener);
                     }
 
-                });
-
-                return viewHolder;
+                }
             }
 
+            public void addViewHolderClickListener(@IdRes int id, OnItemViewHolderClickListener listener) {
+                listenersById.put(id, listener);
+            }
         }
 
         int typeOfBind;
@@ -90,7 +109,11 @@ public class ItemViewCreatorChainer<I, V extends View>
         }
 
         public ItemViewBinderChainer<I, V> addOnItemViewClickListener(final OnItemViewClickListener<I, V> listener) {
-            return addOnItemViewHolderClickListener(new OnItemViewHolderClickListener<I, V>() {
+            return addOnItemViewClickListener(NO_ID, listener);
+        }
+
+        public ItemViewBinderChainer<I, V> addOnItemViewClickListener(@IdRes int id, final OnItemViewClickListener<I, V> listener) {
+            return addOnItemViewHolderClickListener(id, new OnItemViewHolderClickListener<I, V>() {
 
                 @Override
                 public void onItemViewHolderClick(ViewHolder<V> viewHolder, I item) {
@@ -100,25 +123,28 @@ public class ItemViewCreatorChainer<I, V extends View>
             });
         }
 
-        @SuppressWarnings("unchecked")
         public ItemViewBinderChainer<I, V> addOnItemViewHolderClickListener(final OnItemViewHolderClickListener<I, V> listener) {
-            final ViewHolderCreator<V> viewHolderCreator = (ViewHolderCreator<V>)
-                    adapter.getViewHolderCreator(viewType);
+            return addOnItemViewHolderClickListener(NO_ID, listener);
+        }
 
-            ClickableViewHolderCreator<I, V> clickableViewHolderCreator;
+        @SuppressWarnings("unchecked")
+        public ItemViewBinderChainer<I, V> addOnItemViewHolderClickListener(@IdRes int id,  final OnItemViewHolderClickListener<I, V> listener) {
+            final ItemViewHolderBinder<I, V> binder = (ItemViewHolderBinder<I, V>)
+                    adapter.getViewHolderBinder(viewType, typeOfBind);
 
-            if (viewHolderCreator instanceof ClickableViewHolderCreator) {
-                clickableViewHolderCreator = (ClickableViewHolderCreator<I, V>) viewHolderCreator;
+            ClickableItemViewHolderBinder<I, V> clickableBinder;
+
+            if (binder instanceof ClickableItemViewHolderBinder) {
+                clickableBinder = (ClickableItemViewHolderBinder<I, V>) binder;
             } else {
-                clickableViewHolderCreator = new ClickableViewHolderCreator<>(adapter, viewHolderCreator);
-                adapter.addViewHolderCreator(viewType, clickableViewHolderCreator);
+                clickableBinder = new ClickableItemViewHolderBinder<>(binder);
+                adapter.addViewHolderBinder(viewType, typeOfBind, clickableBinder);
             }
 
-            clickableViewHolderCreator.listenersByTypeOfBind.put(typeOfBind, listener);
+            clickableBinder.addViewHolderClickListener(id, listener);
 
             return this;
         }
-
     }
 
     final protected ItemViewAdapter adapter; // parametarization
