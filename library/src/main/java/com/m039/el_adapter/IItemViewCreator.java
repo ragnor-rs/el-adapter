@@ -21,14 +21,19 @@ import android.view.View;
 /**
  * Created by m039 on 6/1/16.
  */
-public class ViewBindingBuilder<V extends View> {
+/* package */ interface IItemViewCreator<B extends ItemViewCreatorChainer>
+        extends IViewCreator<B> {
 
-    final protected BaseViewAdapter adapter;
-    final protected int viewType;
+    <I, V extends View>
+    B addViewCreator(Class<I> clazz, BaseViewAdapter.ViewCreator<V> viewCreator);
 
-    public ViewBindingBuilder(BaseViewAdapter adapter, int viewType) {
-        this.adapter = adapter;
-        this.viewType = viewType;
-    }
+    <I, V extends View>
+    B addViewCreator(Class<I> clazz, int typeOfClass, BaseViewAdapter.ViewCreator<V> viewCreator);
+
+    <I, V extends View>
+    B addViewHolderCreator(Class<I> clazz, BaseViewAdapter.ViewHolderCreator<V> viewHolderCreator);
+
+    <I, V extends View>
+    B addViewHolderCreator(Class<I> clazz, int typeOfClass, BaseViewAdapter.ViewHolderCreator<V> viewHolderCreator);
 
 }

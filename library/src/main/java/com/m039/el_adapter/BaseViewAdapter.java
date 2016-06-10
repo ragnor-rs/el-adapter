@@ -42,8 +42,8 @@ import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
  * <p/>
  * Created by m039 on 3/3/16.
  */
-public abstract class BaseViewAdapter<B extends ViewBindingBuilder> extends RecyclerView.Adapter<BaseViewAdapter.ViewHolder<?>>
-        implements ViewCreatorDelegate<B>
+public abstract class BaseViewAdapter<B extends ViewCreatorChainer> extends RecyclerView.Adapter<BaseViewAdapter.ViewHolder<?>>
+        implements IViewCreator<B>
 {
 
     public static final int DEFAULT_VIEW_TYPE = 0;
@@ -153,7 +153,7 @@ public abstract class BaseViewAdapter<B extends ViewBindingBuilder> extends Recy
     }
 
 
-    public interface ViewBindingBuilderCreator<C extends ViewBindingBuilder> {
+    public interface ViewBindingBuilderCreator<C extends ViewCreatorChainer> {
         C newBindingBuilder(BaseViewAdapter<C> adapter, int viewType);
     }
 

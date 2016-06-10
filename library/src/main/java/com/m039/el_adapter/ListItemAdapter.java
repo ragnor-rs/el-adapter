@@ -28,15 +28,15 @@ import java.util.List;
  * todo javadoc
  * Created by m039 on 3/21/16.
  */
-public class ListItemAdapter extends ItemViewAdapter<ItemViewBindingBuilder> {
+public class ListItemAdapter extends ItemViewAdapter<ItemViewCreatorChainer> {
 
     private final List<Object> mItems = new ArrayList<>();
 
     public ListItemAdapter() {
-        super(new ViewBindingBuilderCreator<ItemViewBindingBuilder>() {
+        super(new ViewBindingBuilderCreator<ItemViewCreatorChainer>() {
             @Override
-            public ItemViewBindingBuilder newBindingBuilder(BaseViewAdapter<ItemViewBindingBuilder> adapter, int viewType) {
-                return new ItemViewBindingBuilder(adapter, viewType);
+            public ItemViewCreatorChainer newBindingBuilder(BaseViewAdapter<ItemViewCreatorChainer> adapter, int viewType) {
+                return new ItemViewCreatorChainer(adapter, viewType);
             }
         });
     }
@@ -108,42 +108,42 @@ public class ListItemAdapter extends ItemViewAdapter<ItemViewBindingBuilder> {
     @Override
     @SuppressWarnings("unchecked")
     public <I, V extends View>
-    ItemViewBindingBuilder<I, V> addViewCreator(Class<I> clazz, ViewCreator<V> viewCreator) {
-        return (ItemViewBindingBuilder<I, V>) super.addViewCreator(clazz, viewCreator);
+    ItemViewCreatorChainer<I, V> addViewCreator(Class<I> clazz, ViewCreator<V> viewCreator) {
+        return (ItemViewCreatorChainer<I, V>) super.addViewCreator(clazz, viewCreator);
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public <I, V extends View>
-    ItemViewBindingBuilder<I, V> addViewCreator(Class<I> clazz, int typeOfClass, ViewCreator<V> viewCreator) {
-        return (ItemViewBindingBuilder<I, V>) super.addViewCreator(clazz, typeOfClass, viewCreator);
+    ItemViewCreatorChainer<I, V> addViewCreator(Class<I> clazz, int typeOfClass, ViewCreator<V> viewCreator) {
+        return (ItemViewCreatorChainer<I, V>) super.addViewCreator(clazz, typeOfClass, viewCreator);
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public <V extends View>
-    ItemViewBindingBuilder<Void, V> addViewCreator(int viewType, ViewCreator<V> viewCreator) {
-        return (ItemViewBindingBuilder<Void, V>) super.addViewCreator(viewType, viewCreator);
+    ItemViewCreatorChainer<Void, V> addViewCreator(int viewType, ViewCreator<V> viewCreator) {
+        return (ItemViewCreatorChainer<Void, V>) super.addViewCreator(viewType, viewCreator);
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public <I, V extends View>
-    ItemViewBindingBuilder<I, V> addViewHolderCreator(Class<I> clazz, ViewHolderCreator<V> viewHolderCreator) {
-        return (ItemViewBindingBuilder<I, V>) super.addViewHolderCreator(clazz, viewHolderCreator);
+    ItemViewCreatorChainer<I, V> addViewHolderCreator(Class<I> clazz, ViewHolderCreator<V> viewHolderCreator) {
+        return (ItemViewCreatorChainer<I, V>) super.addViewHolderCreator(clazz, viewHolderCreator);
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public <I, V extends View>
-    ItemViewBindingBuilder<I, V> addViewHolderCreator(Class<I> clazz, int typeOfClass, ViewHolderCreator<V> viewHolderCreator) {
-        return (ItemViewBindingBuilder<I, V>) super.addViewHolderCreator(clazz, typeOfClass, viewHolderCreator);
+    ItemViewCreatorChainer<I, V> addViewHolderCreator(Class<I> clazz, int typeOfClass, ViewHolderCreator<V> viewHolderCreator) {
+        return (ItemViewCreatorChainer<I, V>) super.addViewHolderCreator(clazz, typeOfClass, viewHolderCreator);
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public <V extends View>
-    ItemViewBindingBuilder<Void, V> addViewHolderCreator(int viewType, ViewHolderCreator<V> viewHolderCreator) {
-        return (ItemViewBindingBuilder<Void, V>) super.addViewHolderCreator(viewType, viewHolderCreator);
+    ItemViewCreatorChainer<Void, V> addViewHolderCreator(int viewType, ViewHolderCreator<V> viewHolderCreator) {
+        return (ItemViewCreatorChainer<Void, V>) super.addViewHolderCreator(viewType, viewHolderCreator);
     }
 }

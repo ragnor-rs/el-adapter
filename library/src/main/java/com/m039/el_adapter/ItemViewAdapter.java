@@ -25,8 +25,8 @@ import java.util.Map;
 /**
  * Created by m039 on 6/1/16.
  */
-public abstract class ItemViewAdapter<B extends ItemViewBindingBuilder> extends BaseViewAdapter<B>
-        implements ItemViewCreatorDelegate<B> {
+public abstract class ItemViewAdapter<B extends ItemViewCreatorChainer> extends BaseViewAdapter<B>
+        implements IItemViewCreator<B> {
 
     public static final int DEFAULT_TYPE_OF_CLASS = DEFAULT_VIEW_TYPE;
     public static final int DEFAULT_TYPE_OF_BIND = DEFAULT_VIEW_TYPE;
@@ -188,7 +188,7 @@ public abstract class ItemViewAdapter<B extends ItemViewBindingBuilder> extends 
     public <I, V extends View>
     B addViewHolderCreator(Class<I> clazz, int typeOfClass, ViewHolderCreator<V> viewHolderCreator) {
         int viewType = getItemViewType(clazz, typeOfClass);
-        return (B) addViewHolderCreator(viewType, viewHolderCreator).setClass(clazz);
+        return addViewHolderCreator(viewType, viewHolderCreator);
     }
 
     /**

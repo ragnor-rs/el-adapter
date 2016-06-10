@@ -34,11 +34,17 @@ import java.util.Map;
  * todo custom ViewHolder typization
  *
  * Created by m039 on 6/1/16.
+ * Chainer returned by addViewCreator
  */
-public class ItemViewBindingBuilder<I, V extends View>
-        extends ViewBindingBuilder<V> {
+public class ItemViewCreatorChainer<I, V extends View>
+        extends ViewCreatorChainer<V> {
 
-    public static class ClickableBindingBuilder<I, V extends View> extends ItemViewBindingBuilder<I, V> {
+    /**
+     * Chainer returned by addViewBinder
+     * @param <I> item
+     * @param <V> view
+     */
+    public static class ItemViewBinderChainer<I, V extends View> extends ItemViewCreatorChainer<I, V> {
 
         private static class ClickableViewHolderCreator<I, V extends View> implements ViewHolderCreator<V> {
 
@@ -78,13 +84,12 @@ public class ItemViewBindingBuilder<I, V extends View>
 
         int typeOfBind;
 
-        public ClickableBindingBuilder(BaseViewAdapter adapter, Class<I> clazz, int viewType, int typeOfBind) {
+        public ItemViewBinderChainer(BaseViewAdapter adapter, int viewType, int typeOfBind) {
             super(adapter, viewType);
-            this.clazz = clazz;
             this.typeOfBind = typeOfBind;
         }
 
-        public ClickableBindingBuilder<I, V> addOnItemViewClickListener(final OnItemViewClickListener<I, V> listener) {
+        public ItemViewBinderChainer<I, V> addOnItemViewClickListener(final OnItemViewClickListener<I, V> listener) {
             return addOnItemViewHolderClickListener(new OnItemViewHolderClickListener<I, V>() {
 
                 @Override
@@ -96,7 +101,7 @@ public class ItemViewBindingBuilder<I, V extends View>
         }
 
         @SuppressWarnings("unchecked")
-        public ClickableBindingBuilder<I, V> addOnItemViewHolderClickListener(final OnItemViewHolderClickListener<I, V> listener) {
+        public ItemViewBinderChainer<I, V> addOnItemViewHolderClickListener(final OnItemViewHolderClickListener<I, V> listener) {
             final ViewHolderCreator<V> viewHolderCreator = (ViewHolderCreator<V>)
                     adapter.getViewHolderCreator(viewType);
 
@@ -117,47 +122,38 @@ public class ItemViewBindingBuilder<I, V extends View>
     }
 
     final protected ItemViewAdapter adapter; // parametarization
-    protected Class<I> clazz;
 
-    public ItemViewBindingBuilder(BaseViewAdapter adapter, int viewType) {
+    public ItemViewCreatorChainer(BaseViewAdapter adapter, int viewType) {
         super(adapter, viewType);
         this.adapter = (ItemViewAdapter) adapter;
     }
 
-    public ItemViewBindingBuilder<I, V> setClass(Class<I> clazz) {
-        this.clazz = clazz;
-        return this;
-    }
-
-    public ClickableBindingBuilder<I, V> addViewBinder(
+    public ItemViewBinderChainer<I, V> addViewBinder(
             ItemViewBinder<I, V> itemViewBinder
     ) {
         return addViewHolderBinder(new DefaultItemViewHolderBinder<>(itemViewBinder));
     }
 
-    public ClickableBindingBuilder<I, V> addViewBinder(
+    public ItemViewBinderChainer<I, V> addViewBinder(
             int typeOfBind,
             ItemViewBinder<I, V> itemViewBinder
     ) {
-        return addViewHolderBinder(typeOfBind, new DefaultItemViewHolderBinder<I, V>(itemViewBinder));
+        return addViewHolderBinder(typeOfBind, new DefaultItemViewHolderBinder<>(itemViewBinder));
     }
 
-    public ClickableBindingBuilder<I, V> addViewHolderBinder(
+    public ItemViewBinderChainer<I, V> addViewHolderBinder(
             ItemViewHolderBinder<I, V> itemViewHolderBinder
     ) {
         return addViewHolderBinder(ItemViewAdapter.DEFAULT_TYPE_OF_BIND, itemViewHolderBinder);
     }
 
-    public ClickableBindingBuilder<I, V> addViewHolderBinder(
+    public ItemViewBinderChainer<I, V> addViewHolderBinder(
             int typeOfBind,
             ItemViewHolderBinder<I, V> itemViewHolderBinder
     ) {
-        if (clazz == null) {
-            throw new IllegalArgumentException(ListItemAdapter.class.getSimpleName() + " doesn't support binding for no class");
-        }
 
         adapter.addViewHolderBinder(viewType, typeOfBind, itemViewHolderBinder);
 
-        return new ClickableBindingBuilder<I, V>(adapter, clazz, viewType, typeOfBind);
+        return new ItemViewBinderChainer<>(adapter, viewType, typeOfBind);
     }
 }
