@@ -19,6 +19,7 @@ package com.m039.el_adapter;
 import android.view.View;
 
 import com.m039.el_adapter.BaseViewAdapter.ViewCreator;
+import com.m039.el_adapter.BaseViewAdapter.ViewHolder;
 import com.m039.el_adapter.BaseViewAdapter.ViewHolderCreator;
 
 /**
@@ -30,6 +31,6 @@ import com.m039.el_adapter.BaseViewAdapter.ViewHolderCreator;
     B addViewCreator(int viewType, ViewCreator<V> viewCreator);
 
     <V extends View>
-    B addViewHolderCreator(int viewType, ViewHolderCreator<V> viewHolderCreator);
+    B addViewHolderCreator(int viewType, ViewHolderCreator<ViewHolder<V>> viewHolderCreator);
 
 }
