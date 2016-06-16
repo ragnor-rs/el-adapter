@@ -129,21 +129,21 @@ public class ListItemAdapter extends ItemViewAdapter<ItemViewCreatorChainer> {
     @Override
     @SuppressWarnings("unchecked")
     public <I, V extends View>
-    ItemViewCreatorChainer<I, V> addViewHolderCreator(Class<I> clazz, ViewHolderCreator<V> viewHolderCreator) {
+    ItemViewCreatorChainer<I, V> addViewHolderCreator(Class<I> clazz, ViewHolderCreator<ViewHolder<V>> viewHolderCreator) {
         return (ItemViewCreatorChainer<I, V>) super.addViewHolderCreator(clazz, viewHolderCreator);
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public <I, V extends View>
-    ItemViewCreatorChainer<I, V> addViewHolderCreator(Class<I> clazz, int typeOfClass, ViewHolderCreator<V> viewHolderCreator) {
+    ItemViewCreatorChainer<I, V> addViewHolderCreator(Class<I> clazz, int typeOfClass, ViewHolderCreator<ViewHolder<V>> viewHolderCreator) {
         return (ItemViewCreatorChainer<I, V>) super.addViewHolderCreator(clazz, typeOfClass, viewHolderCreator);
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public <V extends View>
-    ItemViewCreatorChainer<Void, V> addViewHolderCreator(int viewType, ViewHolderCreator<V> viewHolderCreator) {
+    ItemViewCreatorChainer<Void, V> addViewHolderCreator(int viewType, ViewHolderCreator<ViewHolder<V>> viewHolderCreator) {
         return (ItemViewCreatorChainer<Void, V>) super.addViewHolderCreator(viewType, viewHolderCreator);
     }
 }

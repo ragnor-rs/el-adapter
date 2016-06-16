@@ -180,14 +180,14 @@ public abstract class ItemViewAdapter<B extends ItemViewCreatorChainer> extends 
 
     @Override
     public <I, V extends View>
-    B addViewHolderCreator(Class<I> clazz, ViewHolderCreator<V> viewHolderCreator) {
+    B addViewHolderCreator(Class<I> clazz, ViewHolderCreator<ViewHolder<V>> viewHolderCreator) {
         return addViewHolderCreator(clazz, DEFAULT_TYPE_OF_CLASS, viewHolderCreator);
     }
 
     @SuppressWarnings("unchecked")
     @Override
     public <I, V extends View>
-    B addViewHolderCreator(Class<I> clazz, int typeOfClass, ViewHolderCreator<V> viewHolderCreator) {
+    B addViewHolderCreator(Class<I> clazz, int typeOfClass, ViewHolderCreator<ViewHolder<V>> viewHolderCreator) {
         int viewType = getItemViewType(clazz, typeOfClass);
         return addViewHolderCreator(viewType, viewHolderCreator);
     }
