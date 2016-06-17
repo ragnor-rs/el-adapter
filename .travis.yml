@@ -13,6 +13,7 @@ notifications:
   email: false
 
 script:
+  - jdk_switcher use oraclejdk8
   - ./gradlew clean assembleDebug testDebug -p library
 
 before_cache:
