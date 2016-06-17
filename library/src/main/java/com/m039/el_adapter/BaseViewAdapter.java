@@ -29,22 +29,21 @@ import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 
 /**
  * Base class for adapters.
- * <p/>
+ * <p>
  * The main difference between this class and other that it doesn't know anything about data only
  * how to create view.
- * <p/>
+ * <p>
  * BaseViewAdapter is only responsible for creating view, not binding them.
- * <p/>
+ * <p>
  * Logic for binding should be in another/inherited classes.
- * <p/>
+ * <p>
  * Tha main idea to separate creation and binding cause creation always returns same view for a same
  * viewType, but binding may differ.
- * <p/>
+ * <p>
  * Created by m039 on 3/3/16.
  */
 public abstract class BaseViewAdapter<B extends ViewCreatorChainer> extends RecyclerView.Adapter<BaseViewAdapter.ViewHolder<?>>
-        implements IViewCreator<B>
-{
+        implements IViewCreator<B> {
 
     public static final int DEFAULT_VIEW_TYPE = 0;
 
@@ -74,7 +73,7 @@ public abstract class BaseViewAdapter<B extends ViewCreatorChainer> extends Recy
 
     /**
      * This interface is used to create views in {@link #onCreateViewHolder(ViewGroup, int)}
-     *
+     * <p>
      * todo add type check for ViewHolders
      */
     public interface ViewHolderCreator<VH extends ViewHolder> {
@@ -89,6 +88,11 @@ public abstract class BaseViewAdapter<B extends ViewCreatorChainer> extends Recy
 
     public interface ViewHolderBinder<VH extends ViewHolder> {
 
+        /**
+         * To get position call viewHolder.getAdapterPosition()
+         *
+         * @param viewHolder viewHolder to bind
+         */
         void onBindViewHolder(VH viewHolder);
 
     }
@@ -124,17 +128,17 @@ public abstract class BaseViewAdapter<B extends ViewCreatorChainer> extends Recy
 
     }
 
-    private final ViewBindingBuilderCreator<B> bindingBuilderCreator;
-    private final Map<Integer, ViewHolderCreator> mOnCreteViewHolderByViewType = new HashMap<>();
-    private final Map<Integer, ViewHolderBinder> mOnBindViewHolderByViewType = new HashMap<>();
+    private final ViewCreatorChainerFactory<B> mViewCreatorChainerFactory;
+    private final Map<Integer, ViewHolderCreator> mViewHolderCreatorsMap = new HashMap<>();
+    private final Map<Integer, ViewHolderBinder> mViewHolderBindersMap = new HashMap<>();
 
-    protected BaseViewAdapter(ViewBindingBuilderCreator<B> bindingBuilderCreator) {
-        this.bindingBuilderCreator = bindingBuilderCreator;
+    protected BaseViewAdapter(ViewCreatorChainerFactory<B> mViewCreatorChainerFactory) {
+        this.mViewCreatorChainerFactory = mViewCreatorChainerFactory;
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        ViewHolderCreator viewHolderCreator = mOnCreteViewHolderByViewType.get(viewType);
+        ViewHolderCreator viewHolderCreator = mViewHolderCreatorsMap.get(viewType);
 
         if (viewHolderCreator == null) {
             String className = null;
@@ -159,7 +163,7 @@ public abstract class BaseViewAdapter<B extends ViewCreatorChainer> extends Recy
     @SuppressWarnings("unchecked")
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        ViewHolderBinder viewHolderBinder = mOnBindViewHolderByViewType
+        ViewHolderBinder viewHolderBinder = mViewHolderBindersMap
                 .get(getItemViewType(position));
 
         if (viewHolderBinder != null) {
@@ -171,19 +175,19 @@ public abstract class BaseViewAdapter<B extends ViewCreatorChainer> extends Recy
 
     @SuppressWarnings("unchecked")
     protected B newCommandBuilder(int viewType) {
-        return bindingBuilderCreator.newBindingBuilder(this, viewType);
+        return mViewCreatorChainerFactory.newViewCreatorChainer(this, viewType);
     }
 
-    public interface ViewBindingBuilderCreator<C extends ViewCreatorChainer> {
-        C newBindingBuilder(BaseViewAdapter<C> adapter, int viewType);
+    public interface ViewCreatorChainerFactory<C extends ViewCreatorChainer> {
+        C newViewCreatorChainer(BaseViewAdapter<C> adapter, int viewType);
     }
 
     /**
      * @param viewType view type to bind for
-     * @param binder viewHolder binder which used in {@link #onBindViewHolder(ViewHolder, int)}
+     * @param binder   viewHolder binder which used in {@link #onBindViewHolder(ViewHolder, int)}
      */
-    /* package */ void addViewHolderBinder(int viewType, ViewHolderBinder<ViewHolder> binder) {
-        mOnBindViewHolderByViewType.put(viewType, binder);
+    /* package */ void addViewHolderBinder(int viewType, ViewHolderBinder<ViewHolder<?>> binder) {
+        mViewHolderBindersMap.put(viewType, binder);
     }
 
     /**
@@ -205,7 +209,7 @@ public abstract class BaseViewAdapter<B extends ViewCreatorChainer> extends Recy
     @Override
     public <V extends View>
     B addViewHolderCreator(int viewType, ViewHolderCreator<ViewHolder<V>> viewHolderCreator) {
-        mOnCreteViewHolderByViewType.put(viewType, viewHolderCreator);
+        mViewHolderCreatorsMap.put(viewType, viewHolderCreator);
         return newCommandBuilder(viewType);
     }
 
@@ -225,14 +229,14 @@ public abstract class BaseViewAdapter<B extends ViewCreatorChainer> extends Recy
      * @return viewHolderCreator associated with <code>viewType</code> or null
      */
     protected ViewHolderCreator getViewHolderCreator(int viewType) {
-        return mOnCreteViewHolderByViewType.get(viewType);
+        return mViewHolderCreatorsMap.get(viewType);
     }
 
     /**
      * @return viewHolderBinder associated with <code>viewType</code> or null
      */
     protected ViewHolderBinder<?> getViewHolderBinder(int viewType) {
-        return mOnBindViewHolderByViewType.get(viewType);
+        return mViewHolderBindersMap.get(viewType);
     }
 
 }

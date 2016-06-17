@@ -33,9 +33,9 @@ public class ListItemAdapter extends ItemViewAdapter<ItemViewCreatorChainer> {
     private final List<Object> mItems = new ArrayList<>();
 
     public ListItemAdapter() {
-        super(new ViewBindingBuilderCreator<ItemViewCreatorChainer>() {
+        super(new ViewCreatorChainerFactory<ItemViewCreatorChainer>() {
             @Override
-            public ItemViewCreatorChainer newBindingBuilder(BaseViewAdapter<ItemViewCreatorChainer> adapter, int viewType) {
+            public ItemViewCreatorChainer newViewCreatorChainer(BaseViewAdapter<ItemViewCreatorChainer> adapter, int viewType) {
                 return new ItemViewCreatorChainer(adapter, viewType);
             }
         });
