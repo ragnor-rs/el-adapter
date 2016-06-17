@@ -29,6 +29,10 @@ android {
         }
     }
 
+    dexOptions {
+        javaMaxHeapSize "2048M"
+    }
+
 }
 
 dependencies {

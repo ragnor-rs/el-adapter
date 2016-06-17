@@ -14,7 +14,7 @@ notifications:
 
 script:
   - jdk_switcher use oraclejdk8
-  - ./gradlew clean build connectedCheck
+  - ./gradlew clean build connectedCheck --stacktrace
 
 before_cache:
   - rm -f $HOME/.gradle/caches/modules-2/modules-2.lock
