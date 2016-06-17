@@ -9,23 +9,29 @@ import java.util.Map;
 /**
  * Created by defuera on 17/06/2016.
  */
-public class ViewHolderBinderChainer<V extends View> {
+public class ViewHolderBinderChainer<VH extends BaseViewAdapter.ViewHolder> {
 
     private static final int NO_ID = -1;
-    private final Map<Integer, Listener> listenersById = new HashMap<>();
+    private final Map<Integer, Listener<VH>> listenersById = new HashMap<>();
+    private final BaseViewAdapter adapter;
+    private final BaseViewAdapter.ViewHolderBinder<VH> newBinder;
+    private final int viewType;
 
-    public ViewHolderBinderChainer(final BaseViewAdapter adapter, final BaseViewAdapter.ViewHolderBinder parentBinder, final int viewType) {
-        BaseViewAdapter.ViewHolderBinder newBinder = new BaseViewAdapter.ViewHolderBinder() {
+    public ViewHolderBinderChainer(final BaseViewAdapter adapter, final BaseViewAdapter.ViewHolderBinder<VH> parentBinder, final int viewType) {
+        this.adapter = adapter;
+        this.viewType = viewType;
+        newBinder = new BaseViewAdapter.ViewHolderBinder<VH>() {
+
             @Override
-            public void onBindViewHolder(final BaseViewAdapter.ViewHolder viewHolder) {
+            public void onBindViewHolder(final VH viewHolder) {
+
                 if (parentBinder != null) {
                     parentBinder.onBindViewHolder(viewHolder);
                 }
 
-
-                for (Map.Entry<Integer, Listener> entry : listenersById.entrySet()) {
+                for (Map.Entry<Integer, Listener<VH>> entry : listenersById.entrySet()) {
                     int id = entry.getKey();
-                    final Listener viewHolderClickListener = entry.getValue();
+                    final Listener<VH> listener = entry.getValue();
 
                     /**
                      * WARN:
@@ -37,12 +43,12 @@ public class ViewHolderBinderChainer<V extends View> {
 
                         @Override
                         public void onClick(View v) {
-                            viewHolderClickListener.onClick(viewHolder);
+                            listener.onClick(viewHolder);
                         }
 
                     };
                     View view = viewHolder.itemView;
-                    
+
                     if (id == NO_ID) {
                         view.setOnClickListener(clickListener);
                     } else {
@@ -51,26 +57,31 @@ public class ViewHolderBinderChainer<V extends View> {
 
                 }
 
-
             }
-
         };
 
-        adapter.addViewHolderBinder(viewType, newBinder);
     }
 
-    public ViewHolderBinderChainer addOnViewHolderClickListener(@IdRes int id, final Listener listener) {
+    public ViewHolderBinderChainer addOnViewHolderClickListener(@IdRes int id, final Listener<VH> listener) {
+        addListenerAndSwapBinder(id, listener);
+        return this;
+    }
+
+    public ViewHolderBinderChainer addOnViewHolderClickListener(final Listener<VH> listener) {
+        addListenerAndSwapBinder(NO_ID, listener);
+        return this;
+    }
+
+    private void addListenerAndSwapBinder(@IdRes int id, final Listener<VH> listener) {
         listenersById.put(id, listener);
-        return this;
+
+        if (listenersById.size() == 0){
+            adapter.addViewHolderBinder(viewType, newBinder);
+        }
     }
 
-    public ViewHolderBinderChainer addOnViewHolderClickListener(final Listener listener) {
-        listenersById.put(NO_ID, listener);
-        return this;
-    }
-
-    public interface Listener<V extends View, VH extends BaseViewAdapter.ViewHolder<V>> {
-        void onClick(BaseViewAdapter.ViewHolder viewHolder);
+    public interface Listener<VH extends BaseViewAdapter.ViewHolder> {
+        void onClick(VH viewHolder);
     }
 
 }
