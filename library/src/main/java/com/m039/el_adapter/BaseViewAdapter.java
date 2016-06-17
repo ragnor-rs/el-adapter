@@ -186,7 +186,8 @@ public abstract class BaseViewAdapter<B extends ViewCreatorChainer> extends Recy
      * @param viewType view type to bind for
      * @param binder   viewHolder binder which used in {@link #onBindViewHolder(ViewHolder, int)}
      */
-    /* package */ void addViewHolderBinder(int viewType, ViewHolderBinder<ViewHolder<?>> binder) {
+    <V extends View>
+    /* package */ void addViewHolderBinder(int viewType, ViewHolderBinder<ViewHolder<V>> binder) {
         mViewHolderBindersMap.put(viewType, binder);
     }
 

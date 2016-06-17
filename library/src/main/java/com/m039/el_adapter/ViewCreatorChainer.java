@@ -34,8 +34,8 @@ public class ViewCreatorChainer {
         this.viewType = viewType;
     }
 
-    public <V extends View, VH extends ViewHolder<V>> ViewHolderBinderChainer<V> addViewHolderBinder(ViewHolderBinder<VH> binder) {
-        adapter.addViewHolderBinder(viewType, binder); //todo unsafe
+    public <V extends View> ViewHolderBinderChainer addViewHolderBinder(ViewHolderBinder<ViewHolder<V>> binder) {
+        adapter.addViewHolderBinder(viewType, binder);
         return new ViewHolderBinderChainer<>(adapter, binder, viewType);
     }
 
