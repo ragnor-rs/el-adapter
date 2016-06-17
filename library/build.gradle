@@ -2,7 +2,7 @@ apply plugin: 'com.android.library'
 
 android {
 
-    compileSdkVersion 23
+    compileSdkVersion 24
     buildToolsVersion "24"
 
     compileOptions {
@@ -12,7 +12,7 @@ android {
 
     defaultConfig {
         minSdkVersion 16
-        targetSdkVersion 23
+        targetSdkVersion 24
         versionCode 1
         versionName "0.1"
     }
@@ -23,7 +23,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-    
+
 }
 
 def supportVersion = '23.4.0'
