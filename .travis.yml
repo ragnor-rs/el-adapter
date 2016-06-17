@@ -24,3 +24,5 @@ cache:
   directories:
     - $HOME/.gradle/caches/
     - $HOME/.gradle/wrapper/
+
+after_failure: "cat /home/travis/build/m039/el-adapter/demo/build/outputs/lint-results-debug.html"
