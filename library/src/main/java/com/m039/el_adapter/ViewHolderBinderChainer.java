@@ -62,12 +62,12 @@ public class ViewHolderBinderChainer<VH extends BaseViewAdapter.ViewHolder> {
 
     }
 
-    public ViewHolderBinderChainer addOnViewHolderClickListener(@IdRes int id, final Listener<VH> listener) {
+    public ViewHolderBinderChainer<VH> addOnViewHolderClickListener(@IdRes int id, final Listener<VH> listener) {
         addListenerAndSwapBinder(id, listener);
         return this;
     }
 
-    public ViewHolderBinderChainer addOnViewHolderClickListener(final Listener<VH> listener) {
+    public ViewHolderBinderChainer<VH> addOnViewHolderClickListener(final Listener<VH> listener) {
         addListenerAndSwapBinder(NO_ID, listener);
         return this;
     }

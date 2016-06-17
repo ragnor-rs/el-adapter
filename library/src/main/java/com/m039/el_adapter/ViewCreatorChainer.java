@@ -16,8 +16,6 @@
 
 package com.m039.el_adapter;
 
-import android.view.View;
-
 import com.m039.el_adapter.BaseViewAdapter.ViewHolder;
 import com.m039.el_adapter.BaseViewAdapter.ViewHolderBinder;
 
@@ -34,7 +32,7 @@ public class ViewCreatorChainer {
         this.viewType = viewType;
     }
 
-    public <V extends View> ViewHolderBinderChainer addViewHolderBinder(ViewHolderBinder<ViewHolder<V>> binder) {
+    public <VH extends ViewHolder> ViewHolderBinderChainer<VH> addViewHolderBinder(ViewHolderBinder<VH> binder) {
         adapter.addViewHolderBinder(viewType, binder);
         return new ViewHolderBinderChainer<>(adapter, binder, viewType);
     }
