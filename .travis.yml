@@ -8,6 +8,7 @@ android:
     - extra-google-google_play_services
     - extra-google-m2repository
     - extra-android-m2repository
+    - platform-tools
 
 notifications:
   email: false
@@ -24,5 +25,3 @@ cache:
   directories:
     - $HOME/.gradle/caches/
     - $HOME/.gradle/wrapper/
-
-after_failure: "cat /home/travis/build/m039/el-adapter/demo/build/outputs/lint-results-debug.html"
