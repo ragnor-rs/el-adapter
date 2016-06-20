@@ -16,15 +16,13 @@
 
 package com.m039.el_adapter;
 
-import android.view.View;
-
 import com.m039.el_adapter.BaseViewAdapter.ViewHolder;
 import com.m039.el_adapter.BaseViewAdapter.ViewHolderBinder;
 
 /**
  * Created by m039 on 6/1/16.
  */
-public class ViewCreatorChainer<V extends View> {
+public class ViewCreatorChainer {
 
     final protected BaseViewAdapter adapter;
     final protected int viewType;
@@ -34,8 +32,9 @@ public class ViewCreatorChainer<V extends View> {
         this.viewType = viewType;
     }
 
-    public void addViewHolderBinder(ViewHolderBinder<ViewHolder<V>>  binder) {
+    public <VH extends ViewHolder> ViewHolderBinderChainer<VH> addViewHolderBinder(ViewHolderBinder<VH> binder) {
         adapter.addViewHolderBinder(viewType, binder);
+        return new ViewHolderBinderChainer<>(adapter, binder, viewType);
     }
 
 }
