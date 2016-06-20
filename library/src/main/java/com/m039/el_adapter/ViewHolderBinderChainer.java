@@ -75,7 +75,7 @@ public class ViewHolderBinderChainer<VH extends BaseViewAdapter.ViewHolder> {
     private void addListenerAndSwapBinder(@IdRes int id, final Listener<VH> listener) {
         listenersById.put(id, listener);
 
-        if (listenersById.size() == 0){
+        if (listenersById.size() != 0){
             adapter.addViewHolderBinder(viewType, newBinder);
         }
     }
