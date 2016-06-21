@@ -91,7 +91,7 @@ public abstract class ItemViewAdapter<B extends ItemViewCreatorChainer> extends 
     private final ViewTypeHelper mViewTypeHelper = new ViewTypeHelper();
     private final Map<Integer, Map<Integer, ItemViewHolderBinder>> mItemViewHolderBindersByViewType = new HashMap<>();
 
-    public ItemViewAdapter(ViewBindingBuilderCreator<B> bindingBuilderCreator) {
+    public ItemViewAdapter(ViewCreatorChainerFactory<B> bindingBuilderCreator) {
         super(bindingBuilderCreator);
     }
 

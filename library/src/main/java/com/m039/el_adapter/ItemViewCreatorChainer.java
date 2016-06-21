@@ -18,10 +18,8 @@ package com.m039.el_adapter;
 
 import android.support.annotation.IdRes;
 import android.view.View;
-import android.view.ViewGroup;
 
 import com.m039.el_adapter.BaseViewAdapter.ViewHolder;
-import com.m039.el_adapter.BaseViewAdapter.ViewHolderCreator;
 import com.m039.el_adapter.ItemViewAdapter.DefaultItemViewHolderBinder;
 import com.m039.el_adapter.ItemViewAdapter.ItemViewBinder;
 import com.m039.el_adapter.ItemViewAdapter.ItemViewHolderBinder;
@@ -38,7 +36,7 @@ import java.util.Map;
  * Chainer returned by addViewCreator
  */
 public class ItemViewCreatorChainer<I, V extends View>
-        extends ViewCreatorChainer<V> {
+        extends ViewCreatorChainer {
 
     /**
      * Chainer returned by addViewBinder
@@ -49,13 +47,13 @@ public class ItemViewCreatorChainer<I, V extends View>
 
         private static final int NO_ID = 0;
 
-        private static final class ClickableItemViewHolderBinder<I, V extends View>
+        private static final class ClickableItemViewHolderChainer<I, V extends View>
                 implements ItemViewHolderBinder<I, V> {
 
             Map<Integer, OnItemViewHolderClickListener> listenersById = new HashMap<>();
             ItemViewHolderBinder<I, V> parentBinder;
 
-            ClickableItemViewHolderBinder(ItemViewHolderBinder<I, V> binder) {
+            ClickableItemViewHolderChainer(ItemViewHolderBinder<I, V> binder) {
                 parentBinder = binder;
             }
 
@@ -132,12 +130,12 @@ public class ItemViewCreatorChainer<I, V extends View>
             final ItemViewHolderBinder<I, V> binder = (ItemViewHolderBinder<I, V>)
                     adapter.getViewHolderBinder(viewType, typeOfBind);
 
-            ClickableItemViewHolderBinder<I, V> clickableBinder;
+            ClickableItemViewHolderChainer<I, V> clickableBinder;
 
-            if (binder instanceof ClickableItemViewHolderBinder) {
-                clickableBinder = (ClickableItemViewHolderBinder<I, V>) binder;
+            if (binder instanceof ClickableItemViewHolderChainer) {
+                clickableBinder = (ClickableItemViewHolderChainer<I, V>) binder;
             } else {
-                clickableBinder = new ClickableItemViewHolderBinder<>(binder);
+                clickableBinder = new ClickableItemViewHolderChainer<>(binder);
                 adapter.addViewHolderBinder(viewType, typeOfBind, clickableBinder);
             }
 
