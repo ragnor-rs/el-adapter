@@ -1,4 +1,21 @@
+buildscript {
+
+    repositories {
+        jcenter()
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath 'me.tatarka:gradle-retrolambda:3.2.2'
+        classpath 'me.tatarka.retrolambda.projectlombok:lombok.ast:0.2.3.a2'
+    }
+
+    configurations.classpath.exclude group: 'com.android.tools.external.lombok'
+
+}
+
 apply plugin: 'com.android.application'
+apply plugin: 'me.tatarka.retrolambda'
 
 android {
 
@@ -16,10 +33,6 @@ android {
         targetSdkVersion 24
         versionCode 1
         versionName "1.0"
-
-        jackOptions {
-            enabled true
-        }
     }
 
     buildTypes {
@@ -27,10 +40,6 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
-    }
-
-    dexOptions {
-        javaMaxHeapSize "2048M"
     }
 
 }
