@@ -11,15 +11,15 @@ import com.m039.el_adapter.ViewHolderCreator;
  */
 public class ElBuilder<V extends View, VH extends BaseViewHolder<V>> {
 
-    private final ViewHolderCreator<VH> creator;
+    private final ViewHolderCreator<VH> viewHolderCreator;
     private ViewHolderBinder<VH> viewHolderBinder;
 
-    public ElBuilder(ViewHolderCreator<VH> creator) {
-        this.creator = creator;
+    public ElBuilder(ViewHolderCreator<VH> viewHolderCreator) {
+        this.viewHolderCreator = viewHolderCreator;
     }
 
     public ViewHolderCreator<VH> getViewHolderCreator() {
-        return creator;
+        return viewHolderCreator;
     }
 
     public ViewHolderBinder<VH> getViewHolderBinder() {
@@ -32,7 +32,7 @@ public class ElBuilder<V extends View, VH extends BaseViewHolder<V>> {
 
     public class ViewHolderBinderChainer {
 
-        public void addViewBinder(ViewHolderBinder<VH> viewHolderBinder){
+        public void addViewHolderBinder(ViewHolderBinder<VH> viewHolderBinder) {
             ElBuilder.this.viewHolderBinder = viewHolderBinder;
         }
     }

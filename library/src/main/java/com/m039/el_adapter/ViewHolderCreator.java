@@ -3,7 +3,7 @@ package com.m039.el_adapter;
 import android.view.ViewGroup;
 
 /**
- * This interface is used to create views in {@link #onCreateViewHolder(ViewGroup, int)}
+ * This interface is used to create views in {@link #onCreateViewHolder(ViewGroup)}
  * <p>
  * todo add type check for ViewHolders
  */

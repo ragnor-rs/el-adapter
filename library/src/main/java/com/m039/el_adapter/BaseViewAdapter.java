@@ -16,7 +16,6 @@
 
 package com.m039.el_adapter;
 
-import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,9 +25,6 @@ import com.m039.el_adapter.denis.IBaseAdapter;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
-import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 
 /**
  * Base class for adapters.
@@ -45,24 +41,24 @@ import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
  * <p>
  * Created by m039 on 3/3/16.
  */
-public abstract class BaseViewAdapter extends RecyclerView.Adapter<BaseViewHolder<?>> //todo rename to BaseViewHolderAdapter
-        implements IBaseAdapter {
+public abstract class BaseViewAdapter<B extends ElBuilder> extends RecyclerView.Adapter<BaseViewHolder<?>> //todo rename to BaseViewHolderAdapter
+        implements IBaseAdapter<B> {
 
-    public static final int DEFAULT_VIEW_TYPE = 0;
-
-    private final Map<Integer, ElBuilder<?, ?>> builderMap = new HashMap<>();
+    protected final Map<Integer, B> builderMap = new HashMap<>();
 
     protected BaseViewAdapter() {}
 
     @Override
-    public <V extends View, VH extends BaseViewHolder<V>> ElBuilder<V, VH>.ViewHolderBinderChainer
+    public <V extends View, VH extends BaseViewHolder<V>> B.ViewHolderBinderChainer
     addViewHolderCreator(int viewType, ViewHolderCreator<VH> creator) {
 
-        ElBuilder<V, VH> elBuilder = new ElBuilder<>(creator);
+        B elBuilder = createBuilder(creator);
         builderMap.put(viewType, elBuilder);
 
         return elBuilder.viewHolderBinderChainer();
     }
+
+    protected abstract <V extends View, VH extends BaseViewHolder<V>>  B createBuilder(ViewHolderCreator<VH> creator);
 
     /**
      * @return viewHolderCreator associated with <code>viewType</code> or null
@@ -82,7 +78,7 @@ public abstract class BaseViewAdapter extends RecyclerView.Adapter<BaseViewHolde
 
     @Override
     public BaseViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        ViewHolderCreator viewHolderCreator = builderMap.get(viewType).getViewHolderCreator();
+        ViewHolderCreator viewHolderCreator = getViewHolderCreator(viewType);
 
         if (viewHolderCreator == null) {
             throw new IllegalStateException("Can't create view of type " + viewType + ".");
@@ -94,7 +90,7 @@ public abstract class BaseViewAdapter extends RecyclerView.Adapter<BaseViewHolde
     @SuppressWarnings("unchecked")
     @Override
     public void onBindViewHolder(BaseViewHolder holder, int position) {
-        ViewHolderBinder viewHolderBinder = builderMap.get(getItemViewType(position)).getViewHolderBinder();
+        ViewHolderBinder viewHolderBinder = getViewHolderBinder(getItemViewType(position));
 
         if (viewHolderBinder != null) {
             viewHolderBinder.onBindViewHolder(holder);

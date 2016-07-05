@@ -15,7 +15,7 @@ import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
  * Created by defuera on 05/07/2016.
  * adds simple addViewCreator, addViewBinderMethods
  */
-public abstract class SimpleBaseViewAdapter extends BaseViewAdapter {
+public abstract class SimpleBaseViewAdapter<B extends SimpleBaseViewAdapter.SimpleViewElBuilder> extends BaseViewAdapter<B> {
 
     /**
      * This interface is used to create views in {@link #onCreateViewHolder(ViewGroup, int)}
@@ -27,6 +27,24 @@ public abstract class SimpleBaseViewAdapter extends BaseViewAdapter {
          * @return should be a new created view
          */
         V onCreateView(ViewGroup parent);
+
+    }
+
+    public interface ViewBinder<V extends View> {
+
+        /**
+         * To get position call view.getAdapterPosition()
+         *
+         * @param view view to bind
+         */
+        void onBindView(V view);
+
+    }
+
+    @Override
+    public void onBindViewHolder(BaseViewHolder holder, int position) {
+        super.onBindViewHolder(holder, position);
+
 
     }
 
@@ -61,9 +79,28 @@ public abstract class SimpleBaseViewAdapter extends BaseViewAdapter {
 
     }
 
-    public <V extends View> void addViewCreator(int viewType, ViewCreator<V> viewCreator){
-        ElBuilder.ViewHolderBinderChainer binderChainer = super.addViewHolderCreator(viewType, new DefaultViewHolderCreator<V>(viewCreator));
+    public <V extends View> SimpleViewElBuilder.ViewBinderChainer addViewCreator(int viewType, ViewCreator<V> viewCreator){
+        addViewHolderCreator(viewType, new DefaultViewHolderCreator<>(viewCreator));
+        return builderMap.get(viewType).viewBinderChainer();
+    }
 
-        return binderChainer.;
+    public static class SimpleViewElBuilder<V extends View, VH extends BaseViewHolder<V>> extends ElBuilder<V, VH>{
+
+        private ViewBinder<V> viewBinder;
+
+        public SimpleViewElBuilder(ViewHolderCreator<VH> creator) {
+            super(creator);
+        }
+
+        public ViewBinderChainer viewBinderChainer() {
+            return new ViewBinderChainer();
+        }
+
+        public class ViewBinderChainer {
+
+            public void addViewBinder(ViewBinder<V> viewBinder){
+                SimpleViewElBuilder.this.viewBinder = viewBinder;
+            }
+        }
     }
 }
