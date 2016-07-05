@@ -27,6 +27,7 @@ import static org.junit.Assert.assertNotNull;
 @Config(constants = BuildConfig.class, sdk = Build.VERSION_CODES.LOLLIPOP)
 public class ElAdapterTest {
 
+    public static final ElEntity[] ITEMS_ARRAY_OF_5 = new ElEntity[]{new ElEntity("one"), new ElEntity("two"), new ElEntity("three"), new ElEntity("four"), new ElEntity("five")};
     private SimpleTestActivity activity;
     private RecyclerView recycler;
     private ListItemAdapter testAdapter;
@@ -43,12 +44,6 @@ public class ElAdapterTest {
         recycler = (RecyclerView) activity.findViewById(SimpleTestActivity.RECYCLER_VIEW_ID);
         testAdapter = new ListItemAdapter();
         recycler.setAdapter(testAdapter);
-    }
-
-
-    @Test
-    public void testAddItems() {
-        assertNotNull(recycler.getAdapter());
 
         testAdapter
                 .addViewCreator(
@@ -68,7 +63,14 @@ public class ElAdapterTest {
                             }
                         }
                 );
+    }
 
+
+    @Test
+    public void testAddItems() {
+        assertNotNull(recycler.getAdapter());
+
+        //add first item
         ElEntity item1 = new ElEntity("twelve");
 
         testAdapter.addItem(item1);
@@ -77,7 +79,7 @@ public class ElAdapterTest {
         Assert.assertEquals(1, recycler.getChildCount());
         Assert.assertEquals(item1.id, ((TextView)recycler.getChildAt(0)).getText().toString());
 
-
+        //add second item
         ElEntity item2 = new ElEntity("fifteen");
 
         testAdapter.addItem(item2);
@@ -86,12 +88,50 @@ public class ElAdapterTest {
         Assert.assertEquals(2, recycler.getChildCount());
         Assert.assertEquals(item2.id, ((TextView)recycler.getChildAt(1)).getText().toString());
 
+        //add array items
+        testAdapter.addItems(ITEMS_ARRAY_OF_5);
+        onItemsChanged();
+
+        Assert.assertEquals(2 + ITEMS_ARRAY_OF_5.length, recycler.getChildCount());
+        int testArrayItemIndex = 1;
+        Assert.assertEquals(
+                ITEMS_ARRAY_OF_5[testArrayItemIndex].id,
+                ((TextView)recycler.getChildAt(2 + testArrayItemIndex)).getText().toString()
+        );
     }
 
+    @Test
+    public void testRemoveItem(){
+        assertNotNull(recycler.getAdapter());
+
+        testAdapter.addItems(ITEMS_ARRAY_OF_5);
+        onItemsChanged();
+
+        Assert.assertEquals(ITEMS_ARRAY_OF_5.length, recycler.getChildCount());
+
+
+        //test remove range
+        int itemsToRemove = 2;
+        testAdapter.removeItemsRange(1, itemsToRemove);
+        onItemsChanged();
+
+        Assert.assertEquals(ITEMS_ARRAY_OF_5.length - itemsToRemove , recycler.getChildCount());
+        Assert.assertEquals(ITEMS_ARRAY_OF_5[0].id, ((TextView)recycler.getChildAt(0)).getText().toString());
+        Assert.assertEquals(ITEMS_ARRAY_OF_5[3].id, ((TextView)recycler.getChildAt(1)).getText().toString());
+
+
+        //test remove one
+        testAdapter.removeItem(1);
+        onItemsChanged();
+
+        Assert.assertEquals(ITEMS_ARRAY_OF_5.length - (itemsToRemove + 1) , recycler.getChildCount());
+        Assert.assertEquals(ITEMS_ARRAY_OF_5[0].id, ((TextView)recycler.getChildAt(0)).getText().toString());
+        Assert.assertEquals(ITEMS_ARRAY_OF_5[4].id, ((TextView)recycler.getChildAt(1)).getText().toString());
+    }
+
+
     private void onItemsChanged() {
-
         testAdapter.notifyDataSetChanged();
-
         recycler.measure(
                 View.MeasureSpec.makeMeasureSpec(480, View.MeasureSpec.EXACTLY),
                 View.MeasureSpec.makeMeasureSpec(800, View.MeasureSpec.EXACTLY));
