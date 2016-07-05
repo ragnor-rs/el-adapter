@@ -23,7 +23,7 @@
 //    ElBuilder<V, VH>.ViewHolderBinderChainer addViewHolderCreator(int viewType, ViewHolderCreator<VH> creator) {
 //        ElBuilder<V, VH> elBuilder = new ElBuilder<>(creator);
 //        builderMap.put(viewType, elBuilder);
-//        return elBuilder.viewHolderBinderChainer();
+//        return elBuilder.getViewHolderBinderChainer();
 //    }
 //
 ////    public interface ViewHolderCreator<VH extends BaseViewHolder> {

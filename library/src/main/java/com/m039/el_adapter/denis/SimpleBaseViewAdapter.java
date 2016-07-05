@@ -79,6 +79,7 @@ public abstract class SimpleBaseViewAdapter<B extends SimpleBaseViewAdapter.Simp
 
     }
 
+
     public <V extends View> SimpleViewElBuilder.ViewBinderChainer addViewCreator(int viewType, ViewCreator<V> viewCreator){
         addViewHolderCreator(viewType, new DefaultViewHolderCreator<>(viewCreator));
         return builderMap.get(viewType).viewBinderChainer();

@@ -41,36 +41,37 @@ import java.util.Map;
  * <p>
  * Created by m039 on 3/3/16.
  */
-public abstract class BaseViewAdapter<B extends ElBuilder> extends RecyclerView.Adapter<BaseViewHolder<?>> //todo rename to BaseViewHolderAdapter
-        implements IBaseAdapter<B> {
+public abstract class BaseViewAdapter<B extends ElBuilder> extends RecyclerView.Adapter<BaseViewHolder<?>>
+        implements IBaseAdapter {
 
     protected final Map<Integer, B> builderMap = new HashMap<>();
 
-    protected BaseViewAdapter() {}
+    protected BaseViewAdapter() {
+    }
+
+    protected abstract <V extends View, VH extends BaseViewHolder<V>> B createBuilder(ViewHolderCreator<VH> creator);
 
     @Override
-    public <V extends View, VH extends BaseViewHolder<V>> B.ViewHolderBinderChainer
+    public <V extends View, VH extends BaseViewHolder<V>> ElBuilder.ViewHolderBinderChainer<V, VH>
     addViewHolderCreator(int viewType, ViewHolderCreator<VH> creator) {
 
         B elBuilder = createBuilder(creator);
         builderMap.put(viewType, elBuilder);
 
-        return elBuilder.viewHolderBinderChainer();
+        return (ElBuilder.ViewHolderBinderChainer<V, VH>) elBuilder.getViewHolderBinderChainer();
     }
-
-    protected abstract <V extends View, VH extends BaseViewHolder<V>>  B createBuilder(ViewHolderCreator<VH> creator);
 
     /**
      * @return viewHolderCreator associated with <code>viewType</code> or null
      */
-    protected ViewHolderCreator getViewHolderCreator(int viewType) {
+    protected <V extends View, VH extends BaseViewHolder<V>> ViewHolderCreator<VH> getViewHolderCreator(int viewType) {
         return builderMap.get(viewType).getViewHolderCreator();
     }
 
     /**
      * @return viewHolderBinder associated with <code>viewType</code> or null
      */
-    protected ViewHolderBinder<?> getViewHolderBinder(int viewType) {
+    protected <V extends View, VH extends BaseViewHolder<V>> ViewHolderBinder<VH> getViewHolderBinder(int viewType) {
         return builderMap.get(viewType).getViewHolderBinder();
     }
 
