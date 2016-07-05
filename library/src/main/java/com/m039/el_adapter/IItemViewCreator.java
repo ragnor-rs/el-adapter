@@ -25,10 +25,10 @@
 //        extends IViewCreator<B> {
 //
 //    <I, V extends View>
-//    B addViewCreator(Class<I> clazz, BaseViewAdapter.ViewCreator<V> viewCreator);
+//    B addViewCreator(Class<I> clazz, BaseViewHolderAdapter.ViewCreator<V> viewCreator);
 //
 //    <I, V extends View>
-//    B addViewCreator(Class<I> clazz, int typeOfClass, BaseViewAdapter.ViewCreator<V> viewCreator);
+//    B addViewCreator(Class<I> clazz, int typeOfClass, BaseViewHolderAdapter.ViewCreator<V> viewCreator);
 //
 //    <I, V extends View>
 //    B addViewHolderCreator(Class<I> clazz, ViewHolderCreator<BaseViewHolder<V>> viewHolderCreator);

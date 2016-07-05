@@ -19,7 +19,7 @@
 //import android.support.annotation.NonNull;
 //import android.view.View;
 //
-//import com.m039.el_adapter.denis.ElBuilder;
+//import com.m039.el_adapter.denis.BaseViewHolderBuilder;
 //
 //import java.util.ArrayList;
 //import java.util.Arrays;
@@ -119,7 +119,7 @@
 ////    @Override
 ////    @SuppressWarnings("unchecked")
 ////    public <V extends View>
-////    ElBuilder<V, BaseViewHolder<V>>.ViewHolderBinderChainer addViewCreator(int viewType, ViewCreator<V> viewCreator) {
+////    BaseViewHolderBuilder<V, BaseViewHolder<V>>.ViewHolderBinderChainer addViewCreator(int viewType, ViewCreator<V> viewCreator) {
 ////        return (ItemViewCreatorChainer<Void, V>) super.addViewCreator(viewType, viewCreator);
 ////    }
 //

@@ -13,11 +13,11 @@
 //
 //    private static final int NO_ID = -1;
 //    private final Map<Integer, Listener<VH>> listenersById = new HashMap<>();
-//    private final BaseViewAdapter adapter;
+//    private final BaseViewHolderAdapter adapter;
 //    private final ViewHolderBinder<VH> newBinder;
 //    private final int viewType;
 //
-//    public ViewHolderBinderChainer(final BaseViewAdapter adapter, final ViewHolderBinder<VH> parentBinder, final int viewType) {
+//    public ViewHolderBinderChainer(final BaseViewHolderAdapter adapter, final ViewHolderBinder<VH> parentBinder, final int viewType) {
 //        this.adapter = adapter;
 //        this.viewType = viewType;
 //        newBinder = new ViewHolderBinder<VH>() {

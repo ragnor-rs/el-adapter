@@ -20,7 +20,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.m039.el_adapter.denis.ElBuilder;
+import com.m039.el_adapter.denis.BaseViewHolderBuilder;
 import com.m039.el_adapter.denis.IBaseAdapter;
 
 import java.util.HashMap;
@@ -32,7 +32,7 @@ import java.util.Map;
  * The main difference between this class and other that it doesn't know anything about data only
  * how to create view.
  * <p>
- * BaseViewAdapter is only responsible for creating view, not binding them.
+ * BaseViewHolderAdapter is only responsible for creating view, not binding them.
  * <p>
  * Logic for binding should be in another/inherited classes.
  * <p>
@@ -41,24 +41,24 @@ import java.util.Map;
  * <p>
  * Created by m039 on 3/3/16.
  */
-public abstract class BaseViewAdapter<B extends ElBuilder> extends RecyclerView.Adapter<BaseViewHolder<?>>
+public abstract class BaseViewHolderAdapter<B extends BaseViewHolderBuilder> extends RecyclerView.Adapter<BaseViewHolder<?>>
         implements IBaseAdapter {
 
     protected final Map<Integer, B> builderMap = new HashMap<>();
 
-    protected BaseViewAdapter() {
+    protected BaseViewHolderAdapter() {
     }
 
     protected abstract <V extends View, VH extends BaseViewHolder<V>> B createBuilder(ViewHolderCreator<VH> creator);
 
     @Override
-    public <V extends View, VH extends BaseViewHolder<V>> ElBuilder.ViewHolderBinderChainer<V, VH>
+    public <V extends View, VH extends BaseViewHolder<V>> BaseViewHolderBuilder.ViewHolderBinderChainer<V, VH>
     addViewHolderCreator(int viewType, ViewHolderCreator<VH> creator) {
 
         B elBuilder = createBuilder(creator);
         builderMap.put(viewType, elBuilder);
 
-        return (ElBuilder.ViewHolderBinderChainer<V, VH>) elBuilder.getViewHolderBinderChainer();
+        return (BaseViewHolderBuilder.ViewHolderBinderChainer<V, VH>) elBuilder.getViewHolderBinderChainer();
     }
 
     /**

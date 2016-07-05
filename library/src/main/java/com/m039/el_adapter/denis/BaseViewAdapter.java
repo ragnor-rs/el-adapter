@@ -4,8 +4,8 @@ import android.support.annotation.NonNull;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.m039.el_adapter.BaseViewHolderAdapter;
 import com.m039.el_adapter.BaseViewHolder;
-import com.m039.el_adapter.BaseViewAdapter;
 import com.m039.el_adapter.ViewHolderCreator;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
@@ -15,7 +15,7 @@ import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
  * Created by defuera on 05/07/2016.
  * adds simple addViewCreator, addViewBinderMethods
  */
-public abstract class SimpleBaseViewAdapter<B extends SimpleBaseViewAdapter.SimpleViewElBuilder> extends BaseViewAdapter<B> {
+public abstract class BaseViewAdapter<B extends BaseViewAdapter.BaseViewBuilder> extends BaseViewHolderAdapter<B> {
 
     /**
      * This interface is used to create views in {@link #onCreateViewHolder(ViewGroup, int)}
@@ -43,9 +43,24 @@ public abstract class SimpleBaseViewAdapter<B extends SimpleBaseViewAdapter.Simp
 
     @Override
     public void onBindViewHolder(BaseViewHolder holder, int position) {
-        super.onBindViewHolder(holder, position);
 
+        ViewBinder<View> viewBinder = getViewBinder(getItemViewType(position));
 
+        if (viewBinder != null) {
+            viewBinder.onBindView(holder.itemView);
+        } else {
+            // do nothing, don't bind a thing
+        }
+
+    }
+
+    public <V extends View> BaseViewBuilder.ViewBinderChainer<V> addViewCreator(int viewType, ViewCreator<V> viewCreator) {
+        addViewHolderCreator(viewType, new DefaultViewHolderCreator<>(viewCreator));
+        return (BaseViewBuilder.ViewBinderChainer<V>) builderMap.get(viewType).getViewBinderChainer();
+    }
+
+    protected <V extends View> ViewBinder<V> getViewBinder(int viewType) {
+        return (ViewBinder<V>) builderMap.get(viewType).getViewBinder();
     }
 
     protected static class DefaultViewHolderCreator<V extends View> implements ViewHolderCreator<BaseViewHolder<V>> {
@@ -79,29 +94,37 @@ public abstract class SimpleBaseViewAdapter<B extends SimpleBaseViewAdapter.Simp
 
     }
 
-
-    public <V extends View> SimpleViewElBuilder.ViewBinderChainer addViewCreator(int viewType, ViewCreator<V> viewCreator){
-        addViewHolderCreator(viewType, new DefaultViewHolderCreator<>(viewCreator));
-        return builderMap.get(viewType).viewBinderChainer();
-    }
-
-    public static class SimpleViewElBuilder<V extends View, VH extends BaseViewHolder<V>> extends ElBuilder<V, VH>{
+    public static class BaseViewBuilder<V extends View, VH extends BaseViewHolder<V>> extends BaseViewHolderBuilder<V, VH> {
 
         private ViewBinder<V> viewBinder;
+        private final ViewBinderChainer<V> viewBinderChainer = new ViewBinderChainer<>(this);
 
-        public SimpleViewElBuilder(ViewHolderCreator<VH> creator) {
+        public BaseViewBuilder(ViewHolderCreator<VH> creator) {
             super(creator);
         }
 
-        public ViewBinderChainer viewBinderChainer() {
-            return new ViewBinderChainer();
+        public ViewBinderChainer<V> getViewBinderChainer() {
+            return viewBinderChainer;
         }
 
-        public class ViewBinderChainer {
+        public ViewBinder<V> getViewBinder() {
+            return viewBinder;
+        }
 
-            public void addViewBinder(ViewBinder<V> viewBinder){
-                SimpleViewElBuilder.this.viewBinder = viewBinder;
+
+        public static class ViewBinderChainer<V extends View> {
+
+            private final BaseViewBuilder<V, ?> elBuilder;
+
+            public ViewBinderChainer(BaseViewBuilder<V, ?> elBuilder) {
+                this.elBuilder = elBuilder;
+            }
+
+            public void addViewBinder(ViewBinder<V> viewBinder) {
+                elBuilder.viewBinder = viewBinder;
             }
         }
+
     }
+
 }

@@ -18,7 +18,7 @@
 //
 //import android.view.View;
 //
-//import com.m039.el_adapter.BaseViewAdapter.ViewCreator;
+//import com.m039.el_adapter.BaseViewHolderAdapter.ViewCreator;
 //
 ///**
 // * Created by m039 on 6/1/16.

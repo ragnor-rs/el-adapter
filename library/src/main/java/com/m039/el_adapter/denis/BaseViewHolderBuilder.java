@@ -9,13 +9,13 @@ import com.m039.el_adapter.ViewHolderCreator;
 /**
  * Created by defuera on 05/07/2016.
  */
-public class ElBuilder<V extends View, VH extends BaseViewHolder<V>> {
+public class BaseViewHolderBuilder<V extends View, VH extends BaseViewHolder<V>> {
 
     private final ViewHolderCreator<VH> viewHolderCreator;
     private final ViewHolderBinderChainer<V, VH> viewHolderBinderChainer = new ViewHolderBinderChainer<>(this);
     private ViewHolderBinder<VH> viewHolderBinder;
 
-    public ElBuilder(ViewHolderCreator<VH> viewHolderCreator) {
+    public BaseViewHolderBuilder(ViewHolderCreator<VH> viewHolderCreator) {
         this.viewHolderCreator = viewHolderCreator;
     }
 
@@ -35,16 +35,18 @@ public class ElBuilder<V extends View, VH extends BaseViewHolder<V>> {
         this.viewHolderBinder = viewHolderBinder;
     }
 
+
     public static class ViewHolderBinderChainer<V extends View, VH extends BaseViewHolder<V>> {
 
-        private final ElBuilder<V, VH> elBuilder;
+        private final BaseViewHolderBuilder<V, VH> baseViewHolderBuilder;
 
-        public ViewHolderBinderChainer(ElBuilder<V, VH> elBuilder) {
-            this.elBuilder = elBuilder;
+        public ViewHolderBinderChainer(BaseViewHolderBuilder<V, VH> baseViewHolderBuilder) {
+            this.baseViewHolderBuilder = baseViewHolderBuilder;
         }
 
         public void addViewHolderBinder(ViewHolderBinder<VH> viewHolderBinder) {
-            elBuilder.setViewHolderBinder(viewHolderBinder);
+            baseViewHolderBuilder.setViewHolderBinder(viewHolderBinder);
         }
     }
+
 }

@@ -10,6 +10,6 @@ import com.m039.el_adapter.ViewHolderCreator;
  */
 public interface IBaseAdapter {
 
-     <V extends View, VH extends BaseViewHolder<V>> ElBuilder.ViewHolderBinderChainer addViewHolderCreator(int viewType, ViewHolderCreator<VH> creator);
+     <V extends View, VH extends BaseViewHolder<V>> BaseViewHolderBuilder.ViewHolderBinderChainer addViewHolderCreator(int viewType, ViewHolderCreator<VH> creator);
 
 }

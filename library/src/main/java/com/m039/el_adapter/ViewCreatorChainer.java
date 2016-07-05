@@ -21,10 +21,10 @@
 // */
 //public class ViewCreatorChainer {
 //
-//    final protected BaseViewAdapter adapter;
+//    final protected BaseViewHolderAdapter adapter;
 //    final protected int viewType;
 //
-//    public ViewCreatorChainer(BaseViewAdapter adapter, int viewType) {
+//    public ViewCreatorChainer(BaseViewHolderAdapter adapter, int viewType) {
 //        this.adapter = adapter;
 //        this.viewType = viewType;
 //    }

@@ -6,11 +6,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.m039.el_adapter.BaseViewAdapter;
+import com.m039.el_adapter.BaseViewHolderAdapter;
 import com.m039.el_adapter.BaseViewHolder;
 import com.m039.el_adapter.ViewHolderBinder;
 import com.m039.el_adapter.ViewHolderCreator;
-import com.m039.el_adapter.denis.ElBuilder;
+import com.m039.el_adapter.denis.BaseViewHolderBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -82,7 +82,7 @@ public class DemosFragment extends DemoFragment {
     }
 
 
-    public static class MyAdapter extends BaseViewAdapter<ElBuilder<?, ?>> {
+    public static class MyAdapter extends BaseViewHolderAdapter<BaseViewHolderBuilder<?, ?>> {
 
         List<String> items = new ArrayList<>();
 
@@ -92,8 +92,8 @@ public class DemosFragment extends DemoFragment {
         }
 
         @Override
-        protected <V extends View, VH extends BaseViewHolder<V>> ElBuilder createBuilder(ViewHolderCreator<VH> creator) {
-            return new ElBuilder<>(creator);
+        protected <V extends View, VH extends BaseViewHolder<V>> BaseViewHolderBuilder createBuilder(ViewHolderCreator<VH> creator) {
+            return new BaseViewHolderBuilder<>(creator);
         }
 
         public void addItem(String one) {

@@ -100,7 +100,7 @@
 //
 //        int typeOfBind;
 //
-//        public ItemViewBinderChainer(BaseViewAdapter adapter, int viewType, int typeOfBind) {
+//        public ItemViewBinderChainer(BaseViewHolderAdapter adapter, int viewType, int typeOfBind) {
 //            super(adapter, viewType);
 //            this.typeOfBind = typeOfBind;
 //        }
@@ -146,7 +146,7 @@
 //
 //    final protected ItemViewAdapter adapter; // parametarization
 //
-//    public ItemViewCreatorChainer(BaseViewAdapter adapter, int viewType) {
+//    public ItemViewCreatorChainer(BaseViewHolderAdapter adapter, int viewType) {
 //        super(adapter, viewType);
 //        this.adapter = (ItemViewAdapter) adapter;
 //    }

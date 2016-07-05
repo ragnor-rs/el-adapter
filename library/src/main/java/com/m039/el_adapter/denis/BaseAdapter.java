@@ -16,12 +16,12 @@
 // */
 //public abstract class BaseAdapter extends RecyclerView.Adapter<BaseAdapter.ViewHolder> implements IBaseAdapter {
 //
-//    private final Map<Integer, ElBuilder<?, ?>> builderMap = new HashMap<>();
+//    private final Map<Integer, BaseViewHolderBuilder<?, ?>> builderMap = new HashMap<>();
 //
 //    @Override
 //    public <V extends View, VH extends BaseAdapter.ViewHolder<V>>
-//    ElBuilder<V, VH>.ViewHolderBinderChainer addViewHolderCreator(int viewType, ViewHolderCreator<VH> creator) {
-//        ElBuilder<V, VH> elBuilder = new ElBuilder<>(creator);
+//    BaseViewHolderBuilder<V, VH>.ViewHolderBinderChainer addViewHolderCreator(int viewType, ViewHolderCreator<VH> creator) {
+//        BaseViewHolderBuilder<V, VH> elBuilder = new BaseViewHolderBuilder<>(creator);
 //        builderMap.put(viewType, elBuilder);
 //        return elBuilder.getViewHolderBinderChainer();
 //    }

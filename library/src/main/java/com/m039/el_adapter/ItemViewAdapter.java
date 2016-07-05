@@ -25,7 +25,7 @@
 ///**
 // * Created by m039 on 6/1/16.
 // */
-//public abstract class ItemViewAdapter<B extends ItemViewCreatorChainer> extends BaseViewAdapter<B>
+//public abstract class ItemViewAdapter<B extends ItemViewCreatorChainer> extends BaseViewHolderAdapter<B>
 //        implements IItemViewCreator<B>
 //{
 //

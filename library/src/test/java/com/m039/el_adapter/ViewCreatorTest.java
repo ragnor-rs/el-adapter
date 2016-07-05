@@ -52,7 +52,7 @@
 //        testAdapter
 //                .addViewCreator(
 //                        ElEntityOne.class,
-//                        new BaseViewAdapter.ViewCreator<TestWidgetOne>() {
+//                        new BaseViewHolderAdapter.ViewCreator<TestWidgetOne>() {
 //                            @Override
 //                            public TestWidgetOne onCreateView(ViewGroup parent) {
 //                                return new TestWidgetOne(parent.getContext());
@@ -71,7 +71,7 @@
 //        testAdapter
 //                .addViewCreator(
 //                        ElEntityTwo.class,
-//                        new BaseViewAdapter.ViewCreator<TestWidgetTwo>() {
+//                        new BaseViewHolderAdapter.ViewCreator<TestWidgetTwo>() {
 //                            @Override
 //                            public TestWidgetTwo onCreateView(ViewGroup parent) {
 //                                return new TestWidgetTwo(parent.getContext());
