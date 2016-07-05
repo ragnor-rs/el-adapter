@@ -49,7 +49,7 @@ public abstract class ItemViewAdapter<B extends ItemViewCreatorChainer> extends 
 
     public interface ItemViewHolderBinder<I, V extends View> {
 
-        void onBindViewHolder(ViewHolder<V> viewHolder, I item);
+        void onBindViewHolder(BaseViewHolder<V> viewHolder, I item);
 
     }
 
@@ -61,7 +61,7 @@ public abstract class ItemViewAdapter<B extends ItemViewCreatorChainer> extends 
 
     public interface OnItemViewHolderClickListener<I, V extends View> {
 
-        void onItemViewHolderClick(ViewHolder<V> viewHolder, I item);
+        void onItemViewHolderClick(BaseViewHolder<V> viewHolder, I item);
 
     }
 
@@ -82,7 +82,7 @@ public abstract class ItemViewAdapter<B extends ItemViewCreatorChainer> extends 
 
         @SuppressWarnings("unchecked")
         @Override
-        public void onBindViewHolder(ViewHolder<V> viewHolder, I item) {
+        public void onBindViewHolder(BaseViewHolder<V> viewHolder, I item) {
             mItemViewBinder.onBindView((V) viewHolder.itemView, item);
         }
 
@@ -91,13 +91,13 @@ public abstract class ItemViewAdapter<B extends ItemViewCreatorChainer> extends 
     private final ViewTypeHelper mViewTypeHelper = new ViewTypeHelper();
     private final Map<Integer, Map<Integer, ItemViewHolderBinder>> mItemViewHolderBindersByViewType = new HashMap<>();
 
-    public ItemViewAdapter(ViewCreatorChainerFactory<B> bindingBuilderCreator) {
-        super(bindingBuilderCreator);
+    public ItemViewAdapter() {
+        super();
     }
 
     @SuppressWarnings("unchecked")
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(BaseViewHolder holder, int position) {
         int viewType = getItemViewType(position);
         int typeOfBind = getTypeOfBind(position);
 
@@ -180,14 +180,14 @@ public abstract class ItemViewAdapter<B extends ItemViewCreatorChainer> extends 
 
     @Override
     public <I, V extends View>
-    B addViewHolderCreator(Class<I> clazz, ViewHolderCreator<ViewHolder<V>> viewHolderCreator) {
+    B addViewHolderCreator(Class<I> clazz, ViewHolderCreator<BaseViewHolder<V>> viewHolderCreator) {
         return addViewHolderCreator(clazz, DEFAULT_TYPE_OF_CLASS, viewHolderCreator);
     }
 
     @SuppressWarnings("unchecked")
     @Override
     public <I, V extends View>
-    B addViewHolderCreator(Class<I> clazz, int typeOfClass, ViewHolderCreator<ViewHolder<V>> viewHolderCreator) {
+    B addViewHolderCreator(Class<I> clazz, int typeOfClass, ViewHolderCreator<BaseViewHolder<V>> viewHolderCreator) {
         int viewType = getItemViewType(clazz, typeOfClass);
         return addViewHolderCreator(viewType, viewHolderCreator);
     }

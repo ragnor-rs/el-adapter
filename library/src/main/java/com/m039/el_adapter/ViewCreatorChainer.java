@@ -16,9 +16,6 @@
 
 package com.m039.el_adapter;
 
-import com.m039.el_adapter.BaseViewAdapter.ViewHolder;
-import com.m039.el_adapter.BaseViewAdapter.ViewHolderBinder;
-
 /**
  * Created by m039 on 6/1/16.
  */
@@ -32,7 +29,7 @@ public class ViewCreatorChainer {
         this.viewType = viewType;
     }
 
-    public <VH extends ViewHolder> ViewHolderBinderChainer<VH> addViewHolderBinder(ViewHolderBinder<VH> binder) {
+    public <VH extends BaseViewHolder> ViewHolderBinderChainer<VH> addViewHolderBinder(ViewHolderBinder<VH> binder) {
         adapter.addViewHolderBinder(viewType, binder);
         return new ViewHolderBinderChainer<>(adapter, binder, viewType);
     }

@@ -21,6 +21,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.m039.el_adapter.denis.ElBuilder;
+import com.m039.el_adapter.denis.IBaseAdapter;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -42,119 +45,47 @@ import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
  * <p>
  * Created by m039 on 3/3/16.
  */
-public abstract class BaseViewAdapter<B extends ViewCreatorChainer> extends RecyclerView.Adapter<BaseViewAdapter.ViewHolder<?>>
-        implements IViewCreator<B> {
+public abstract class BaseViewAdapter extends RecyclerView.Adapter<BaseViewHolder<?>> //todo rename to BaseViewHolderAdapter
+        implements IBaseAdapter {
 
     public static final int DEFAULT_VIEW_TYPE = 0;
 
-    public static class ViewHolder<V extends View> extends RecyclerView.ViewHolder {
+    private final Map<Integer, ElBuilder<?, ?>> builderMap = new HashMap<>();
 
-        public V itemView; // parameterize
-
-        public ViewHolder(V itemView) {
-            super(itemView);
-            this.itemView = itemView;
-        }
-
-    }
-
-    /**
-     * This interface is used to create views in {@link #onCreateViewHolder(ViewGroup, int)}
-     */
-    public interface ViewCreator<V extends View> {
-
-        /**
-         * @param parent parent of a new view
-         * @return should be a new created view
-         */
-        V onCreateView(ViewGroup parent);
-
-    }
-
-    /**
-     * This interface is used to create views in {@link #onCreateViewHolder(ViewGroup, int)}
-     * <p>
-     * todo add type check for ViewHolders
-     */
-    public interface ViewHolderCreator<VH extends ViewHolder> {
-
-        /**
-         * @param parent parent of a new view
-         * @return should be a new created viewHolder
-         */
-        VH onCreateViewHolder(ViewGroup parent);
-
-    }
-
-    public interface ViewHolderBinder<VH extends ViewHolder> {
-
-        /**
-         * To get position call viewHolder.getAdapterPosition()
-         *
-         * @param viewHolder viewHolder to bind
-         */
-        void onBindViewHolder(VH viewHolder);
-
-    }
-
-    protected static class DefaultViewHolderCreator<V extends View> implements ViewHolderCreator<ViewHolder<V>> {
-
-        @NonNull
-        private final ViewCreator<V> mViewCreator;
-
-        DefaultViewHolderCreator(@NonNull ViewCreator<V> viewCreator) {
-            mViewCreator = viewCreator;
-        }
-
-        @NonNull
-        public ViewCreator<V> getViewCreator() {
-            return mViewCreator;
-        }
-
-        @Override
-        public ViewHolder<V> onCreateViewHolder(ViewGroup parent) {
-            V view = mViewCreator.onCreateView(parent);
-
-            setLayoutParams(view);
-
-            return new ViewHolder<>(view);
-        }
-
-        protected void setLayoutParams(View view) {
-            if (view.getLayoutParams() == null) {
-                view.setLayoutParams(new ViewGroup.MarginLayoutParams(MATCH_PARENT, WRAP_CONTENT));
-            }
-        }
-
-    }
-
-    private final ViewCreatorChainerFactory<B> mViewCreatorChainerFactory;
-    private final Map<Integer, ViewHolderCreator> mViewHolderCreatorsMap = new HashMap<>();
-    private final Map<Integer, ViewHolderBinder> mViewHolderBindersMap = new HashMap<>();
-
-    protected BaseViewAdapter(ViewCreatorChainerFactory<B> mViewCreatorChainerFactory) {
-        this.mViewCreatorChainerFactory = mViewCreatorChainerFactory;
-    }
+    protected BaseViewAdapter() {}
 
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        ViewHolderCreator viewHolderCreator = mViewHolderCreatorsMap.get(viewType);
+    public <V extends View, VH extends BaseViewHolder<V>> ElBuilder<V, VH>.ViewHolderBinderChainer
+    addViewHolderCreator(int viewType, ViewHolderCreator<VH> creator) {
+
+        ElBuilder<V, VH> elBuilder = new ElBuilder<>(creator);
+        builderMap.put(viewType, elBuilder);
+
+        return elBuilder.viewHolderBinderChainer();
+    }
+
+    /**
+     * @return viewHolderCreator associated with <code>viewType</code> or null
+     */
+    protected ViewHolderCreator getViewHolderCreator(int viewType) {
+        return builderMap.get(viewType).getViewHolderCreator();
+    }
+
+    /**
+     * @return viewHolderBinder associated with <code>viewType</code> or null
+     */
+    protected ViewHolderBinder<?> getViewHolderBinder(int viewType) {
+        return builderMap.get(viewType).getViewHolderBinder();
+    }
+
+    //region RecyclerView.Adapter
+
+    @Override
+    public BaseViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        ViewHolderCreator viewHolderCreator = builderMap.get(viewType).getViewHolderCreator();
 
         if (viewHolderCreator == null) {
-            String className = null;
-
-            if (this instanceof ItemViewAdapter) {
-                className = ((ItemViewAdapter) this).findClassName(viewType);
-            }
-
-            throw new IllegalStateException("Can't create view of type " +
-                    viewType + (className != null ? " or '" + className : "'") + "." +
-                    " You should register " +
-                    ViewCreator.class.getSimpleName() +
-                    " or " +
-                    ViewHolderCreator.class.getSimpleName() +
-                    " for that type."
-            );
+            throw new IllegalStateException("Can't create view of type " + viewType + ".");
         }
 
         return viewHolderCreator.onCreateViewHolder(parent);
@@ -162,9 +93,8 @@ public abstract class BaseViewAdapter<B extends ViewCreatorChainer> extends Recy
 
     @SuppressWarnings("unchecked")
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
-        ViewHolderBinder viewHolderBinder = mViewHolderBindersMap
-                .get(getItemViewType(position));
+    public void onBindViewHolder(BaseViewHolder holder, int position) {
+        ViewHolderBinder viewHolderBinder = builderMap.get(getItemViewType(position)).getViewHolderBinder();
 
         if (viewHolderBinder != null) {
             viewHolderBinder.onBindViewHolder(holder);
@@ -173,71 +103,6 @@ public abstract class BaseViewAdapter<B extends ViewCreatorChainer> extends Recy
         }
     }
 
-    @SuppressWarnings("unchecked")
-    protected B newCommandBuilder(int viewType) {
-        return mViewCreatorChainerFactory.newViewCreatorChainer(this, viewType);
-    }
-
-    public interface ViewCreatorChainerFactory<C extends ViewCreatorChainer> {
-        C newViewCreatorChainer(BaseViewAdapter<C> adapter, int viewType);
-    }
-
-    /**
-     * @param viewType view type to bind for
-     * @param binder   viewHolder binder which used in {@link #onBindViewHolder(ViewHolder, int)}
-     */
-    <V extends View>
-    /* package */ void addViewHolderBinder(int viewType, ViewHolderBinder<ViewHolder<V>> binder) {
-        mViewHolderBindersMap.put(viewType, binder);
-    }
-
-    /**
-     * The main method to add viewCreator to this class
-     *
-     * @param viewType    viewType for which <code>viewCreator</code> will be used
-     * @param viewCreator creator of views
-     */
-    @Override
-    public <V extends View>
-    B addViewCreator(int viewType, ViewCreator<V> viewCreator) {
-        return addViewHolderCreator(viewType, new DefaultViewHolderCreator<>(viewCreator));
-    }
-
-    /**
-     * @param viewType          for which <code>viewHolderCreator</code> will be used
-     * @param viewHolderCreator creator of viewHolders
-     */
-    @Override
-    public <V extends View>
-    B addViewHolderCreator(int viewType, ViewHolderCreator<ViewHolder<V>> viewHolderCreator) {
-        mViewHolderCreatorsMap.put(viewType, viewHolderCreator);
-        return newCommandBuilder(viewType);
-    }
-
-    /**
-     * @return viewCreator associated with this <code>viewType</code> or null
-     */
-    protected ViewCreator<?> getViewCreator(int viewType) {
-        ViewHolderCreator viewHolderCreator = getViewHolderCreator(viewType);
-        if (viewHolderCreator instanceof DefaultViewHolderCreator) {
-            return ((DefaultViewHolderCreator) viewHolderCreator).getViewCreator();
-        } else {
-            throw new IllegalStateException("Can't find viewCreator");
-        }
-    }
-
-    /**
-     * @return viewHolderCreator associated with <code>viewType</code> or null
-     */
-    protected ViewHolderCreator getViewHolderCreator(int viewType) {
-        return mViewHolderCreatorsMap.get(viewType);
-    }
-
-    /**
-     * @return viewHolderBinder associated with <code>viewType</code> or null
-     */
-    protected ViewHolderBinder<?> getViewHolderBinder(int viewType) {
-        return mViewHolderBindersMap.get(viewType);
-    }
+    //endregion
 
 }

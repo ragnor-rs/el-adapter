@@ -1,9 +1,12 @@
 package com.m039.el_adapter.fragments;
 
 import android.support.v7.widget.RecyclerView;
+import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.m039.el_adapter.ListItemAdapter;
+import com.m039.el_adapter.denis.BaseAdapter;
+import com.m039.el_adapter.denis.BaseAdapter.ViewHolder;
 
 /**
  * Created by m039 on 6/1/16.
@@ -23,6 +26,26 @@ public class SimpleDemoFragment extends DemoFragment {
         }
 
         recycler.setAdapter(listAdapter);
+
+        BaseAdapter baseAdapter = new BaseAdapter() {
+            @Override
+            public int getItemCount() {
+                return 0;
+            }
+        };
+
+        baseAdapter.addViewHolderCreator(
+                1,
+                parent -> new ViewHolder<>(new TextView(parent.getContext()))
+        )
+        .addViewBinder(
+                new BaseAdapter.ViewHolderBinder<ViewHolder<TextView>>() {
+                    @Override
+                    public void onBindViewHolder(ViewHolder<TextView> viewHolder) {
+
+                    }
+                }
+        );
     }
 
 }

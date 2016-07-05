@@ -19,7 +19,6 @@ package com.m039.el_adapter;
 import android.support.annotation.IdRes;
 import android.view.View;
 
-import com.m039.el_adapter.BaseViewAdapter.ViewHolder;
 import com.m039.el_adapter.ItemViewAdapter.DefaultItemViewHolderBinder;
 import com.m039.el_adapter.ItemViewAdapter.ItemViewBinder;
 import com.m039.el_adapter.ItemViewAdapter.ItemViewHolderBinder;
@@ -59,7 +58,7 @@ public class ItemViewCreatorChainer<I, V extends View>
 
             @SuppressWarnings("unchecked")
             @Override
-            public void onBindViewHolder(final ViewHolder<V> viewHolder, final I item) {
+            public void onBindViewHolder(final BaseViewHolder<V> viewHolder, final I item) {
                 if (parentBinder != null) {
                     parentBinder.onBindViewHolder(viewHolder, item);
                 }
@@ -114,7 +113,7 @@ public class ItemViewCreatorChainer<I, V extends View>
             return addOnItemViewHolderClickListener(id, new OnItemViewHolderClickListener<I, V>() {
 
                 @Override
-                public void onItemViewHolderClick(ViewHolder<V> viewHolder, I item) {
+                public void onItemViewHolderClick(BaseViewHolder<V> viewHolder, I item) {
                     listener.onItemViewClick(viewHolder.itemView, item);
                 }
 

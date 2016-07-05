@@ -9,18 +9,18 @@ import java.util.Map;
 /**
  * Created by defuera on 17/06/2016.
  */
-public class ViewHolderBinderChainer<VH extends BaseViewAdapter.ViewHolder> {
+public class ViewHolderBinderChainer<VH extends BaseViewHolder> {
 
     private static final int NO_ID = -1;
     private final Map<Integer, Listener<VH>> listenersById = new HashMap<>();
     private final BaseViewAdapter adapter;
-    private final BaseViewAdapter.ViewHolderBinder<VH> newBinder;
+    private final ViewHolderBinder<VH> newBinder;
     private final int viewType;
 
-    public ViewHolderBinderChainer(final BaseViewAdapter adapter, final BaseViewAdapter.ViewHolderBinder<VH> parentBinder, final int viewType) {
+    public ViewHolderBinderChainer(final BaseViewAdapter adapter, final ViewHolderBinder<VH> parentBinder, final int viewType) {
         this.adapter = adapter;
         this.viewType = viewType;
-        newBinder = new BaseViewAdapter.ViewHolderBinder<VH>() {
+        newBinder = new ViewHolderBinder<VH>() {
 
             @Override
             public void onBindViewHolder(final VH viewHolder) {
@@ -80,7 +80,7 @@ public class ViewHolderBinderChainer<VH extends BaseViewAdapter.ViewHolder> {
         }
     }
 
-    public interface Listener<VH extends BaseViewAdapter.ViewHolder> {
+    public interface Listener<VH extends BaseViewHolder> {
         void onClick(VH viewHolder);
     }
 

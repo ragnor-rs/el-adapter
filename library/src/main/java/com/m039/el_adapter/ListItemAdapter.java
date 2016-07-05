@@ -19,6 +19,8 @@ package com.m039.el_adapter;
 import android.support.annotation.NonNull;
 import android.view.View;
 
+import com.m039.el_adapter.denis.ElBuilder;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -33,12 +35,7 @@ public class ListItemAdapter extends ItemViewAdapter<ItemViewCreatorChainer> {
     private final List<Object> mItems = new ArrayList<>();
 
     public ListItemAdapter() {
-        super(new ViewCreatorChainerFactory<ItemViewCreatorChainer>() {
-            @Override
-            public ItemViewCreatorChainer newViewCreatorChainer(BaseViewAdapter<ItemViewCreatorChainer> adapter, int viewType) {
-                return new ItemViewCreatorChainer(adapter, viewType);
-            }
-        });
+        super();
     }
 
     @Override
@@ -122,28 +119,28 @@ public class ListItemAdapter extends ItemViewAdapter<ItemViewCreatorChainer> {
     @Override
     @SuppressWarnings("unchecked")
     public <V extends View>
-    ItemViewCreatorChainer<Void, V> addViewCreator(int viewType, ViewCreator<V> viewCreator) {
+    ElBuilder<V, BaseViewHolder<V>>.ViewHolderBinderChainer addViewCreator(int viewType, ViewCreator<V> viewCreator) {
         return (ItemViewCreatorChainer<Void, V>) super.addViewCreator(viewType, viewCreator);
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public <I, V extends View>
-    ItemViewCreatorChainer<I, V> addViewHolderCreator(Class<I> clazz, ViewHolderCreator<ViewHolder<V>> viewHolderCreator) {
+    ItemViewCreatorChainer<I, V> addViewHolderCreator(Class<I> clazz, ViewHolderCreator<BaseViewHolder<V>> viewHolderCreator) {
         return (ItemViewCreatorChainer<I, V>) super.addViewHolderCreator(clazz, viewHolderCreator);
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public <I, V extends View>
-    ItemViewCreatorChainer<I, V> addViewHolderCreator(Class<I> clazz, int typeOfClass, ViewHolderCreator<ViewHolder<V>> viewHolderCreator) {
+    ItemViewCreatorChainer<I, V> addViewHolderCreator(Class<I> clazz, int typeOfClass, ViewHolderCreator<BaseViewHolder<V>> viewHolderCreator) {
         return (ItemViewCreatorChainer<I, V>) super.addViewHolderCreator(clazz, typeOfClass, viewHolderCreator);
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public <V extends View>
-    ItemViewCreatorChainer<Void, V> addViewHolderCreator(int viewType, ViewHolderCreator<ViewHolder<V>> viewHolderCreator) {
+    ItemViewCreatorChainer<Void, V> addViewHolderCreator(int viewType, ViewHolderCreator<BaseViewHolder<V>> viewHolderCreator) {
         return (ItemViewCreatorChainer<Void, V>) super.addViewHolderCreator(viewType, viewHolderCreator);
     }
 }

@@ -8,7 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.m039.el_adapter.BaseViewAdapter.ViewHolder;
 import com.m039.el_adapter.view.SimpleTestActivity;
 
 import junit.framework.Assert;
@@ -54,11 +53,11 @@ public class ViewHolderCreatorTest {
         testAdapter
                 .addViewHolderCreator(
                         ElEntityOne.class,
-                        new BaseViewAdapter.ViewHolderCreator<ViewHolder<TestWidgetOne>>() {
+                        new ViewHolderCreator<BaseViewHolder<TestWidgetOne>>() {
 
                             @Override
-                            public ViewHolder<TestWidgetOne> onCreateViewHolder(ViewGroup parent) {
-                                return new ViewHolder<>(new TestWidgetOne(parent.getContext()));
+                            public BaseViewHolder<TestWidgetOne> onCreateViewHolder(ViewGroup parent) {
+                                return new BaseViewHolder<>(new TestWidgetOne(parent.getContext()));
                             }
                         }
 
@@ -66,7 +65,7 @@ public class ViewHolderCreatorTest {
                 .addViewHolderBinder(
                         new ItemViewAdapter.ItemViewHolderBinder<ElEntityOne, TestWidgetOne>() {
                             @Override
-                            public void onBindViewHolder(ViewHolder<TestWidgetOne> viewHolder, ElEntityOne item) {
+                            public void onBindViewHolder(BaseViewHolder<TestWidgetOne> viewHolder, ElEntityOne item) {
                                 viewHolder.itemView.setText(item.id + TEST_ONE_POSTFIX);
                             }
                         }
@@ -75,11 +74,11 @@ public class ViewHolderCreatorTest {
         testAdapter
                 .addViewHolderCreator(
                         ElEntityTwo.class,
-                        new BaseViewAdapter.ViewHolderCreator<ViewHolder<TestWidgetTwo>>() {
+                        new ViewHolderCreator<BaseViewHolder<TestWidgetTwo>>() {
 
                             @Override
-                            public ViewHolder<TestWidgetTwo> onCreateViewHolder(ViewGroup parent) {
-                                return new ViewHolder<>(new TestWidgetTwo(parent.getContext()));
+                            public BaseViewHolder<TestWidgetTwo> onCreateViewHolder(ViewGroup parent) {
+                                return new BaseViewHolder<>(new TestWidgetTwo(parent.getContext()));
                             }
                         }
 
@@ -87,7 +86,7 @@ public class ViewHolderCreatorTest {
                 .addViewHolderBinder(
                         new ItemViewAdapter.ItemViewHolderBinder<ElEntityTwo, TestWidgetTwo>() {
                             @Override
-                            public void onBindViewHolder(ViewHolder<TestWidgetTwo> viewHolder, ElEntityTwo item) {
+                            public void onBindViewHolder(BaseViewHolder<TestWidgetTwo> viewHolder, ElEntityTwo item) {
                                 viewHolder.itemView.setText(item.id + TEST_TWO_POSTFIX);
                             }
                         }
