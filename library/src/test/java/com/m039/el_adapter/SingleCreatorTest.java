@@ -47,39 +47,43 @@ public class SingleCreatorTest {
         recycler.setAdapter(testAdapter);
 
         testAdapter
-                .addViewCreator(
+                .addViewHolderCreator(
                         ElEntityOne.class,
-                        new BaseViewAdapter.ViewCreator<TextView>() {
+                        new BaseViewAdapter.ViewHolderCreator<BaseViewAdapter.ViewHolder<TextView>>() {
+
                             @Override
-                            public TextView onCreateView(ViewGroup parent) {
-                                return new TextView(parent.getContext());
+                            public BaseViewAdapter.ViewHolder<TextView> onCreateViewHolder(ViewGroup parent) {
+                                return new BaseViewAdapter.ViewHolder<>(new TextView(parent.getContext()));
                             }
                         }
+
                 )
-                .addViewBinder(
-                        new ItemViewAdapter.ItemViewBinder<ElEntityOne, TextView>() {
+                .addViewHolderBinder(
+                        new ItemViewAdapter.ItemViewHolderBinder<ElEntityOne, TextView>() {
                             @Override
-                            public void onBindView(TextView view, ElEntityOne item) {
-                                view.setText(item.id);
+                            public void onBindViewHolder(BaseViewAdapter.ViewHolder<TextView> viewHolder, ElEntityOne item) {
+                                viewHolder.itemView.setText(item.id);
                             }
                         }
                 );
 
         testAdapter
-                .addViewCreator(
+                .addViewHolderCreator(
                         ElEntityTwo.class,
-                        new BaseViewAdapter.ViewCreator<TextView>() {
+                        new BaseViewAdapter.ViewHolderCreator<BaseViewAdapter.ViewHolder<TextView>>() {
+
                             @Override
-                            public TextView onCreateView(ViewGroup parent) {
-                                return new TextView(parent.getContext());
+                            public BaseViewAdapter.ViewHolder<TextView> onCreateViewHolder(ViewGroup parent) {
+                                return new BaseViewAdapter.ViewHolder<>(new TextView(parent.getContext()));
                             }
                         }
+
                 )
-                .addViewBinder(
-                        new ItemViewAdapter.ItemViewBinder<ElEntityTwo, TextView>() {
+                .addViewHolderBinder(
+                        new ItemViewAdapter.ItemViewHolderBinder<ElEntityTwo, TextView>() {
                             @Override
-                            public void onBindView(TextView view, ElEntityTwo item) {
-                                view.setText(item.id);
+                            public void onBindViewHolder(BaseViewAdapter.ViewHolder<TextView> viewHolder, ElEntityTwo item) {
+                                viewHolder.itemView.setText(item.id);
                             }
                         }
                 );
