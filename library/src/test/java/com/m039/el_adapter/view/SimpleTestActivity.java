@@ -26,7 +26,6 @@ public class SimpleTestActivity extends Activity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setId(RECYCLER_VIEW_ID);
 
-
         setContentView(recyclerView);
     }
 }

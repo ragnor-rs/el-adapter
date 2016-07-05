@@ -1,11 +1,14 @@
 package com.m039.el_adapter;
 
+import android.annotation.SuppressLint;
+import android.content.Context;
 import android.os.Build;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.m039.el_adapter.BaseViewAdapter.ViewHolder;
 import com.m039.el_adapter.view.SimpleTestActivity;
 
 import junit.framework.Assert;
@@ -25,19 +28,21 @@ import static org.junit.Assert.assertNotNull;
  */
 @RunWith(RobolectricGradleTestRunner.class)
 @Config(constants = BuildConfig.class, sdk = Build.VERSION_CODES.LOLLIPOP)
-public class SingleCreatorTest {
+public class ViewHolderCreatorTest {
 
     public static final ElEntityOne[] ITEMS_ONE_ARRAY_OF_5 = new ElEntityOne[]{new ElEntityOne("one"), new ElEntityOne("two"), new ElEntityOne("three"), new ElEntityOne("four"), new ElEntityOne("five")};
     public static final ElEntityTwo[] ITEMS_TWO_ARRAY_OF_3 = new ElEntityTwo[]{new ElEntityTwo("11"), new ElEntityTwo("12"), new ElEntityTwo("13")};
+    private static final String TEST_ONE_POSTFIX = "Uno";
+    private static final String TEST_TWO_POSTFIX = "Dos";
 
-    private SimpleTestActivity activity;
     private RecyclerView recycler;
     private ListItemAdapter testAdapter;
 
+    @SuppressLint("SetTextI18n")
     @SuppressWarnings("ResourceType")
     @Before
     public void setup() throws Exception {
-        activity = Robolectric.buildActivity(SimpleTestActivity.class)
+        SimpleTestActivity activity = Robolectric.buildActivity(SimpleTestActivity.class)
                 .create()
                 .resume()
                 .get();
@@ -49,20 +54,20 @@ public class SingleCreatorTest {
         testAdapter
                 .addViewHolderCreator(
                         ElEntityOne.class,
-                        new BaseViewAdapter.ViewHolderCreator<BaseViewAdapter.ViewHolder<TextView>>() {
+                        new BaseViewAdapter.ViewHolderCreator<ViewHolder<TestWidgetOne>>() {
 
                             @Override
-                            public BaseViewAdapter.ViewHolder<TextView> onCreateViewHolder(ViewGroup parent) {
-                                return new BaseViewAdapter.ViewHolder<>(new TextView(parent.getContext()));
+                            public ViewHolder<TestWidgetOne> onCreateViewHolder(ViewGroup parent) {
+                                return new ViewHolder<>(new TestWidgetOne(parent.getContext()));
                             }
                         }
 
                 )
                 .addViewHolderBinder(
-                        new ItemViewAdapter.ItemViewHolderBinder<ElEntityOne, TextView>() {
+                        new ItemViewAdapter.ItemViewHolderBinder<ElEntityOne, TestWidgetOne>() {
                             @Override
-                            public void onBindViewHolder(BaseViewAdapter.ViewHolder<TextView> viewHolder, ElEntityOne item) {
-                                viewHolder.itemView.setText(item.id);
+                            public void onBindViewHolder(ViewHolder<TestWidgetOne> viewHolder, ElEntityOne item) {
+                                viewHolder.itemView.setText(item.id + TEST_ONE_POSTFIX);
                             }
                         }
                 );
@@ -70,20 +75,20 @@ public class SingleCreatorTest {
         testAdapter
                 .addViewHolderCreator(
                         ElEntityTwo.class,
-                        new BaseViewAdapter.ViewHolderCreator<BaseViewAdapter.ViewHolder<TextView>>() {
+                        new BaseViewAdapter.ViewHolderCreator<ViewHolder<TestWidgetTwo>>() {
 
                             @Override
-                            public BaseViewAdapter.ViewHolder<TextView> onCreateViewHolder(ViewGroup parent) {
-                                return new BaseViewAdapter.ViewHolder<>(new TextView(parent.getContext()));
+                            public ViewHolder<TestWidgetTwo> onCreateViewHolder(ViewGroup parent) {
+                                return new ViewHolder<>(new TestWidgetTwo(parent.getContext()));
                             }
                         }
 
                 )
                 .addViewHolderBinder(
-                        new ItemViewAdapter.ItemViewHolderBinder<ElEntityTwo, TextView>() {
+                        new ItemViewAdapter.ItemViewHolderBinder<ElEntityTwo, TestWidgetTwo>() {
                             @Override
-                            public void onBindViewHolder(BaseViewAdapter.ViewHolder<TextView> viewHolder, ElEntityTwo item) {
-                                viewHolder.itemView.setText(item.id);
+                            public void onBindViewHolder(ViewHolder<TestWidgetTwo> viewHolder, ElEntityTwo item) {
+                                viewHolder.itemView.setText(item.id + TEST_TWO_POSTFIX);
                             }
                         }
                 );
@@ -101,7 +106,7 @@ public class SingleCreatorTest {
         onItemsChanged();
 
         Assert.assertEquals(1, recycler.getChildCount());
-        Assert.assertEquals(itemOne1.id, ((TextView) recycler.getChildAt(0)).getText().toString());
+        Assert.assertEquals(itemOne1.id + TEST_ONE_POSTFIX, ((TextView) recycler.getChildAt(0)).getText().toString());
 
         //add second item
         ElEntityOne itemOne2 = new ElEntityOne("fifteen");
@@ -110,7 +115,8 @@ public class SingleCreatorTest {
         onItemsChanged();
 
         Assert.assertEquals(2, recycler.getChildCount());
-        Assert.assertEquals(itemOne2.id, ((TextView) recycler.getChildAt(1)).getText().toString());
+        Assert.assertEquals(itemOne1.id + TEST_ONE_POSTFIX, ((TextView) recycler.getChildAt(0)).getText().toString());
+        Assert.assertEquals(itemOne2.id + TEST_ONE_POSTFIX, ((TextView) recycler.getChildAt(1)).getText().toString());
 
         //add array items
         testAdapter.addItems(ITEMS_ONE_ARRAY_OF_5);
@@ -119,7 +125,7 @@ public class SingleCreatorTest {
         Assert.assertEquals(2 + ITEMS_ONE_ARRAY_OF_5.length, recycler.getChildCount());
         int testArrayItemIndex = 1;
         Assert.assertEquals(
-                ITEMS_ONE_ARRAY_OF_5[testArrayItemIndex].id,
+                ITEMS_ONE_ARRAY_OF_5[testArrayItemIndex].id + TEST_ONE_POSTFIX,
                 ((TextView) recycler.getChildAt(2 + testArrayItemIndex)).getText().toString()
         );
     }
@@ -135,7 +141,7 @@ public class SingleCreatorTest {
         onItemsChanged();
 
         Assert.assertEquals(1, recycler.getChildCount());
-        Assert.assertEquals(itemOne.id, ((TextView) recycler.getChildAt(0)).getText().toString());
+        Assert.assertEquals(itemOne.id + TEST_ONE_POSTFIX, ((TextView) recycler.getChildAt(0)).getText().toString());
 
         //add second item
         ElEntityTwo itemOne2 = new ElEntityTwo("fifteen");
@@ -144,7 +150,8 @@ public class SingleCreatorTest {
         onItemsChanged();
 
         Assert.assertEquals(2, recycler.getChildCount());
-        Assert.assertEquals(itemOne2.id, ((TextView) recycler.getChildAt(1)).getText().toString());
+        Assert.assertEquals(itemOne.id + TEST_ONE_POSTFIX, ((TextView) recycler.getChildAt(0)).getText().toString());
+        Assert.assertEquals(itemOne2.id + TEST_TWO_POSTFIX, ((TextView) recycler.getChildAt(1)).getText().toString());
 
     }
 
@@ -164,8 +171,8 @@ public class SingleCreatorTest {
         onItemsChanged();
 
         Assert.assertEquals(ITEMS_ONE_ARRAY_OF_5.length - itemsToRemove, recycler.getChildCount());
-        Assert.assertEquals(ITEMS_ONE_ARRAY_OF_5[0].id, ((TextView) recycler.getChildAt(0)).getText().toString());
-        Assert.assertEquals(ITEMS_ONE_ARRAY_OF_5[3].id, ((TextView) recycler.getChildAt(1)).getText().toString());
+        Assert.assertEquals(ITEMS_ONE_ARRAY_OF_5[0].id + TEST_ONE_POSTFIX, ((TextView) recycler.getChildAt(0)).getText().toString());
+        Assert.assertEquals(ITEMS_ONE_ARRAY_OF_5[3].id + TEST_ONE_POSTFIX, ((TextView) recycler.getChildAt(1)).getText().toString());
 
 
         //test remove one
@@ -173,8 +180,8 @@ public class SingleCreatorTest {
         onItemsChanged();
 
         Assert.assertEquals(ITEMS_ONE_ARRAY_OF_5.length - (itemsToRemove + 1), recycler.getChildCount());
-        Assert.assertEquals(ITEMS_ONE_ARRAY_OF_5[0].id, ((TextView) recycler.getChildAt(0)).getText().toString());
-        Assert.assertEquals(ITEMS_ONE_ARRAY_OF_5[4].id, ((TextView) recycler.getChildAt(1)).getText().toString());
+        Assert.assertEquals(ITEMS_ONE_ARRAY_OF_5[0].id + TEST_ONE_POSTFIX, ((TextView) recycler.getChildAt(0)).getText().toString());
+        Assert.assertEquals(ITEMS_ONE_ARRAY_OF_5[4].id + TEST_ONE_POSTFIX, ((TextView) recycler.getChildAt(1)).getText().toString());
     }
 
     @Test
@@ -195,8 +202,8 @@ public class SingleCreatorTest {
         onItemsChanged();
 
         Assert.assertEquals(sumLength - itemsToRemove, recycler.getChildCount());
-        Assert.assertEquals(ITEMS_ONE_ARRAY_OF_5[0].id, ((TextView) recycler.getChildAt(0)).getText().toString());
-        Assert.assertEquals(ITEMS_TWO_ARRAY_OF_3[2].id, ((TextView) recycler.getChildAt(1)).getText().toString());
+        Assert.assertEquals(ITEMS_ONE_ARRAY_OF_5[0].id + TEST_ONE_POSTFIX, ((TextView) recycler.getChildAt(0)).getText().toString());
+        Assert.assertEquals(ITEMS_TWO_ARRAY_OF_3[2].id + TEST_TWO_POSTFIX, ((TextView) recycler.getChildAt(1)).getText().toString());
     }
 
     private void onItemsChanged() {
@@ -224,4 +231,18 @@ public class SingleCreatorTest {
         }
     }
 
+    public static final class TestWidgetOne extends TextView {
+
+        public TestWidgetOne(Context context) {
+            super(context);
+        }
+    }
+
+    public static final class TestWidgetTwo extends TextView {
+
+        public TestWidgetTwo(Context context) {
+            super(context);
+        }
+
+    }
 }
