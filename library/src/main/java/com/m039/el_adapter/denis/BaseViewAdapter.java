@@ -6,7 +6,6 @@ import android.view.ViewGroup;
 
 import com.m039.el_adapter.BaseViewHolderAdapter;
 import com.m039.el_adapter.BaseViewHolder;
-import com.m039.el_adapter.ViewHolderCreator;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
@@ -41,6 +40,9 @@ public abstract class BaseViewAdapter<B extends BaseViewAdapter.BaseViewBuilder>
 
     }
 
+
+    //region RecyclerView#Adapter
+
     @Override
     public void onBindViewHolder(BaseViewHolder holder, int position) {
 
@@ -54,13 +56,16 @@ public abstract class BaseViewAdapter<B extends BaseViewAdapter.BaseViewBuilder>
 
     }
 
+    //endregion
+
+
     public <V extends View> BaseViewBuilder.ViewBinderChainer<V> addViewCreator(int viewType, ViewCreator<V> viewCreator) {
         addViewHolderCreator(viewType, new DefaultViewHolderCreator<>(viewCreator));
-        return (BaseViewBuilder.ViewBinderChainer<V>) builderMap.get(viewType).getViewBinderChainer();
+        return (BaseViewBuilder.ViewBinderChainer<V>) getBuilder(viewType).getViewBinderChainer();
     }
 
     protected <V extends View> ViewBinder<V> getViewBinder(int viewType) {
-        return (ViewBinder<V>) builderMap.get(viewType).getViewBinder();
+        return (ViewBinder<V>) getBuilder(viewType).getViewBinder();
     }
 
     protected static class DefaultViewHolderCreator<V extends View> implements ViewHolderCreator<BaseViewHolder<V>> {
@@ -94,6 +99,7 @@ public abstract class BaseViewAdapter<B extends BaseViewAdapter.BaseViewBuilder>
 
     }
 
+    //todo replace VH with ?
     public static class BaseViewBuilder<V extends View, VH extends BaseViewHolder<V>> extends BaseViewHolderBuilder<V, VH> {
 
         private ViewBinder<V> viewBinder;

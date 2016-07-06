@@ -8,7 +8,6 @@ import android.widget.TextView;
 
 import com.m039.el_adapter.BaseViewHolderAdapter;
 import com.m039.el_adapter.BaseViewHolder;
-import com.m039.el_adapter.ViewHolderCreator;
 import com.m039.el_adapter.denis.BaseViewHolderBuilder;
 
 import java.util.ArrayList;

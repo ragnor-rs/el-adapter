@@ -4,11 +4,8 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
-
-import com.m039.el_adapter.denis.BaseViewAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +27,7 @@ public class MainActivity extends AppCompatActivity {
         MyAdapter adapter = new MyAdapter();
 
         adapter.addItem("one");
+        adapter.addItem("three");
         adapter.addItem("two");
 
         RecyclerView recycler = new RecyclerView(this);
@@ -39,32 +37,38 @@ public class MainActivity extends AppCompatActivity {
         setContentView(recycler);
     }
 
-    public static class MyAdapter extends BaseViewAdapter<BaseViewAdapter.BaseViewBuilder> {
 
-        public static final int VIEW_TYPE_ONE = 0;
+    public static class MyAdapter extends ItemViewAdapter {
 
         List<String> items = new ArrayList<>();
 
         public MyAdapter() {
 
-            addViewCreator(
-                    VIEW_TYPE_ONE,
-                    parent -> {
+//            addViewHolderCreator(
+//                    Integer.class,
+//                    parent1 -> new BaseViewHolder<>(new TextView(parent1.getContext()))
+//            ).addViewHolderBinder(
+//                    (viewHolder, item) -> viewHolder.itemView.setText(item)
+//            );
 
-                        Log.i("DensTest", "onCreateView");
-                        return new TextView(parent.getContext());
-                    }
+            addViewCreator(
+                    String.class,
+                    parent -> new TextView(parent.getContext())
             )
-                    .addViewBinder(view -> {
-                        view.setText("ONE");
-                        Log.i("DensTest", "onBindView");
-                    });
+                    .addItemViewBinder(
+                            TextView::setText
+                    );
 
         }
 
         @Override
-        protected <V extends View, VH extends BaseViewHolder<V>> BaseViewBuilder createBuilder(ViewHolderCreator<VH> creator) {
-            return new BaseViewBuilder<>(creator);
+        protected Object getItemAt(int position) {
+            return items.get(position);
+        }
+
+        @Override
+        protected <V extends View, VH extends BaseViewHolder<V>> ItemViewBuilder createBuilder(ViewHolderCreator<VH> creator) {
+            return new ItemViewBuilder<>(creator);
         }
 
         @Override
@@ -77,6 +81,46 @@ public class MainActivity extends AppCompatActivity {
             notifyDataSetChanged();
         }
     }
+
+
+//    public static class MyAdapter extends BaseViewAdapter<BaseViewAdapter.BaseViewBuilder> {
+//
+//        public static final int VIEW_TYPE_ONE = 0;
+//
+//        List<String> items = new ArrayList<>();
+//
+//        public MyAdapter() {
+//
+//            addViewCreator(
+//                    VIEW_TYPE_ONE,
+//                    parent -> {
+//
+//                        Log.i("DensTest", "onCreateView");
+//                        return new TextView(parent.getContext());
+//                    }
+//            )
+//                    .addViewBinder(view -> {
+//                        view.setText("ONE");
+//                        Log.i("DensTest", "onBindView");
+//                    });
+//
+//        }
+//
+//        @Override
+//        protected <V extends View, VH extends BaseViewHolder<V>> BaseViewBuilder createBuilder(ViewHolderCreator<VH> creator) {
+//            return new BaseViewBuilder<>(creator);
+//        }
+//
+//        @Override
+//        public int getItemCount() {
+//            return items.size();
+//        }
+//
+//        public void addItem(String item) {
+//            items.add(item);
+//            notifyDataSetChanged();
+//        }
+//    }
 
 //    public static class MyAdapter extends BaseViewHolderAdapter<BaseViewHolderBuilder> {
 //

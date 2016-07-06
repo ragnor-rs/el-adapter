@@ -8,8 +8,6 @@ import android.widget.TextView;
 
 import com.m039.el_adapter.BaseViewHolderAdapter;
 import com.m039.el_adapter.BaseViewHolder;
-import com.m039.el_adapter.ViewHolderBinder;
-import com.m039.el_adapter.ViewHolderCreator;
 import com.m039.el_adapter.denis.BaseViewHolderBuilder;
 
 import java.util.ArrayList;
@@ -63,13 +61,13 @@ public class DemosFragment extends DemoFragment {
 
         baseAdapter.addViewHolderCreator(
                 0,
-                new ViewHolderCreator<BaseViewHolder<TextView>>() {
+                new BaseViewHolderAdapter.ViewHolderCreator<BaseViewHolder<TextView>>() {
                     @Override
                     public BaseViewHolder<TextView> onCreateViewHolder(ViewGroup parent) {
                         return new BaseViewHolder<TextView>(new TextView(parent.getContext()));
                     }
                 }
-        ).addViewHolderBinder(new ViewHolderBinder<BaseViewHolder<TextView>>() {
+        ).addViewHolderBinder(new BaseViewHolderAdapter.ViewHolderBinder<BaseViewHolder<TextView>>() {
             @Override
             public void onBindViewHolder(BaseViewHolder<TextView> viewHolder) {
 

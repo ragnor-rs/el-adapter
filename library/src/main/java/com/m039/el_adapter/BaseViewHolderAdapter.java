@@ -44,10 +44,39 @@ import java.util.Map;
 public abstract class BaseViewHolderAdapter<B extends BaseViewHolderBuilder> extends RecyclerView.Adapter<BaseViewHolder<?>>
         implements IBaseAdapter {
 
-    protected final Map<Integer, B> builderMap = new HashMap<>();
+    public static final int DEFAULT_VIEW_TYPE = 0;
 
-    protected BaseViewHolderAdapter() {
+    /**
+     * This interface is used to create views in {@link #onCreateViewHolder(ViewGroup)}
+     * <p>
+     * todo add type check for ViewHolders
+     */
+    public interface ViewHolderCreator<VH extends BaseViewHolder> {
+
+        /**
+         * @param parent parent of a new view
+         * @return should be a new created viewHolder
+         */
+        VH onCreateViewHolder(ViewGroup parent);
+
     }
+
+    /**
+     * Created by defuera on 05/07/2016.
+     */
+    public interface ViewHolderBinder<VH extends BaseViewHolder> {
+
+        /**
+         * To get position call viewHolder.getAdapterPosition()
+         *
+         * @param viewHolder viewHolder to bind
+         */
+        void onBindViewHolder(VH viewHolder);
+
+    }
+
+
+    private final Map<Integer, B> builderMap = new HashMap<>();
 
     protected abstract <V extends View, VH extends BaseViewHolder<V>> B createBuilder(ViewHolderCreator<VH> creator);
 
@@ -65,14 +94,14 @@ public abstract class BaseViewHolderAdapter<B extends BaseViewHolderBuilder> ext
      * @return viewHolderCreator associated with <code>viewType</code> or null
      */
     protected <V extends View, VH extends BaseViewHolder<V>> ViewHolderCreator<VH> getViewHolderCreator(int viewType) {
-        return builderMap.get(viewType).getViewHolderCreator();
+        return getBuilder(viewType).getViewHolderCreator();
     }
 
     /**
      * @return viewHolderBinder associated with <code>viewType</code> or null
      */
     protected <V extends View, VH extends BaseViewHolder<V>> ViewHolderBinder<VH> getViewHolderBinder(int viewType) {
-        return builderMap.get(viewType).getViewHolderBinder();
+        return ((BaseViewHolderBuilder<V, VH>) getBuilder(viewType)).getViewHolderBinder();
     }
 
     //region RecyclerView.Adapter
@@ -102,4 +131,7 @@ public abstract class BaseViewHolderAdapter<B extends BaseViewHolderBuilder> ext
 
     //endregion
 
+    protected B getBuilder(int viewType) {
+        return builderMap.get(viewType);
+    }
 }
