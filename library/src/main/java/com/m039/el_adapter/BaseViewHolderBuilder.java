@@ -1,9 +1,7 @@
-package com.m039.el_adapter.denis;
+package com.m039.el_adapter;
 
 import android.view.View;
 
-import com.m039.el_adapter.BaseViewHolder;
-import com.m039.el_adapter.BaseViewHolderAdapter;
 import com.m039.el_adapter.BaseViewHolderAdapter.ViewHolderBinder;
 import com.m039.el_adapter.BaseViewHolderAdapter.ViewHolderCreator;
 

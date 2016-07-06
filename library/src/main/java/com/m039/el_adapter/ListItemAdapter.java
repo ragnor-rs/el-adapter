@@ -19,7 +19,7 @@
 //import android.support.annotation.NonNull;
 //import android.view.View;
 //
-//import com.m039.el_adapter.denis.BaseViewHolderBuilder;
+//import com.m039.el_adapter.BaseViewHolderBuilder;
 //
 //import java.util.ArrayList;
 //import java.util.Arrays;

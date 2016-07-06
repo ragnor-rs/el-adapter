@@ -1,11 +1,8 @@
-package com.m039.el_adapter.denis;
+package com.m039.el_adapter;
 
 import android.support.annotation.NonNull;
 import android.view.View;
 import android.view.ViewGroup;
-
-import com.m039.el_adapter.BaseViewHolderAdapter;
-import com.m039.el_adapter.BaseViewHolder;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;

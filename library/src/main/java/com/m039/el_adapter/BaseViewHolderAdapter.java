@@ -20,9 +20,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.m039.el_adapter.denis.BaseViewHolderBuilder;
-import com.m039.el_adapter.denis.IBaseAdapter;
-
 import java.util.HashMap;
 import java.util.Map;
 

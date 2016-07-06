@@ -26,9 +26,9 @@ public class MainActivity extends AppCompatActivity {
         //todo move to BaseViewHolderAdapterTestFragment
         MyAdapter adapter = new MyAdapter();
 
-        adapter.addItem("one");
-        adapter.addItem("three");
-        adapter.addItem("two");
+        adapter.addItem("Kirill");
+        adapter.addItem("t222hree");
+        adapter.addItem("444two");
 
         RecyclerView recycler = new RecyclerView(this);
         recycler.setLayoutManager(new LinearLayoutManager(this));
@@ -45,18 +45,18 @@ public class MainActivity extends AppCompatActivity {
         public MyAdapter() {
 
 //            addViewHolderCreator(
-//                    Integer.class,
+//                    String.class,
 //                    parent1 -> new BaseViewHolder<>(new TextView(parent1.getContext()))
-//            ).addViewHolderBinder(
+//            ).addItemViewHolderBinder(
 //                    (viewHolder, item) -> viewHolder.itemView.setText(item)
 //            );
-
+//
             addViewCreator(
                     String.class,
                     parent -> new TextView(parent.getContext())
             )
-                    .addItemViewBinder(
-                            TextView::setText
+                    .addItemViewHolderBinder(
+                            (viewHolder, item) -> viewHolder.itemView.setText(item)
                     );
 
         }
