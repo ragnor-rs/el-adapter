@@ -28,7 +28,9 @@ public class MainActivity extends AppCompatActivity {
 
         adapter.addItem("Kirill");
         adapter.addItem("t222hree");
-        adapter.addItem("444two");
+        adapter.addItem("Artem Yowkin");
+
+        adapter.notifyDataSetChanged();
 
         RecyclerView recycler = new RecyclerView(this);
         recycler.setLayoutManager(new LinearLayoutManager(this));
@@ -37,10 +39,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(recycler);
     }
 
-
-    public static class MyAdapter extends ItemViewAdapter {
-
-        List<String> items = new ArrayList<>();
+    public static class MyAdapter extends ListItemAdapter {
 
         public MyAdapter() {
 
@@ -55,32 +54,58 @@ public class MainActivity extends AppCompatActivity {
                     String.class,
                     parent -> new TextView(parent.getContext())
             )
-                    .addItemViewHolderBinder(
+                    .addViewHolderBinder(
                             (viewHolder, item) -> viewHolder.itemView.setText(item)
                     );
 
         }
-
-        @Override
-        protected Object getItemAt(int position) {
-            return items.get(position);
-        }
-
-        @Override
-        protected <V extends View, VH extends BaseViewHolder<V>> ItemViewBuilder createBuilder(ViewHolderCreator<VH> creator) {
-            return new ItemViewBuilder<>(creator);
-        }
-
-        @Override
-        public int getItemCount() {
-            return items.size();
-        }
-
-        public void addItem(String item) {
-            items.add(item);
-            notifyDataSetChanged();
-        }
     }
+
+
+
+//    public static class MyAdapter extends ItemViewAdapter<ItemViewAdapter.ItemViewBuilder> {
+//
+//        List<String> items = new ArrayList<>();
+//
+//        public MyAdapter() {
+//
+//            addViewHolderCreator(
+//                    String.class,
+//                    parent1 -> new BaseViewHolder<>(new TextView(parent1.getContext()))
+//            ).addItemViewHolderBinder(
+//                    (viewHolder, item) -> viewHolder.itemView.setText(item)
+//            );
+//
+//            addViewCreator(
+//                    String.class,
+//                    parent -> new TextView(parent.getContext())
+//            )
+//                    .addItemViewHolderBinder(
+//                            (viewHolder, item) -> viewHolder.itemView.setText(item)
+//                    );
+//
+//        }
+//
+//        @Override
+//        protected Object getItemAt(int position) {
+//            return items.get(position);
+//        }
+//
+//        @Override
+//        protected <V extends View, VH extends BaseViewHolder<V>> ItemViewBuilder createBuilder(ViewHolderCreator<VH> creator) {
+//            return new ItemViewBuilder<>(creator);
+//        }
+//
+//        @Override
+//        public int getItemCount() {
+//            return items.size();
+//        }
+//
+//        public void addItem(String item) {
+//            items.add(item);
+//            notifyDataSetChanged();
+//        }
+//    }
 
 
 //    public static class MyAdapter extends BaseViewAdapter<BaseViewAdapter.BaseViewBuilder> {

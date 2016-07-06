@@ -22,13 +22,10 @@ import android.view.View;
 import com.m039.el_adapter.ItemViewAdapter.ItemViewBuilder.ItemViewBinderChainer;
 import com.m039.el_adapter.ItemViewAdapter.ItemViewBuilder.ItemViewHolderBinderChainer;
 
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * Created by m039 on 6/1/16.
  */
-public abstract class ItemViewAdapter extends BaseViewAdapter<ItemViewAdapter.ItemViewBuilder> {
+public abstract class ItemViewAdapter<B extends ItemViewAdapter.ItemViewBuilder> extends BaseViewAdapter<B> {
 
     public static final int DEFAULT_TYPE_OF_CLASS = DEFAULT_VIEW_TYPE;
 
@@ -52,7 +49,6 @@ public abstract class ItemViewAdapter extends BaseViewAdapter<ItemViewAdapter.It
     }
 
     private final ViewTypeHelper mViewTypeHelper = new ViewTypeHelper();
-    private final Map<Integer, Map<Integer, ItemViewHolderBinder>> mItemViewHolderBindersByViewType = new HashMap<>();
 
     public ItemViewAdapter() {
         super();
@@ -64,24 +60,6 @@ public abstract class ItemViewAdapter extends BaseViewAdapter<ItemViewAdapter.It
     @SuppressWarnings("unchecked")
     @Override
     public void onBindViewHolder(BaseViewHolder holder, int position) {
-//        int viewType = getItemViewType(position);
-//
-//        Map<Integer, ItemViewHolderBinder> binders = mItemViewHolderBindersByViewType.get(viewType);
-//
-//        if (binders == null) {
-//            throw new IllegalStateException("Can't find binders for " + position + ":" + viewType + ".");
-//        }
-//
-//        ItemViewHolderBinder binder = binders.get(typeOfBind);
-//
-//        if (binder == null) {
-//            throw new IllegalStateException(
-//                    "Can't find binder for " + position + ":" + viewType + ":" + typeOfBind + "."
-//            );
-//        }
-//
-//        binder.onBindViewHolder(holder, getItemAt(position));
-
 
         ItemViewHolderBinder<Object, View> viewBinder = getItemViewHolderBinder(getItemViewType(position));
 
@@ -99,35 +77,6 @@ public abstract class ItemViewAdapter extends BaseViewAdapter<ItemViewAdapter.It
 
     protected abstract Object getItemAt(int position);
 
-//    public <I, V extends View>
-//    void addViewHolderBinder(
-//            int viewType,
-//            int typeOfBind,
-//            @NonNull ItemViewHolderBinder<I, V> itemViewHolderBinder
-//    ) {
-//        Map<Integer, ItemViewHolderBinder> binders =
-//                mItemViewHolderBindersByViewType.get(viewType);
-//
-//        if (binders == null) {
-//            binders = new HashMap<>();
-//            mItemViewHolderBindersByViewType.put(viewType, binders);
-//        }
-//
-//        binders.put(typeOfBind, itemViewHolderBinder);
-//    }
-//
-//    @SuppressWarnings("unchecked")
-//    public <I, V extends View>
-//    ItemViewHolderBinder<I, V> getViewHolderBinder(int viewType, int typeOfBind) {
-//        Map<Integer, ItemViewHolderBinder> binders =
-//                mItemViewHolderBindersByViewType.get(viewType);
-//
-//        if (binders != null) {
-//            return binders.get(typeOfBind);
-//        } else {
-//            return null;
-//        }
-//    }
 
     /**
      * @param clazz       <code>clazz</code> will be used to create new view type if if doesn't
@@ -207,6 +156,7 @@ public abstract class ItemViewAdapter extends BaseViewAdapter<ItemViewAdapter.It
         return (ItemViewHolderBinder<I, V>) getBuilder(viewType).getItemViewHolderBinder();
     }
 
+
     public static class ItemViewBuilder<I, V extends View> extends BaseViewAdapter.BaseViewBuilder {
 
         private ItemViewHolderBinder<I, V> itemViewHolderBinder;
@@ -239,7 +189,7 @@ public abstract class ItemViewAdapter extends BaseViewAdapter<ItemViewAdapter.It
                 this.elBuilder = elBuilder;
             }
 
-            public void addItemViewBinder(ItemViewBinder<I, V> viewBinder) {
+            public void addViewBinder(ItemViewBinder<I, V> viewBinder) {
                 elBuilder.itemViewHolderBinder = new DefaultItemViewHolderBinder<>(viewBinder);
             }
         }
@@ -253,7 +203,7 @@ public abstract class ItemViewAdapter extends BaseViewAdapter<ItemViewAdapter.It
                 this.elBuilder = elBuilder;
             }
 
-            public void addItemViewHolderBinder(ItemViewHolderBinder<I, V> viewHolderBinder) {
+            public void addViewHolderBinder(ItemViewHolderBinder<I, V> viewHolderBinder) {
                 elBuilder.itemViewHolderBinder = viewHolderBinder;
             }
         }
