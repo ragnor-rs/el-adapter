@@ -20,6 +20,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.m039.el_adapter.BaseViewHolderBuilder.ViewHolderClickListener;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -78,46 +80,64 @@ public abstract class BaseViewHolderAdapter<B extends BaseViewHolderBuilder> ext
     protected abstract <V extends View, VH extends BaseViewHolder<V>> B createBuilder(ViewHolderCreator<VH> creator);
 
     @Override
-    public <V extends View, VH extends BaseViewHolder<V>> BaseViewHolderBuilder.ViewHolderBinderChainer<V, VH>
+    public <V extends View, VH extends BaseViewHolder<V>> BaseViewHolderBuilder.BindClickViewClickChainer<V, VH>
     addViewHolderCreator(int viewType, ViewHolderCreator<VH> creator) {
 
         B elBuilder = createBuilder(creator);
         builderMap.put(viewType, elBuilder);
 
-        return (BaseViewHolderBuilder.ViewHolderBinderChainer<V, VH>) elBuilder.getViewHolderBinderChainer();
+        return (BaseViewHolderBuilder.BindClickViewClickChainer<V, VH>) elBuilder.chainer();
     }
 
-    /**
-     * @return viewHolderCreator associated with <code>viewType</code> or null
-     */
-    protected <V extends View, VH extends BaseViewHolder<V>> ViewHolderCreator<VH> getViewHolderCreator(int viewType) {
-        return getBuilder(viewType).getViewHolderCreator();
-    }
-
-    /**
-     * @return viewHolderBinder associated with <code>viewType</code> or null
-     */
-    protected <V extends View, VH extends BaseViewHolder<V>> ViewHolderBinder<VH> getViewHolderBinder(int viewType) {
-        return ((BaseViewHolderBuilder<V, VH>) getBuilder(viewType)).getViewHolderBinder();
-    }
 
     //region RecyclerView.Adapter
 
     @Override
     public BaseViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        ViewHolderCreator viewHolderCreator = getViewHolderCreator(viewType);
+        B builder = getBuilder(viewType);
+        ViewHolderCreator viewHolderCreator = builder.getViewHolderCreator();
 
         if (viewHolderCreator == null) {
             throw new IllegalStateException("Can't create view of type " + viewType + ".");
         }
 
-        return viewHolderCreator.onCreateViewHolder(parent);
+
+        final BaseViewHolder viewHolder = viewHolderCreator.onCreateViewHolder(parent);
+        final View view = viewHolder.itemView;
+        for (Object entryO : builder.getViewHolderClickListeners().entrySet()){
+            Map.Entry<Integer, ViewHolderClickListener> entry = (Map.Entry<Integer, ViewHolderClickListener>) entryO; //todo wtf
+            int id = entry.getKey();
+            final ViewHolderClickListener viewHolderClickListener = entry.getValue();
+
+            /**
+             * WARN:
+             *
+             * Performance bottleneck - a lot of calls to new
+             */
+
+            View.OnClickListener clickListener = new View.OnClickListener() {
+
+                @Override
+                public void onClick(View v) {
+                    viewHolderClickListener.onViewHolderClick(viewHolder);
+                }
+
+            };
+
+            if (id == BaseViewHolderBuilder.NO_ID_CLICK_LISTENER) {
+                view.setOnClickListener(clickListener);
+            } else {
+                view.findViewById(id).setOnClickListener(clickListener);
+            }
+        }
+
+        return viewHolder;
     }
 
     @SuppressWarnings("unchecked")
     @Override
     public void onBindViewHolder(BaseViewHolder holder, int position) {
-        ViewHolderBinder viewHolderBinder = getViewHolderBinder(getItemViewType(position));
+        ViewHolderBinder viewHolderBinder = getBuilder(getItemViewType(position)).getViewHolderBinder();
 
         if (viewHolderBinder != null) {
             viewHolderBinder.onBindViewHolder(holder);

@@ -2,6 +2,7 @@ package com.m039.el_adapter.fragments;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.Toast;
 
 import com.m039.el_adapter.BaseViewHolder;
 import com.m039.el_adapter.BaseViewHolderAdapter;
@@ -18,20 +19,43 @@ import java.util.List;
 public class BaseViewAdapterDemoFragment extends DemoFragment {
 
     private static final int ANOTHER_VIEW_TYPE = 1;
+    private static final int GREEN_TEXT_WIDGET_RES_ID = 12;
 
+    @SuppressWarnings("ResourceType")
     @Override
     protected void showDemo(RecyclerView recycler) {
         MyAdapter listAdapter = new MyAdapter();
 
         listAdapter
-                .addViewHolderCreator(BaseViewHolderAdapter.DEFAULT_VIEW_TYPE, parent -> new BaseViewHolder<>(new BlueTextView(parent.getContext())))
+                .addViewHolderCreator(
+                        BaseViewHolderAdapter.DEFAULT_VIEW_TYPE,
+                        parent -> new BaseViewHolder<>(new BlueTextView(parent.getContext()))
+                )
+                .addViewHolderClickListener(
+                        viewHolder -> Toast.makeText(getActivity(), "Blue widget clicked", Toast.LENGTH_SHORT).show()
+                )
                 .addViewHolderBinder(viewHolder -> {
                     Integer item = listAdapter.getItemAt(viewHolder.getAdapterPosition());
                     viewHolder.itemView.setText(Integer.toString(item));
                 });
 
         listAdapter
-                .addViewHolderCreator(ANOTHER_VIEW_TYPE, parent -> new BaseViewHolder<>(new GreenTextView(parent.getContext())))
+                .addViewHolderCreator(
+                        ANOTHER_VIEW_TYPE,
+                        parent -> {
+                            GreenTextView greenTextView = new GreenTextView(parent.getContext());
+                            greenTextView.setId(GREEN_TEXT_WIDGET_RES_ID);
+                            return new BaseViewHolder<>(greenTextView);
+                        }
+                )
+                .addViewHolderClickListener(
+                        GREEN_TEXT_WIDGET_RES_ID,
+                        viewHolder1 -> Toast.makeText(getActivity(), "green widget clicked", Toast.LENGTH_SHORT).show()
+                )
+                .addViewHolderClickListener(
+                        GREEN_TEXT_WIDGET_RES_ID,
+                        viewHolder1 -> Toast.makeText(getActivity(), "green widget clicked really", Toast.LENGTH_SHORT).show()
+                )
                 .addViewHolderBinder(viewHolder -> {
                     Integer item = listAdapter.getItemAt(viewHolder.getAdapterPosition());
                     viewHolder.itemView.setText(Integer.toString(item));
