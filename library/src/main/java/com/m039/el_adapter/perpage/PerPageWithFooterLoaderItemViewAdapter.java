@@ -22,7 +22,7 @@ import java.util.List;
  * <li>Only list of items can be added</li>
  * </ul>
  */
-public abstract class PerPageWithFooterLoaderItemViewAdapter extends PerPageItemViewAdapter {
+public class PerPageWithFooterLoaderItemViewAdapter extends PerPageItemViewAdapter {
 
     protected static final int VIEW_TYPE_FOOTER = 0;
     private FooterLoaderWidget mFooterView;

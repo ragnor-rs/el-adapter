@@ -2,12 +2,12 @@ package com.m039.el_adapter.perpage;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.view.View;
+import android.widget.FrameLayout;
 
 /**
  * Created by defuera on 07/07/2016.
  */
-public abstract class FooterLoaderWidget extends View {
+public abstract class FooterLoaderWidget extends FrameLayout {
 
     public FooterLoaderWidget(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -20,4 +20,5 @@ public abstract class FooterLoaderWidget extends View {
     public abstract void showNetworkError();
 
     public abstract void showEmptyView();
+
 }
