@@ -4,10 +4,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Toast;
 
-import com.m039.el_adapter.BaseViewAdapter;
-import com.m039.el_adapter.BaseViewAdapter.BaseViewBuilder;
 import com.m039.el_adapter.BaseViewHolder;
 import com.m039.el_adapter.BaseViewHolderAdapter;
+import com.m039.el_adapter.BaseViewHolderBuilder;
 import com.m039.el_adapter.views.BlueTextView;
 import com.m039.el_adapter.views.GreenTextView;
 
@@ -17,7 +16,7 @@ import java.util.List;
 /**
  * Created by m039 on 6/1/16.
  */
-public class BaseViewAdapterDemoFragment extends DemoFragment {
+public class BaseViewHolderAdapterDemoFragment extends DemoFragment {
 
     private static final int ANOTHER_VIEW_TYPE = 1;
     private static final int GREEN_TEXT_WIDGET_RES_ID = 12;
@@ -28,25 +27,25 @@ public class BaseViewAdapterDemoFragment extends DemoFragment {
         MyAdapter listAdapter = new MyAdapter();
 
         listAdapter
-                .addViewCreator(
+                .addViewHolderCreator(
                         BaseViewHolderAdapter.DEFAULT_VIEW_TYPE,
-                        parent -> new BlueTextView(parent.getContext())
+                        parent -> new BaseViewHolder<>(new BlueTextView(parent.getContext()))
                 )
-                .addViewClickListener(
-                        (view, position) -> Toast.makeText(getActivity(), "blue widget clicked " + listAdapter.getItemAt(position), Toast.LENGTH_SHORT).show()
+                .addViewHolderClickListener(
+                        viewHolder -> Toast.makeText(getActivity(), "Blue widget clicked", Toast.LENGTH_SHORT).show()
                 )
-                .addViewBinder((view, position) -> {
-                    String item = listAdapter.getItemAt(position);
-                    view.setText(item);
+                .addViewHolderBinder(viewHolder -> {
+                    Integer item = listAdapter.getItemAt(viewHolder.getAdapterPosition());
+                    viewHolder.itemView.setText(Integer.toString(item));
                 });
 
         listAdapter
-                .addViewCreator(
+                .addViewHolderCreator(
                         ANOTHER_VIEW_TYPE,
                         parent -> {
                             GreenTextView greenTextView = new GreenTextView(parent.getContext());
                             greenTextView.setId(GREEN_TEXT_WIDGET_RES_ID);
-                            return greenTextView;
+                            return new BaseViewHolder<>(greenTextView);
                         }
                 )
                 .addViewHolderClickListener(
@@ -55,15 +54,11 @@ public class BaseViewAdapterDemoFragment extends DemoFragment {
                 )
                 .addViewHolderClickListener(
                         GREEN_TEXT_WIDGET_RES_ID,
-                        viewHolder1 -> Toast.makeText(
-                                getActivity(),
-                                "green widget clicked really " + listAdapter.getItemAt(viewHolder1.getAdapterPosition()),
-                                Toast.LENGTH_SHORT
-                        ).show()
+                        viewHolder1 -> Toast.makeText(getActivity(), "green widget clicked really", Toast.LENGTH_SHORT).show()
                 )
                 .addViewHolderBinder(viewHolder -> {
-                    String item = listAdapter.getItemAt(viewHolder.getAdapterPosition());
-                    viewHolder.itemView.setText(item);
+                    Integer item = listAdapter.getItemAt(viewHolder.getAdapterPosition());
+                    viewHolder.itemView.setText(Integer.toString(item));
                 });
 
         for (int i = 0; i < 1000; i++) {
@@ -73,9 +68,14 @@ public class BaseViewAdapterDemoFragment extends DemoFragment {
         recycler.setAdapter(listAdapter);
     }
 
-    public static class MyAdapter extends BaseViewAdapter<BaseViewBuilder> {
+    public static class MyAdapter extends BaseViewHolderAdapter<BaseViewHolderBuilder> {
 
         List<Integer> items = new ArrayList<>();
+
+        @Override
+        protected <V extends View, VH extends BaseViewHolder<V>> BaseViewHolderBuilder createBuilder(ViewHolderCreator<VH> creator) {
+            return new BaseViewHolderBuilder<>(creator);
+        }
 
         @Override
         public int getItemCount() {
@@ -86,18 +86,13 @@ public class BaseViewAdapterDemoFragment extends DemoFragment {
             items.add(item);
         }
 
-        public String getItemAt(int position) {
-            return Integer.toString(items.get(position));
+        public Integer getItemAt(int position) {
+            return items.get(position);
         }
 
         @Override
         public int getItemViewType(int position) {
             return position % 2 == 0 ? ANOTHER_VIEW_TYPE : super.getItemViewType(position);
-        }
-
-        @Override
-        protected <V extends View, VH extends BaseViewHolder<V>> BaseViewBuilder<V> createBuilder(ViewHolderCreator<VH> creator) {
-            return new BaseViewBuilder(creator);
         }
     }
 

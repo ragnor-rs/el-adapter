@@ -1,8 +1,12 @@
 package com.m039.el_adapter;
 
+import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.view.View;
 import android.view.ViewGroup;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
@@ -32,21 +36,61 @@ public abstract class BaseViewAdapter<B extends BaseViewAdapter.BaseViewBuilder>
          * To get position call view.getAdapterPosition()
          *
          * @param view view to bind
+         * @param position
          */
-        void onBindView(V view);
+        void onBindView(V view, int position);
 
     }
 
 
     //region RecyclerView#Adapter
 
+
+    @Override
+    public BaseViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        final BaseViewHolder viewHolder = super.onCreateViewHolder(parent, viewType);
+
+        final View view = viewHolder.itemView;
+        for (Object entryO : getBuilder(viewType).getViewClickListeners().entrySet()) {
+            Map.Entry<Integer, BaseViewBuilder.ViewClickListener> entry = (Map.Entry<Integer, BaseViewBuilder.ViewClickListener>) entryO; //todo wtf
+            int id = entry.getKey();
+            final BaseViewBuilder.ViewClickListener viewClickListener = entry.getValue();
+
+            /**
+             * WARN:
+             *
+             * Performance bottleneck - a lot of calls to new
+             */
+
+            View.OnClickListener clickListener = new View.OnClickListener() {
+
+                @Override
+                public void onClick(View v) {
+                    viewClickListener.onViewClick(view, viewHolder.getAdapterPosition());
+                }
+
+            };
+
+            if (id == BaseViewBuilder.NO_ID_CLICK_LISTENER) {
+                view.setOnClickListener(clickListener);
+            } else {
+                view.findViewById(id).setOnClickListener(clickListener);
+            }
+        }
+
+        return viewHolder;
+
+
+    }
+
     @Override
     public void onBindViewHolder(BaseViewHolder holder, int position) {
+        super.onBindViewHolder(holder, position);
 
         ViewBinder<View> viewBinder = getViewBinder(getItemViewType(position));
 
         if (viewBinder != null) {
-            viewBinder.onBindView(holder.itemView);
+            viewBinder.onBindView(holder.itemView, holder.getAdapterPosition());
         } else {
             // do nothing, don't bind a thing
         }
@@ -56,9 +100,9 @@ public abstract class BaseViewAdapter<B extends BaseViewAdapter.BaseViewBuilder>
     //endregion
 
 
-    public <V extends View> BaseViewBuilder.ViewBinderChainer<V> addViewCreator(int viewType, ViewCreator<V> viewCreator) {
+    public <V extends View> BaseViewBuilder.BindClickViewClickChainer<V> addViewCreator(int viewType, ViewCreator<V> viewCreator) {
         addViewHolderCreator(viewType, new DefaultViewHolderCreator<>(viewCreator));
-        return (BaseViewBuilder.ViewBinderChainer<V>) getBuilder(viewType).getViewBinderChainer();
+        return (BaseViewBuilder.BindClickViewClickChainer<V>) getBuilder(viewType).getChainer();
     }
 
     protected <V extends View> ViewBinder<V> getViewBinder(int viewType) {
@@ -96,17 +140,17 @@ public abstract class BaseViewAdapter<B extends BaseViewAdapter.BaseViewBuilder>
 
     }
 
-    //todo replace VH with ?
-    public static class BaseViewBuilder<V extends View, VH extends BaseViewHolder<V>> extends BaseViewHolderBuilder<V, VH> {
+    public static class BaseViewBuilder<V extends View> extends BaseViewHolderBuilder<V, BaseViewHolder<V>> {
 
         private ViewBinder<V> viewBinder;
-        private final ViewBinderChainer<V> viewBinderChainer = new ViewBinderChainer<>(this);
+        private final BindClickViewClickChainer<V> viewBinderChainer = new BindClickViewClickChainer<>(this);
+        private Map<Integer, ViewClickListener<V>> viewClickListenersById = new HashMap<>();
 
-        public BaseViewBuilder(ViewHolderCreator<VH> creator) {
+        public BaseViewBuilder(ViewHolderCreator<BaseViewHolder<V>> creator) {
             super(creator);
         }
 
-        public ViewBinderChainer<V> getViewBinderChainer() {
+        public BindClickViewClickChainer<V> getChainer() { //todo return the best chainer
             return viewBinderChainer;
         }
 
@@ -114,20 +158,92 @@ public abstract class BaseViewAdapter<B extends BaseViewAdapter.BaseViewBuilder>
             return viewBinder;
         }
 
+        private void addViewClickListener(@IdRes int resId, ViewClickListener<V> viewClickListener) {
+            viewClickListenersById.put(resId, viewClickListener);
+        }
 
-        public static class ViewBinderChainer<V extends View> {
+        public Map<Integer, ViewClickListener<V>> getViewClickListeners() {
+            return viewClickListenersById;
+        }
 
-            private final BaseViewBuilder<V, ?> elBuilder;
 
-            public ViewBinderChainer(BaseViewBuilder<V, ?> elBuilder) {
-                this.elBuilder = elBuilder;
+        //region Chainers
+
+        /**
+         * this Chainer can chain addViewHolderClickListener, addViewHolderClickListener, addViewHolderBinder
+         *
+         * @param <V>
+         */
+        public static class BindClickViewClickChainer<V extends View> extends BindViewClickChainer<V> {
+
+            public BindClickViewClickChainer(BaseViewBuilder<V> builder) {
+                super(builder);
+            }
+
+            public BindViewClickChainer<V> addViewHolderClickListener(ViewHolderClickListener<V> viewHolderClickListener) {
+                getBuilder().addViewHolderClickListener(NO_ID_CLICK_LISTENER, viewHolderClickListener);
+                return new BindViewClickChainer<>(getBuilder());
+            }
+
+            public BindViewClickChainer<V> addViewClickListener(ViewClickListener<V> viewClickListener) {
+                getBuilder().addViewClickListener(NO_ID_CLICK_LISTENER, viewClickListener);
+                return new BindViewClickChainer<>(getBuilder());
+            }
+
+        }
+
+        /**
+         * this Chainer can chain
+         * <p>addViewHolderClickListener, addViewClickListener,
+         * <p>addViewHolderBinder, addViewBinder
+         *
+         * @param <V>
+         */
+        public static class BindViewClickChainer<V extends View> extends BindChainer<V> {
+
+            public BindViewClickChainer(BaseViewBuilder<V> builder) {
+                super(builder);
+            }
+
+            public BindViewClickChainer<V> addViewHolderClickListener(@IdRes int resId, ViewHolderClickListener<V> viewHolderClickListener) {
+                getBuilder().addViewHolderClickListener(resId, viewHolderClickListener);
+                return new BindViewClickChainer<>(getBuilder());
+
+            }
+
+            public BindViewClickChainer<V> addViewClickListener(@IdRes int resId, ViewClickListener<V> viewClickListener) {
+                getBuilder().addViewClickListener(resId, viewClickListener);
+                return new BindViewClickChainer<>(getBuilder());
+            }
+
+
+        }
+
+        /**
+         * this Chainer can chain addViewHolderBinder, addViewBinder
+         *
+         * @param <V>
+         */
+        public static class BindChainer<V extends View> extends BaseViewHolderBuilder.BindChainer<V, BaseViewHolder<V>, BaseViewBuilder<V>> {
+
+            public BindChainer(BaseViewBuilder<V> builder) {
+                super(builder);
             }
 
             public void addViewBinder(ViewBinder<V> viewBinder) {
-                elBuilder.viewBinder = viewBinder;
+                getBuilder().viewBinder = viewBinder;
             }
+
+        }
+
+
+        public interface ViewClickListener<V extends View> {
+            void onViewClick(V view, int position);
         }
 
     }
+
+    //endregion
+
 
 }

@@ -64,8 +64,8 @@ public class BaseViewHolderBuilder<V extends View, VH extends BaseViewHolder<V>>
         }
 
         public BindViewClickChainer<V, VH> addViewHolderClickListener(ViewHolderClickListener<V> viewHolderClickListener) {
-            builder.addViewHolderClickListener(NO_ID_CLICK_LISTENER, viewHolderClickListener);
-            return new BindViewClickChainer<>(builder);
+            getBuilder().addViewHolderClickListener(NO_ID_CLICK_LISTENER, viewHolderClickListener);
+            return new BindViewClickChainer<>(getBuilder());
         }
 
     }
@@ -77,15 +77,15 @@ public class BaseViewHolderBuilder<V extends View, VH extends BaseViewHolder<V>>
      * @param <V>
      * @param <VH>
      */
-    public static class BindViewClickChainer<V extends View, VH extends BaseViewHolder<V>> extends BindChainer<V, VH> {
+    public static class BindViewClickChainer<V extends View, VH extends BaseViewHolder<V>> extends BindChainer<V, VH, BaseViewHolderBuilder<V, VH>> {
 
         public BindViewClickChainer(BaseViewHolderBuilder<V, VH> builder) {
             super(builder);
         }
 
         public BindViewClickChainer<V, VH> addViewHolderClickListener(@IdRes int resId, ViewHolderClickListener<V> viewHolderClickListener) {
-            builder.addViewHolderClickListener(resId, viewHolderClickListener);
-            return new BindViewClickChainer<>(builder);
+            getBuilder().addViewHolderClickListener(resId, viewHolderClickListener);
+            return new BindViewClickChainer<>(getBuilder());
         }
 
     }
@@ -96,16 +96,20 @@ public class BaseViewHolderBuilder<V extends View, VH extends BaseViewHolder<V>>
      * @param <V>
      * @param <VH>
      */
-    public static class BindChainer<V extends View, VH extends BaseViewHolder<V>> {
+    public static class BindChainer<V extends View, VH extends BaseViewHolder<V>, B extends BaseViewHolderBuilder<V, VH>> {
 
-        protected final BaseViewHolderBuilder<V, VH> builder;
+        private final B builder;
 
-        public BindChainer(BaseViewHolderBuilder<V, VH> builder) {
+        public BindChainer(B builder) {
             this.builder = builder;
         }
 
         public void addViewHolderBinder(ViewHolderBinder<VH> viewHolderBinder) {
             builder.setViewHolderBinder(viewHolderBinder);
+        }
+
+        public B getBuilder() {
+            return builder;
         }
     }
 
