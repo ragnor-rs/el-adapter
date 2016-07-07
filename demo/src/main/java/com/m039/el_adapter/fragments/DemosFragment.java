@@ -41,25 +41,13 @@ public class DemosFragment extends DemoFragment {
 
         listAdapter
                 .addViewCreator(Pair.class, parent -> new Button(getActivity()))
-                .addViewHolderClickListener((view, item) -> {
-                    getFragmentManager()
-                            .beginTransaction()
-                            .replace(android.R.id.content, (Fragment) item.second)
-                            .addToBackStack(null)
-                            .commit();
-                })
-                .addItemViewBinder((view, item) -> {
-                            view.setText((String) item.first);
-//                            view.setOnClickListener(
-//                                    v -> getFragmentManager()
-//                                            .beginTransaction()
-//                                            .replace(android.R.id.content, (Fragment) item.second)
-//                                            .addToBackStack(null)
-//                                            .commit());
-                        }
+                .addViewHolderClickListener((view, item) -> getFragmentManager()
+                        .beginTransaction()
+                        .replace(android.R.id.content, (Fragment) item.second)
+                        .addToBackStack(null)
+                        .commit())
+                .addItemViewBinder((view, item) -> view.setText((String) item.first)
                 );
-
-        ;
 
         listAdapter.addItems(DEMOS);
 

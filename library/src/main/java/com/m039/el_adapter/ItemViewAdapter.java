@@ -18,12 +18,15 @@ package com.m039.el_adapter;
 
 import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
+import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 
 import com.m039.el_adapter.ItemViewAdapter.ItemViewBuilder.BindClickViewClickChainer;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by m039 on 6/1/16.
@@ -59,6 +62,45 @@ public abstract class ItemViewAdapter<B extends ItemViewAdapter.ItemViewBuilder>
 
 
     //region RecyclerView#Adapter
+
+    @Override
+    public BaseViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        final BaseViewHolder viewHolder = super.onCreateViewHolder(parent, viewType);
+
+        final View view = viewHolder.itemView;
+        Set entrySet = getBuilder(viewType).getItemViewClickListenersById().entrySet();
+
+        for (Object entryO : entrySet) {
+            Map.Entry<Integer, ItemViewBuilder.ItemViewClickListener> entry = (Map.Entry<Integer, ItemViewBuilder.ItemViewClickListener>) entryO; //todo wtf
+            int id = entry.getKey();
+            final ItemViewBuilder.ItemViewClickListener viewClickListener = entry.getValue();
+
+            /**
+             * WARN:
+             *
+             * Performance bottleneck - a lot of calls to new
+             */
+
+            View.OnClickListener clickListener = new View.OnClickListener() {
+
+                @Override
+                public void onClick(View v) {
+                    viewClickListener.onItemViewClick(view, getItemAt(viewHolder.getAdapterPosition()));
+                }
+
+            };
+
+            if (id == BaseViewBuilder.NO_ID_CLICK_LISTENER) {
+                view.setOnClickListener(clickListener);
+            } else {
+                view.findViewById(id).setOnClickListener(clickListener);
+            }
+        }
+
+        return viewHolder;
+
+
+    }
 
     @SuppressWarnings("unchecked")
     @Override
@@ -193,6 +235,13 @@ public abstract class ItemViewAdapter<B extends ItemViewAdapter.ItemViewBuilder>
             itemViewClickListenersById.put(resId, itemViewClickListener);
         }
 
+        public Map<Integer, ItemViewClickListener<I, V>> getItemViewClickListenersById() {
+            return itemViewClickListenersById;
+        }
+
+        public Map<Integer, ItemViewHolderClickListener<I, V>> getItemViewHolderClickListenersById() {
+            return itemViewHolderClickListenersById;
+        }
 
         //region Chainers
 
