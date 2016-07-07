@@ -30,22 +30,21 @@ public class ClicksDemoFragment extends DemoFragment {
 
                     return inflater.inflate(R.layout.two_items, parent, false);
                 })
+                .addOnItemViewClickListener((view, item) -> {
+                    toast("Click on whole item");
+                })
+                .addOnItemViewClickListener(R.id.first, (view, item) -> {
+                    toast("Click on first");
+                })
+                .addOnItemViewClickListener(R.id.second, (view, item) -> {
+                    toast("Click on second");
+                })
+
                 .addViewBinder((view, item) -> {
                     ((TextView) view.findViewById(R.id.first)).setText("->");
                     ((TextView) view.findViewById(R.id.second)).setText(item);
                     view.findViewById(R.id.divider).setBackgroundColor(Color.GREEN);
-                })
-
-//                .addOnItemViewClickListener((view, item) -> {
-//                    toast("Click on whole item");
-//                })
-        ;
-//                .addOnItemViewClickListener(R.id.first, (view, item) -> {
-//                    toast("Click on first");
-//                })
-//                .addOnItemViewClickListener(R.id.second, (view, item) -> {
-//                    toast("Click on second");
-//                });
+                });
 
 
         listAdapter
@@ -55,15 +54,14 @@ public class ClicksDemoFragment extends DemoFragment {
 
                     return inflater.inflate(R.layout.two_items, parent, false);
                 })
+                .addOnItemViewClickListener((view, item) -> {
+                    toast("Click on whole item");
+                })
                 .addViewBinder((view, item) -> {
                     ((TextView) view.findViewById(R.id.first)).setText("->");
                     ((TextView) view.findViewById(R.id.second)).setText(Integer.toString(item));
                     view.findViewById(R.id.divider).setBackgroundColor(Color.CYAN);
-                })
-//                .addOnItemViewClickListener((view, item) -> {
-//                    toast("Click on whole item");
-//                })
-        ;
+                });
 
         recycler.setAdapter(listAdapter);
 

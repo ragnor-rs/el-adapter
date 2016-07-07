@@ -5,7 +5,6 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Pair;
 import android.widget.Button;
 
-import com.m039.el_adapter.ItemViewAdapter;
 import com.m039.el_adapter.ListItemAdapter;
 
 import java.util.ArrayList;
@@ -41,13 +40,12 @@ public class DemosFragment extends DemoFragment {
 
         listAdapter
                 .addViewCreator(Pair.class, parent -> new Button(getActivity()))
-                .addViewHolderClickListener((view, item) -> getFragmentManager()
+                .addOnItemViewHolderClickListener((view, item) -> getFragmentManager()
                         .beginTransaction()
                         .replace(android.R.id.content, (Fragment) item.second)
                         .addToBackStack(null)
                         .commit())
-                .addItemViewBinder((view, item) -> view.setText((String) item.first)
-                );
+                .addItemViewBinder((view, item) -> view.setText((String) item.first));
 
         listAdapter.addItems(DEMOS);
 
