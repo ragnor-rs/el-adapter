@@ -3,6 +3,7 @@ package com.m039.el_adapter.fragments;
 import android.support.v7.widget.RecyclerView;
 import android.widget.TextView;
 
+import com.m039.el_adapter.ItemViewAdapter;
 import com.m039.el_adapter.ListItemAdapter;
 
 /**
@@ -16,7 +17,7 @@ public class SimpleDemoFragment extends DemoFragment {
 
         listAdapter
                 .addViewCreator(Integer.class, parent -> new TextView(getActivity()))
-                .addViewBinder((view, item) -> view.setText(String.valueOf(item)));
+                .addItemViewBinder((view, item) -> view.setText(String.valueOf(item)));
 
         for (int i = 0; i < 1000; i++) {
             listAdapter.addItem(i);

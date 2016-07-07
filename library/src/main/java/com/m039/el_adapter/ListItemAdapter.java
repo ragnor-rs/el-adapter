@@ -99,7 +99,7 @@ public class ListItemAdapter extends ItemViewAdapter<ItemViewAdapter.ItemViewBui
     }
 
     @Override
-    protected <V extends View, VH extends BaseViewHolder<V>> ItemViewBuilder<?, V> createBuilder(ViewHolderCreator<VH> creator) {
-        return new ItemViewAdapter.ItemViewBuilder<>(creator);
+    protected <V extends View, VH extends BaseViewHolder<V>> ItemViewBuilder createBuilder(ViewHolderCreator<VH> creator) {
+        return new ItemViewBuilder(creator); //todo unchecked
     }
 }

@@ -4,9 +4,11 @@ import android.content.Context;
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.m039.el_adapter.ItemViewAdapter;
 import com.m039.el_adapter.ListItemAdapter;
 import com.m039.el_adapter.demo.R;
 

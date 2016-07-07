@@ -44,7 +44,7 @@ public class BaseViewHolderBuilder<V extends View, VH extends BaseViewHolder<V>>
         return viewHolderClickListeners;
     }
 
-    public BindClickViewClickChainer<V, VH> chainer() {
+    public BindClickViewClickChainer<V, VH> getBaseViewHolderChainer() {
         return new BindClickViewClickChainer<>(this);
     }
 

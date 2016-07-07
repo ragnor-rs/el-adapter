@@ -86,7 +86,7 @@ public abstract class BaseViewHolderAdapter<B extends BaseViewHolderBuilder> ext
         B elBuilder = createBuilder(creator);
         builderMap.put(viewType, elBuilder);
 
-        return (BaseViewHolderBuilder.BindClickViewClickChainer<V, VH>) elBuilder.chainer();
+        return (BaseViewHolderBuilder.BindClickViewClickChainer<V, VH>) elBuilder.getBaseViewHolderChainer();
     }
 
 
