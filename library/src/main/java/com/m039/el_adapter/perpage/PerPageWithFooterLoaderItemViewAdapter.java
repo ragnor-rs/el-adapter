@@ -74,7 +74,7 @@ public class PerPageWithFooterLoaderItemViewAdapter extends PerPageItemViewAdapt
      */
     @CallSuper
     public <T> void addAll(@Nullable List<T> items, boolean hasNextPage) {
-        int startPosition = this.getItems().size();
+        int startPosition = this.getItemCount();
 
         if (items != null) {
             addItems(items);

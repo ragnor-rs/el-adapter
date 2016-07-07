@@ -21,6 +21,10 @@ public class ConfigurableAdapter extends ItemViewAdapter<ItemViewAdapter.ItemVie
         this.configurator = configurator;
     }
 
+    public void setConfigurator(Configurator configurator) {
+        this.configurator = configurator;
+    }
+
     @Override
     protected <V extends View, VH extends BaseViewHolder<V>> ItemViewBuilder createBuilder(ViewHolderCreator<VH> creator) {
         return new ItemViewBuilder(creator); //todo unchecked
@@ -52,12 +56,12 @@ public class ConfigurableAdapter extends ItemViewAdapter<ItemViewAdapter.ItemVie
     }
 
     @Override
-    public <T> void addItem(T item) {
+    public <I> void addItem(I item) {
         configurator.addItem(item);
     }
 
     @Override
-    public <T> void addItem(int index, T item) {
+    public <I> void addItem(int index, I item) {
         configurator.addItem(index, item);
     }
 

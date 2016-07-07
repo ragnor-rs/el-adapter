@@ -30,7 +30,7 @@ public interface Configurator {
 
     <I> void addItems(int index, @NonNull List<I> items);
 
-    List<Object> getItems();
+    List<Object> getItems(); //todo parametrize
 
     Object getItemAt(int position);
 }

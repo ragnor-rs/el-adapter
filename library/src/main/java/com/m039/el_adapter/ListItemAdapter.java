@@ -16,16 +16,6 @@
 
 package com.m039.el_adapter;
 
-import android.support.annotation.NonNull;
-import android.view.View;
-
-import com.m039.el_adapter.BaseViewHolderBuilder;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-
 /**
  * todo javadoc
  * Created by m039 on 3/21/16.
@@ -33,7 +23,7 @@ import java.util.List;
 public class ListItemAdapter extends ConfigurableAdapter {
 
     public ListItemAdapter() {
-        super();
+        super(new ArrayListConfigurator());
     }
 
 }

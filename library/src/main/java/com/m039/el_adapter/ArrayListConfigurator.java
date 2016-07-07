@@ -12,7 +12,7 @@ import java.util.List;
  */
 public class ArrayListConfigurator implements Configurator {
 
-    List<Object> mItems = new ArrayList<>();
+    ArrayList<Object> mItems = new ArrayList<>();
 
     @Override
     public int getItemCount() {
@@ -60,7 +60,7 @@ public class ArrayListConfigurator implements Configurator {
         }
     }
 
-    public List<Object> getItems() {
+    public ArrayList<Object> getItems() {
         return mItems;
     }
 
