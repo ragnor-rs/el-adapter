@@ -192,6 +192,8 @@ public abstract class ItemViewAdapter<B extends ItemViewAdapter.ItemViewBuilder>
         return (BindClickViewClickChainer<I, V>) builder.getItemViewChainer();
     }
 
+
+    //region item view types
     /**
      * Same as {@link #getItemViewType(Class, int)} but with <code>typeOfClasss</code> is 0.
      */
@@ -222,9 +224,12 @@ public abstract class ItemViewAdapter<B extends ItemViewAdapter.ItemViewBuilder>
         return DEFAULT_TYPE_OF_CLASS;
     }
 
-    /* package */ String findClassName(int viewType) {
-        return mViewTypeHelper.findClassName(viewType);
+    @Override
+    public int getItemViewType(int position) {
+        return getItemViewType(getItemAt(position).getClass(), getTypeOfClass(position));
     }
+
+    //endregion
 
     protected <I, V extends View> ItemViewHolderBinder<I, V> getItemViewHolderBinder(int viewType) {
         return (ItemViewHolderBinder<I, V>) getBuilder(viewType).getItemViewHolderBinder();

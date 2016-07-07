@@ -30,76 +30,10 @@ import java.util.List;
  * todo javadoc
  * Created by m039 on 3/21/16.
  */
-public class ListItemAdapter extends ItemViewAdapter<ItemViewAdapter.ItemViewBuilder> {
-
-    private final List<Object> mItems = new ArrayList<>();
+public class ListItemAdapter extends ConfigurableAdapter {
 
     public ListItemAdapter() {
         super();
     }
 
-    @Override
-    public int getItemCount() {
-        return mItems.size();
-    }
-
-    public void removeItem(int position) {
-        removeItemsRange(position, 1);
-    }
-
-    public void removeAllItems() {
-        removeItemsRange(0, mItems.size());
-    }
-
-    public void removeItemsRange(int positionStart, int itemCount) {
-        if (mItems.size() < itemCount || itemCount <= 0) {
-            return;
-        }
-        mItems.subList(positionStart, positionStart + itemCount).clear();
-    }
-
-    public <T> void addItem(T item) {
-        mItems.add(item);
-    }
-
-    public <T> void addItem(int index, T item) {
-        mItems.add(index, item);
-    }
-
-    public <I> void addItems(@NonNull Collection<I> items) {
-        if (!items.isEmpty()) {
-            mItems.addAll(items);
-        }
-    }
-
-    public <I> void addItems(@NonNull I items[]) {
-        if (items.length > 0) {
-            mItems.addAll(Arrays.asList(items));
-        }
-    }
-
-    public <I> void addItems(int index, @NonNull List<I> items) {
-        if (!items.isEmpty()) {
-            mItems.addAll(index, items);
-        }
-    }
-
-    public List<Object> getItems() {
-        return mItems;
-    }
-
-    @Override
-    public Object getItemAt(int position) {
-        return mItems.get(position);
-    }
-
-    @Override
-    public int getItemViewType(int position) {
-        return getItemViewType(mItems.get(position).getClass(), getTypeOfClass(position));
-    }
-
-    @Override
-    protected <V extends View, VH extends BaseViewHolder<V>> ItemViewBuilder createBuilder(ViewHolderCreator<VH> creator) {
-        return new ItemViewBuilder(creator); //todo unchecked
-    }
 }
