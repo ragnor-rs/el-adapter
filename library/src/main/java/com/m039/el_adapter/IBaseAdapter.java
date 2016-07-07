@@ -7,8 +7,6 @@ import android.view.View;
  */
 public interface IBaseAdapter {
 
-     //todo BaseViewHolderAdapter.ViewHolderCreator probably should not be in interface
-     //todo use interface instead
      <V extends View, VH extends BaseViewHolder<V>>
      BaseViewHolderBuilder.BindClickViewClickChainer addViewHolderCreator(int viewType, BaseViewHolderAdapter.ViewHolderCreator<VH> creator);
 
