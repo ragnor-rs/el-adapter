@@ -98,7 +98,7 @@ public abstract class BaseViewHolderAdapter<B extends BaseViewHolderHelper> exte
         ViewHolderCreator viewHolderCreator = builder.getViewHolderCreator();
 
         if (viewHolderCreator == null) {
-            throw new IllegalStateException("Can't create view of type " + viewType + ".");
+            throw new UnknownViewType("Can't create view of type " + viewType + ".");
         }
 
 

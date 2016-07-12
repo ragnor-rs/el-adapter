@@ -63,7 +63,24 @@ public abstract class ItemViewAdapter<B extends ItemViewAdapter.ItemViewHelper> 
 
     @Override
     public BaseViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        final BaseViewHolder viewHolder = super.onCreateViewHolder(parent, viewType);
+        final BaseViewHolder viewHolder;
+
+        try {
+
+            viewHolder = super.onCreateViewHolder(parent, viewType);
+
+        } catch (UnknownViewType e) {
+            String className = mViewTypeHelper.findClassName(viewType);
+
+            throw new UnknownViewType("Can't create view of type " +
+                    viewType + (className != null ? " or '" + className : "'") + "." +
+                    " You should register " +
+                    ViewCreator.class.getSimpleName() +
+                    " or " +
+                    ViewHolderCreator.class.getSimpleName() +
+                    " for that type."
+            );
+        }
 
         final View view = viewHolder.itemView;
 
@@ -193,6 +210,7 @@ public abstract class ItemViewAdapter<B extends ItemViewAdapter.ItemViewHelper> 
 
 
     //region item view types
+
     /**
      * Same as {@link #getItemViewType(Class, int)} but with <code>typeOfClasss</code> is 0.
      */
