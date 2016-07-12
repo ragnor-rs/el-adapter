@@ -19,7 +19,7 @@ import java.util.List;
  * <p>
  * Default constructor {@link ManagingAdapter#ManagingAdapter()} sets ArrayListItemManager
  */
-public class ManagingAdapter extends ItemViewAdapter<ItemViewAdapter.ItemViewBuilder> implements ItemManager {
+public class ManagingAdapter extends ItemViewAdapter<ItemViewAdapter.ItemViewHelper> implements ItemManager {
 
     private ItemManager itemManager;
 
@@ -36,8 +36,8 @@ public class ManagingAdapter extends ItemViewAdapter<ItemViewAdapter.ItemViewBui
     }
 
     @Override
-    protected <V extends View, VH extends BaseViewHolder<V>> ItemViewBuilder createBuilder(ViewHolderCreator<VH> creator) {
-        return new ItemViewBuilder(creator); //todo unchecked
+    protected <V extends View, VH extends BaseViewHolder<V>> ItemViewHelper createBuilder(ViewHolderCreator<VH> creator) {
+        return new ItemViewHelper(creator); //todo unchecked
     }
 
     @Override

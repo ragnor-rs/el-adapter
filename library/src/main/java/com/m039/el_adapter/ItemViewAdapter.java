@@ -21,16 +21,15 @@ import android.support.annotation.NonNull;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.m039.el_adapter.ItemViewAdapter.ItemViewBuilder.BindClickViewClickChainer;
+import com.m039.el_adapter.ItemViewAdapter.ItemViewHelper.BindClickViewClickChainer;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * Created by m039 on 6/1/16.
  */
-public abstract class ItemViewAdapter<B extends ItemViewAdapter.ItemViewBuilder> extends BaseViewAdapter<B> {
+public abstract class ItemViewAdapter<B extends ItemViewAdapter.ItemViewHelper> extends BaseViewAdapter<B> {
 
     public static final int DEFAULT_TYPE_OF_CLASS = DEFAULT_VIEW_TYPE;
 
@@ -70,9 +69,9 @@ public abstract class ItemViewAdapter<B extends ItemViewAdapter.ItemViewBuilder>
 
         //item view click listener
         for (Object entryO : getBuilder(viewType).getItemViewClickListenersById().entrySet()) {
-            Map.Entry<Integer, ItemViewBuilder.ItemViewClickListener> entry = (Map.Entry<Integer, ItemViewBuilder.ItemViewClickListener>) entryO; //todo wtf
+            Map.Entry<Integer, ItemViewHelper.ItemViewClickListener> entry = (Map.Entry<Integer, ItemViewHelper.ItemViewClickListener>) entryO; //todo wtf
             int id = entry.getKey();
-            final ItemViewBuilder.ItemViewClickListener viewClickListener = entry.getValue();
+            final ItemViewHelper.ItemViewClickListener viewClickListener = entry.getValue();
 
             /**
              * WARN:
@@ -99,9 +98,9 @@ public abstract class ItemViewAdapter<B extends ItemViewAdapter.ItemViewBuilder>
         //todo DRY
         //item view holder click listener
         for (Object entryO : getBuilder(viewType).getItemViewHolderClickListenersById().entrySet()) {
-            Map.Entry<Integer, ItemViewBuilder.ItemViewHolderClickListener> entry = (Map.Entry<Integer, ItemViewBuilder.ItemViewHolderClickListener>) entryO; //todo wtf
+            Map.Entry<Integer, ItemViewHelper.ItemViewHolderClickListener> entry = (Map.Entry<Integer, ItemViewHelper.ItemViewHolderClickListener>) entryO; //todo wtf
             int id = entry.getKey();
-            final ItemViewBuilder.ItemViewHolderClickListener viewClickListener = entry.getValue();
+            final ItemViewHelper.ItemViewHolderClickListener viewClickListener = entry.getValue();
 
             /**
              * WARN:
@@ -174,7 +173,7 @@ public abstract class ItemViewAdapter<B extends ItemViewAdapter.ItemViewBuilder>
     BindClickViewClickChainer<I, V> addViewCreator(Class<I> clazz, int typeOfClass, ViewCreator<V> viewCreator) {
         int viewType = getItemViewType(clazz, typeOfClass);
         addViewCreator(viewType, viewCreator);
-        ItemViewBuilder builder = getBuilder(viewType);
+        ItemViewHelper builder = getBuilder(viewType);
         return (BindClickViewClickChainer<I, V>) builder.getItemViewChainer();
     }
 
@@ -188,7 +187,7 @@ public abstract class ItemViewAdapter<B extends ItemViewAdapter.ItemViewBuilder>
     BindClickViewClickChainer<I, V> addViewHolderCreator(Class<I> clazz, int typeOfClass, ViewHolderCreator<BaseViewHolder<V>> viewHolderCreator) {
         int viewType = getItemViewType(clazz, typeOfClass);
         addViewHolderCreator(viewType, viewHolderCreator);
-        ItemViewBuilder builder = getBuilder(viewType);
+        ItemViewHelper builder = getBuilder(viewType);
         return (BindClickViewClickChainer<I, V>) builder.getItemViewChainer();
     }
 
@@ -236,13 +235,13 @@ public abstract class ItemViewAdapter<B extends ItemViewAdapter.ItemViewBuilder>
     }
 
 
-    public static class ItemViewBuilder<I, V extends View> extends BaseViewAdapter.BaseViewBuilder<V> {
+    public static class ItemViewHelper<I, V extends View> extends BaseViewAdapter.BaseViewBuilder<V> {
 
         private ItemViewHolderBinder<I, V> itemViewHolderBinder;
         private Map<Integer, ItemViewClickListener<I, V>> itemViewClickListenersById = new HashMap<>();
         private Map<Integer, ItemViewHolderClickListener<I, V>> itemViewHolderClickListenersById = new HashMap<>();
 
-        public ItemViewBuilder(ViewHolderCreator<BaseViewHolder<V>> creator) {
+        public ItemViewHelper(ViewHolderCreator<BaseViewHolder<V>> creator) {
             super(creator);
         }
 
@@ -285,7 +284,7 @@ public abstract class ItemViewAdapter<B extends ItemViewAdapter.ItemViewBuilder>
          */
         public static class BindClickViewClickChainer<I, V extends View> extends BindViewClickChainer<I, V> {
 
-            public BindClickViewClickChainer(ItemViewBuilder<I, V> builder) {
+            public BindClickViewClickChainer(ItemViewHelper<I, V> builder) {
                 super(builder);
             }
 
@@ -310,7 +309,7 @@ public abstract class ItemViewAdapter<B extends ItemViewAdapter.ItemViewBuilder>
          */
         public static class BindViewClickChainer<I, V extends View> extends BindChainer<I, V> {
 
-            public BindViewClickChainer(ItemViewBuilder<I, V> builder) {
+            public BindViewClickChainer(ItemViewHelper<I, V> builder) {
                 super(builder);
             }
 
@@ -334,9 +333,9 @@ public abstract class ItemViewAdapter<B extends ItemViewAdapter.ItemViewBuilder>
          *
          * @param <V>
          */
-        public static class BindChainer<I, V extends View> extends BaseViewBuilder.BindChainer<V, ItemViewBuilder<I, V>> {
+        public static class BindChainer<I, V extends View> extends BaseViewBuilder.BindChainer<V, ItemViewHelper<I, V>> {
 
-            public BindChainer(ItemViewBuilder<I, V> builder) {
+            public BindChainer(ItemViewHelper<I, V> builder) {
                 super(builder);
             }
 
