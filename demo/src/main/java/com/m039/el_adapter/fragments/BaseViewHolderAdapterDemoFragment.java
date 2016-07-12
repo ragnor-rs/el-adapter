@@ -6,7 +6,7 @@ import android.widget.Toast;
 
 import com.m039.el_adapter.BaseViewHolder;
 import com.m039.el_adapter.BaseViewHolderAdapter;
-import com.m039.el_adapter.BaseViewHolderBuilder;
+import com.m039.el_adapter.BaseViewHolderHelper;
 import com.m039.el_adapter.views.BlueTextView;
 import com.m039.el_adapter.views.GreenTextView;
 
@@ -68,13 +68,13 @@ public class BaseViewHolderAdapterDemoFragment extends DemoFragment {
         recycler.setAdapter(listAdapter);
     }
 
-    public static class MyAdapter extends BaseViewHolderAdapter<BaseViewHolderBuilder> {
+    public static class MyAdapter extends BaseViewHolderAdapter<BaseViewHolderHelper> {
 
         List<Integer> items = new ArrayList<>();
 
         @Override
-        protected <V extends View, VH extends BaseViewHolder<V>> BaseViewHolderBuilder createBuilder(ViewHolderCreator<VH> creator) {
-            return new BaseViewHolderBuilder<>(creator);
+        protected <V extends View, VH extends BaseViewHolder<V>> BaseViewHolderHelper createBuilder(ViewHolderCreator<VH> creator) {
+            return new BaseViewHolderHelper<>(creator);
         }
 
         @Override

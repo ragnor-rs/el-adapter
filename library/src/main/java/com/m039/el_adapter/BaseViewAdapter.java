@@ -156,7 +156,7 @@ public abstract class BaseViewAdapter<B extends BaseViewAdapter.BaseViewBuilder>
 
     }
 
-    public static class BaseViewBuilder<V extends View> extends BaseViewHolderBuilder<V, BaseViewHolder<V>> {
+    public static class BaseViewBuilder<V extends View> extends BaseViewHolderHelper<V, BaseViewHolder<V>> {
 
         private ViewBinder<V> viewBinder;
         private Map<Integer, ViewClickListener<V>> viewClickListenersById = new HashMap<>();
@@ -243,7 +243,7 @@ public abstract class BaseViewAdapter<B extends BaseViewAdapter.BaseViewBuilder>
          *
          * @param <V>
          */
-        public static class BindChainer<V extends View, B extends BaseViewBuilder<V>> extends BaseViewHolderBuilder.BindChainer<V, BaseViewHolder<V>, B> {
+        public static class BindChainer<V extends View, B extends BaseViewBuilder<V>> extends BaseViewHolderHelper.BindChainer<V, BaseViewHolder<V>, B> {
 
             public BindChainer(B builder) {
                 super(builder);
