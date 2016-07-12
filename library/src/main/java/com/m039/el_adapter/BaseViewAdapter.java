@@ -156,7 +156,7 @@ public abstract class BaseViewAdapter<B extends BaseViewAdapter.BaseViewBuilder>
 
     }
 
-    public static class BaseViewBuilder<V extends View> extends BaseViewHolderHelper<V, BaseViewHolder<V>> {
+    public static class BaseViewBuilder<V extends View> extends BaseViewHolderHelper<V, BaseViewHolder<V>> { //todo rename to BaseViewHelper
 
         private ViewBinder<V> viewBinder;
         private Map<Integer, ViewClickListener<V>> viewClickListenersById = new HashMap<>();
