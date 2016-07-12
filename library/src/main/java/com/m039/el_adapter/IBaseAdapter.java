@@ -7,6 +7,9 @@ import android.view.View;
  */
 public interface IBaseAdapter {
 
+    /**
+     * @param viewType is used to bind Item with its ViewCreator and ViewBinder
+     */
      <V extends View, VH extends BaseViewHolder<V>>
      BaseViewHolderBuilder.BindClickViewClickChainer addViewHolderCreator(int viewType, BaseViewHolderAdapter.ViewHolderCreator<VH> creator);
 
