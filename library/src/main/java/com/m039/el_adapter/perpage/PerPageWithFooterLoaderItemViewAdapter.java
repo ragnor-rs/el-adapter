@@ -6,7 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.m039.el_adapter.BaseViewHolder;
-import com.m039.el_adapter.Configurator;
+import com.m039.el_adapter.ItemManager;
 
 import java.util.List;
 
@@ -40,8 +40,8 @@ public class PerPageWithFooterLoaderItemViewAdapter extends PerPageItemViewAdapt
         });
     }
 
-    public PerPageWithFooterLoaderItemViewAdapter(PageLoader pageLoader, Configurator configurator, FooterLoaderWidget footerView) {
-        super(pageLoader, configurator);
+    public PerPageWithFooterLoaderItemViewAdapter(PageLoader pageLoader, ItemManager itemManager, FooterLoaderWidget footerView) {
+        super(pageLoader, itemManager);
         this.mFooterView = footerView;
 
         addViewCreator(VIEW_TYPE_FOOTER, new ViewCreator<View>() {

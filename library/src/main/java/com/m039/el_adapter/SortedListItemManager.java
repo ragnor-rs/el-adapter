@@ -8,11 +8,11 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-public class SortedListConfigurator implements Configurator {
+public class SortedListItemManager implements ItemManager {
 
     private final SortedList<Object> mItems;
 
-    public SortedListConfigurator(SortedListAdapterCallback<Object> adapterCallback) {
+    public SortedListItemManager(SortedListAdapterCallback<Object> adapterCallback) {
         mItems = new SortedList<>(Object.class, adapterCallback);
     }
 

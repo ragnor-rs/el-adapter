@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * Created by defuera on 07/07/2016.
  */
-public class ArrayListConfigurator implements Configurator {
+public class ArrayListItemManager implements ItemManager {
 
     ArrayList<Object> mItems = new ArrayList<>();
 

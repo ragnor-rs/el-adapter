@@ -2,10 +2,10 @@ package com.m039.el_adapter.perpage;
 
 import android.support.annotation.Nullable;
 
-import com.m039.el_adapter.ArrayListConfigurator;
+import com.m039.el_adapter.ArrayListItemManager;
 import com.m039.el_adapter.BaseViewHolder;
-import com.m039.el_adapter.ConfigurableAdapter;
-import com.m039.el_adapter.Configurator;
+import com.m039.el_adapter.ManagingAdapter;
+import com.m039.el_adapter.ItemManager;
 
 /**
  * Created by m039 on 3/22/16.
@@ -22,7 +22,7 @@ import com.m039.el_adapter.Configurator;
  * <li>Per page data number is hardcoded to amount of {@link PerPageItemViewAdapter#LIMIT}</li>
  * </ul>
  */
-public class PerPageItemViewAdapter extends ConfigurableAdapter {
+public class PerPageItemViewAdapter extends ManagingAdapter {
 
     public static final int LIMIT = 20;
 
@@ -30,12 +30,12 @@ public class PerPageItemViewAdapter extends ConfigurableAdapter {
     private final PageLoader mPageLoader;
 
     public PerPageItemViewAdapter(@Nullable PageLoader pageLoader) {
-        super(new ArrayListConfigurator());
+        super(new ArrayListItemManager());
         mPageLoader = pageLoader;
     }
 
-    public PerPageItemViewAdapter(@Nullable PageLoader pageLoader, Configurator configurator) {
-        super(configurator);
+    public PerPageItemViewAdapter(@Nullable PageLoader pageLoader, ItemManager itemManager) {
+        super(itemManager);
         mPageLoader = pageLoader;
     }
 

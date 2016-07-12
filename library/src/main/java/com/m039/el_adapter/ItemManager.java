@@ -8,9 +8,9 @@ import java.util.List;
 /**
  * Created by defuera on 07/07/2016.
  * Abstract model which allows usage of {@link ItemViewAdapter} with different models.
- * For Example ArrayList via {@link ArrayListConfigurator}
+ * For Example ArrayList via {@link ArrayListItemManager} of SortedList list {@link SortedListItemManager}
  */
-public interface Configurator {
+public interface ItemManager {
 
     int getItemCount();
 

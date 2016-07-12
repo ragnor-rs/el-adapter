@@ -20,10 +20,10 @@ package com.m039.el_adapter;
  * todo javadoc
  * Created by m039 on 3/21/16.
  */
-public class ListItemAdapter extends ConfigurableAdapter {
+public class ListItemAdapter extends ManagingAdapter {
 
     public ListItemAdapter() {
-        super(new ArrayListConfigurator());
+        super(new ArrayListItemManager());
     }
 
 }
