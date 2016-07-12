@@ -12,7 +12,7 @@ import java.util.Map;
 /**
  * Created by defuera on 05/07/2016.
  */
-public class BaseViewHolderBuilder<V extends View, VH extends BaseViewHolder<V>> {
+public class BaseViewHolderHelper<V extends View, VH extends BaseViewHolder<V>> {
 
     public static final int NO_ID_CLICK_LISTENER = 0;
 
@@ -20,7 +20,7 @@ public class BaseViewHolderBuilder<V extends View, VH extends BaseViewHolder<V>>
     private ViewHolderBinder<VH> viewHolderBinder;
     private Map<Integer, ViewHolderClickListener<V>> viewHolderClickListeners = new HashMap<>();
 
-    public BaseViewHolderBuilder(ViewHolderCreator<VH> viewHolderCreator) {
+    public BaseViewHolderHelper(ViewHolderCreator<VH> viewHolderCreator) {
         this.viewHolderCreator = viewHolderCreator;
     }
 
@@ -59,7 +59,7 @@ public class BaseViewHolderBuilder<V extends View, VH extends BaseViewHolder<V>>
     public static class BindClickViewClickChainer<V extends View, VH extends BaseViewHolder<V>> extends BindViewClickChainer<V, VH> {
 
 
-        public BindClickViewClickChainer(BaseViewHolderBuilder<V, VH> builder) {
+        public BindClickViewClickChainer(BaseViewHolderHelper<V, VH> builder) {
             super(builder);
         }
 
@@ -77,9 +77,9 @@ public class BaseViewHolderBuilder<V extends View, VH extends BaseViewHolder<V>>
      * @param <V>
      * @param <VH>
      */
-    public static class BindViewClickChainer<V extends View, VH extends BaseViewHolder<V>> extends BindChainer<V, VH, BaseViewHolderBuilder<V, VH>> {
+    public static class BindViewClickChainer<V extends View, VH extends BaseViewHolder<V>> extends BindChainer<V, VH, BaseViewHolderHelper<V, VH>> {
 
-        public BindViewClickChainer(BaseViewHolderBuilder<V, VH> builder) {
+        public BindViewClickChainer(BaseViewHolderHelper<V, VH> builder) {
             super(builder);
         }
 
@@ -96,7 +96,7 @@ public class BaseViewHolderBuilder<V extends View, VH extends BaseViewHolder<V>>
      * @param <V>
      * @param <VH>
      */
-    public static class BindChainer<V extends View, VH extends BaseViewHolder<V>, B extends BaseViewHolderBuilder<V, VH>> {
+    public static class BindChainer<V extends View, VH extends BaseViewHolder<V>, B extends BaseViewHolderHelper<V, VH>> {
 
         private final B builder;
 

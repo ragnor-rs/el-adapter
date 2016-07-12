@@ -5,7 +5,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.m039.el_adapter.BaseViewAdapter;
-import com.m039.el_adapter.BaseViewAdapter.BaseViewBuilder;
+import com.m039.el_adapter.BaseViewAdapter.BaseViewHelper;
 import com.m039.el_adapter.BaseViewHolder;
 import com.m039.el_adapter.BaseViewHolderAdapter;
 import com.m039.el_adapter.views.BlueTextView;
@@ -73,7 +73,7 @@ public class BaseViewAdapterDemoFragment extends DemoFragment {
         recycler.setAdapter(listAdapter);
     }
 
-    public static class MyAdapter extends BaseViewAdapter<BaseViewBuilder> {
+    public static class MyAdapter extends BaseViewAdapter<BaseViewHelper> {
 
         List<Integer> items = new ArrayList<>();
 
@@ -96,8 +96,8 @@ public class BaseViewAdapterDemoFragment extends DemoFragment {
         }
 
         @Override
-        protected <V extends View, VH extends BaseViewHolder<V>> BaseViewBuilder<V> createBuilder(ViewHolderCreator<VH> creator) {
-            return new BaseViewBuilder(creator);
+        protected <V extends View, VH extends BaseViewHolder<V>> BaseViewHelper<V> createBuilder(ViewHolderCreator<VH> creator) {
+            return new BaseViewHelper(creator);
         }
     }
 

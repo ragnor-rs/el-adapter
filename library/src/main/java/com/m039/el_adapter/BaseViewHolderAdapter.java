@@ -20,7 +20,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.m039.el_adapter.BaseViewHolderBuilder.ViewHolderClickListener;
+import com.m039.el_adapter.BaseViewHolderHelper.ViewHolderClickListener;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -40,7 +40,7 @@ import java.util.Map;
  * <p>
  * Created by m039 on 3/3/16.
  */
-public abstract class BaseViewHolderAdapter<B extends BaseViewHolderBuilder> extends RecyclerView.Adapter<BaseViewHolder<?>>
+public abstract class BaseViewHolderAdapter<B extends BaseViewHolderHelper> extends RecyclerView.Adapter<BaseViewHolder<?>>
         implements IBaseAdapter {
 
     public static final int DEFAULT_VIEW_TYPE = 0;
@@ -80,13 +80,13 @@ public abstract class BaseViewHolderAdapter<B extends BaseViewHolderBuilder> ext
     protected abstract <V extends View, VH extends BaseViewHolder<V>> B createBuilder(ViewHolderCreator<VH> creator);
 
     @Override
-    public <V extends View, VH extends BaseViewHolder<V>> BaseViewHolderBuilder.BindClickViewClickChainer<V, VH>
+    public <V extends View, VH extends BaseViewHolder<V>> BaseViewHolderHelper.BindClickViewClickChainer<V, VH>
     addViewHolderCreator(int viewType, ViewHolderCreator<VH> creator) {
 
         B elBuilder = createBuilder(creator);
         builderMap.put(viewType, elBuilder);
 
-        return (BaseViewHolderBuilder.BindClickViewClickChainer<V, VH>) elBuilder.getBaseViewHolderChainer();
+        return (BaseViewHolderHelper.BindClickViewClickChainer<V, VH>) elBuilder.getBaseViewHolderChainer();
     }
 
 
@@ -98,7 +98,7 @@ public abstract class BaseViewHolderAdapter<B extends BaseViewHolderBuilder> ext
         ViewHolderCreator viewHolderCreator = builder.getViewHolderCreator();
 
         if (viewHolderCreator == null) {
-            throw new IllegalStateException("Can't create view of type " + viewType + ".");
+            throw new UnknownViewType("Can't create view of type " + viewType + ".");
         }
 
 
@@ -124,7 +124,7 @@ public abstract class BaseViewHolderAdapter<B extends BaseViewHolderBuilder> ext
 
             };
 
-            if (id == BaseViewHolderBuilder.NO_ID_CLICK_LISTENER) {
+            if (id == BaseViewHolderHelper.NO_ID_CLICK_LISTENER) {
                 view.setOnClickListener(clickListener);
             } else {
                 view.findViewById(id).setOnClickListener(clickListener);
