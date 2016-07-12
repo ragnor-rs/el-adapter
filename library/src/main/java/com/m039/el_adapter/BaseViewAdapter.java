@@ -31,7 +31,7 @@ import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
  * Created by defuera on 05/07/2016.
  * adds simple addViewCreator, addViewBinderMethods
  */
-public abstract class BaseViewAdapter<B extends BaseViewAdapter.BaseViewBuilder> extends BaseViewHolderAdapter<B> {
+public abstract class BaseViewAdapter<B extends BaseViewAdapter.BaseViewHelper> extends BaseViewHolderAdapter<B> {
 
     /**
      * This interface is used to create views in {@link #onCreateViewHolder(ViewGroup, int)}
@@ -68,9 +68,9 @@ public abstract class BaseViewAdapter<B extends BaseViewAdapter.BaseViewBuilder>
 
         final View view = viewHolder.itemView;
         for (Object entryO : getBuilder(viewType).getViewClickListeners().entrySet()) {
-            Map.Entry<Integer, BaseViewBuilder.ViewClickListener> entry = (Map.Entry<Integer, BaseViewBuilder.ViewClickListener>) entryO; //todo wtf
+            Map.Entry<Integer, BaseViewHelper.ViewClickListener> entry = (Map.Entry<Integer, BaseViewHelper.ViewClickListener>) entryO; //todo wtf
             int id = entry.getKey();
-            final BaseViewBuilder.ViewClickListener viewClickListener = entry.getValue();
+            final BaseViewHelper.ViewClickListener viewClickListener = entry.getValue();
 
             /**
              * WARN:
@@ -87,7 +87,7 @@ public abstract class BaseViewAdapter<B extends BaseViewAdapter.BaseViewBuilder>
 
             };
 
-            if (id == BaseViewBuilder.NO_ID_CLICK_LISTENER) {
+            if (id == BaseViewHelper.NO_ID_CLICK_LISTENER) {
                 view.setOnClickListener(clickListener);
             } else {
                 view.findViewById(id).setOnClickListener(clickListener);
@@ -116,9 +116,9 @@ public abstract class BaseViewAdapter<B extends BaseViewAdapter.BaseViewBuilder>
     //endregion
 
 
-    public <V extends View> BaseViewBuilder.BindClickViewClickChainer<V> addViewCreator(int viewType, ViewCreator<V> viewCreator) {
+    public <V extends View> BaseViewHelper.BindClickViewClickChainer<V> addViewCreator(int viewType, ViewCreator<V> viewCreator) {
         addViewHolderCreator(viewType, new DefaultViewHolderCreator<>(viewCreator));
-        return (BaseViewBuilder.BindClickViewClickChainer<V>) getBuilder(viewType).getBaseViewChainer();
+        return (BaseViewHelper.BindClickViewClickChainer<V>) getBuilder(viewType).getBaseViewChainer();
     }
 
     protected <V extends View> ViewBinder<V> getViewBinder(int viewType) {
@@ -156,12 +156,12 @@ public abstract class BaseViewAdapter<B extends BaseViewAdapter.BaseViewBuilder>
 
     }
 
-    public static class BaseViewBuilder<V extends View> extends BaseViewHolderHelper<V, BaseViewHolder<V>> { //todo rename to BaseViewHelper
+    public static class BaseViewHelper<V extends View> extends BaseViewHolderHelper<V, BaseViewHolder<V>> {
 
         private ViewBinder<V> viewBinder;
         private Map<Integer, ViewClickListener<V>> viewClickListenersById = new HashMap<>();
 
-        public BaseViewBuilder(ViewHolderCreator<BaseViewHolder<V>> creator) {
+        public BaseViewHelper(ViewHolderCreator<BaseViewHolder<V>> creator) {
             super(creator);
         }
 
@@ -195,7 +195,7 @@ public abstract class BaseViewAdapter<B extends BaseViewAdapter.BaseViewBuilder>
          */
         public static class BindClickViewClickChainer<V extends View> extends BindViewClickChainer<V> {
 
-            public BindClickViewClickChainer(BaseViewBuilder<V> builder) {
+            public BindClickViewClickChainer(BaseViewHelper<V> builder) {
                 super(builder);
             }
 
@@ -218,9 +218,9 @@ public abstract class BaseViewAdapter<B extends BaseViewAdapter.BaseViewBuilder>
          *
          * @param <V>
          */
-        public static class BindViewClickChainer<V extends View> extends BindChainer<V, BaseViewBuilder<V>> {
+        public static class BindViewClickChainer<V extends View> extends BindChainer<V, BaseViewHelper<V>> {
 
-            public BindViewClickChainer(BaseViewBuilder<V> builder) {
+            public BindViewClickChainer(BaseViewHelper<V> builder) {
                 super(builder);
             }
 
@@ -243,7 +243,7 @@ public abstract class BaseViewAdapter<B extends BaseViewAdapter.BaseViewBuilder>
          *
          * @param <V>
          */
-        public static class BindChainer<V extends View, B extends BaseViewBuilder<V>> extends BaseViewHolderHelper.BindChainer<V, BaseViewHolder<V>, B> {
+        public static class BindChainer<V extends View, B extends BaseViewHelper<V>> extends BaseViewHolderHelper.BindChainer<V, BaseViewHolder<V>, B> {
 
             public BindChainer(B builder) {
                 super(builder);

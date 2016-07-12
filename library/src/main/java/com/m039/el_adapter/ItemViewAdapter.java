@@ -105,7 +105,7 @@ public abstract class ItemViewAdapter<B extends ItemViewAdapter.ItemViewHelper> 
 
             };
 
-            if (id == BaseViewBuilder.NO_ID_CLICK_LISTENER) {
+            if (id == BaseViewHelper.NO_ID_CLICK_LISTENER) {
                 view.setOnClickListener(clickListener);
             } else {
                 view.findViewById(id).setOnClickListener(clickListener);
@@ -134,7 +134,7 @@ public abstract class ItemViewAdapter<B extends ItemViewAdapter.ItemViewHelper> 
 
             };
 
-            if (id == BaseViewBuilder.NO_ID_CLICK_LISTENER) {
+            if (id == BaseViewHelper.NO_ID_CLICK_LISTENER) {
                 view.setOnClickListener(clickListener);
             } else {
                 view.findViewById(id).setOnClickListener(clickListener);
@@ -253,7 +253,7 @@ public abstract class ItemViewAdapter<B extends ItemViewAdapter.ItemViewHelper> 
     }
 
 
-    public static class ItemViewHelper<I, V extends View> extends BaseViewAdapter.BaseViewBuilder<V> {
+    public static class ItemViewHelper<I, V extends View> extends BaseViewAdapter.BaseViewHelper<V> {
 
         private ItemViewHolderBinder<I, V> itemViewHolderBinder;
         private Map<Integer, ItemViewClickListener<I, V>> itemViewClickListenersById = new HashMap<>();
@@ -351,7 +351,7 @@ public abstract class ItemViewAdapter<B extends ItemViewAdapter.ItemViewHelper> 
          *
          * @param <V>
          */
-        public static class BindChainer<I, V extends View> extends BaseViewBuilder.BindChainer<V, ItemViewHelper<I, V>> {
+        public static class BindChainer<I, V extends View> extends BaseViewHelper.BindChainer<V, ItemViewHelper<I, V>> {
 
             public BindChainer(ItemViewHelper<I, V> builder) {
                 super(builder);
