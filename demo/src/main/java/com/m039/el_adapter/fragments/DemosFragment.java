@@ -20,16 +20,16 @@ public class DemosFragment extends DemoFragment {
     private static List<Pair<String, DemoFragment>> DEMOS = new ArrayList<>();
 
     static {
+        DEMOS.add(create("BaseViewHolderAdapter test",
+                new BaseViewHolderAdapterDemoFragment()));
+        DEMOS.add(create("BaseViewAdapter test",
+                new BaseViewAdapterDemoFragment()));
         DEMOS.add(create("Simple example",
                 new SimpleDemoFragment()));
         DEMOS.add(create("typeOfClass example",
                 new TypeOfClassDemoFragment()));
         DEMOS.add(create("typeOfClass (wrapper) example",
                 new TypeOfClassWrapperDemoFragment()));
-        DEMOS.add(create("typeOfBind example",
-                new TypeOfBindDemoFragment()));
-        DEMOS.add(create("typeOfBind and typeOfClass example",
-                new TypesDemoFragment()));
         DEMOS.add(create("clicks example",
                 new ClicksDemoFragment()));
     }
@@ -40,14 +40,12 @@ public class DemosFragment extends DemoFragment {
 
         listAdapter
                 .addViewCreator(Pair.class, parent -> new Button(getActivity()))
-                .addViewBinder((view, item) -> view.setText((String) item.first))
-                .addOnItemViewClickListener((view, item) -> {
-                    getFragmentManager()
-                            .beginTransaction()
-                            .replace(android.R.id.content, (Fragment) item.second)
-                            .addToBackStack(null)
-                            .commit();
-                });
+                .addOnItemViewHolderClickListener((view, item) -> getFragmentManager()
+                        .beginTransaction()
+                        .replace(android.R.id.content, (Fragment) item.second)
+                        .addToBackStack(null)
+                        .commit())
+                .addItemViewBinder((view, item) -> view.setText((String) item.first));
 
         listAdapter.addItems(DEMOS);
 

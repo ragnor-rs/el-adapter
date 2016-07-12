@@ -16,8 +16,8 @@
 
 package com.m039.el_adapter;
 
+import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -28,35 +28,10 @@ import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 
 /**
- * Base class for adapters.
- * <p>
- * The main difference between this class and other that it doesn't know anything about data only
- * how to create view.
- * <p>
- * BaseViewAdapter is only responsible for creating view, not binding them.
- * <p>
- * Logic for binding should be in another/inherited classes.
- * <p>
- * Tha main idea to separate creation and binding cause creation always returns same view for a same
- * viewType, but binding may differ.
- * <p>
- * Created by m039 on 3/3/16.
+ * Created by defuera on 05/07/2016.
+ * adds simple addViewCreator, addViewBinderMethods
  */
-public abstract class BaseViewAdapter<B extends ViewCreatorChainer> extends RecyclerView.Adapter<BaseViewAdapter.ViewHolder<?>>
-        implements IViewCreator<B> {
-
-    public static final int DEFAULT_VIEW_TYPE = 0;
-
-    public static class ViewHolder<V extends View> extends RecyclerView.ViewHolder {
-
-        public V itemView; // parameterize
-
-        public ViewHolder(V itemView) {
-            super(itemView);
-            this.itemView = itemView;
-        }
-
-    }
+public abstract class BaseViewAdapter<B extends BaseViewAdapter.BaseViewBuilder> extends BaseViewHolderAdapter<B> {
 
     /**
      * This interface is used to create views in {@link #onCreateViewHolder(ViewGroup, int)}
@@ -71,33 +46,86 @@ public abstract class BaseViewAdapter<B extends ViewCreatorChainer> extends Recy
 
     }
 
-    /**
-     * This interface is used to create views in {@link #onCreateViewHolder(ViewGroup, int)}
-     * <p>
-     * todo add type check for ViewHolders
-     */
-    public interface ViewHolderCreator<VH extends ViewHolder> {
+    public interface ViewBinder<V extends View> {
 
         /**
-         * @param parent parent of a new view
-         * @return should be a new created viewHolder
-         */
-        VH onCreateViewHolder(ViewGroup parent);
-
-    }
-
-    public interface ViewHolderBinder<VH extends ViewHolder> {
-
-        /**
-         * To get position call viewHolder.getAdapterPosition()
+         * To get position call view.getAdapterPosition()
          *
-         * @param viewHolder viewHolder to bind
+         * @param view view to bind
+         * @param position
          */
-        void onBindViewHolder(VH viewHolder);
+        void onBindView(V view, int position);
 
     }
 
-    protected static class DefaultViewHolderCreator<V extends View> implements ViewHolderCreator<ViewHolder<V>> {
+
+    //region RecyclerView#Adapter
+
+
+    @Override
+    public BaseViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        final BaseViewHolder viewHolder = super.onCreateViewHolder(parent, viewType);
+
+        final View view = viewHolder.itemView;
+        for (Object entryO : getBuilder(viewType).getViewClickListeners().entrySet()) {
+            Map.Entry<Integer, BaseViewBuilder.ViewClickListener> entry = (Map.Entry<Integer, BaseViewBuilder.ViewClickListener>) entryO; //todo wtf
+            int id = entry.getKey();
+            final BaseViewBuilder.ViewClickListener viewClickListener = entry.getValue();
+
+            /**
+             * WARN:
+             *
+             * Performance bottleneck - a lot of calls to new
+             */
+
+            View.OnClickListener clickListener = new View.OnClickListener() {
+
+                @Override
+                public void onClick(View v) {
+                    viewClickListener.onViewClick(view, viewHolder.getAdapterPosition());
+                }
+
+            };
+
+            if (id == BaseViewBuilder.NO_ID_CLICK_LISTENER) {
+                view.setOnClickListener(clickListener);
+            } else {
+                view.findViewById(id).setOnClickListener(clickListener);
+            }
+        }
+
+        return viewHolder;
+
+
+    }
+
+    @Override
+    public void onBindViewHolder(BaseViewHolder holder, int position) {
+        super.onBindViewHolder(holder, position);
+
+        ViewBinder<View> viewBinder = getViewBinder(getItemViewType(position));
+
+        if (viewBinder != null) {
+            viewBinder.onBindView(holder.itemView, holder.getAdapterPosition());
+        } else {
+            // do nothing, don't bind a thing
+        }
+
+    }
+
+    //endregion
+
+
+    public <V extends View> BaseViewBuilder.BindClickViewClickChainer<V> addViewCreator(int viewType, ViewCreator<V> viewCreator) {
+        addViewHolderCreator(viewType, new DefaultViewHolderCreator<>(viewCreator));
+        return (BaseViewBuilder.BindClickViewClickChainer<V>) getBuilder(viewType).getBaseViewChainer();
+    }
+
+    protected <V extends View> ViewBinder<V> getViewBinder(int viewType) {
+        return (ViewBinder<V>) getBuilder(viewType).getViewBinder();
+    }
+
+    protected static class DefaultViewHolderCreator<V extends View> implements ViewHolderCreator<BaseViewHolder<V>> {
 
         @NonNull
         private final ViewCreator<V> mViewCreator;
@@ -112,12 +140,12 @@ public abstract class BaseViewAdapter<B extends ViewCreatorChainer> extends Recy
         }
 
         @Override
-        public ViewHolder<V> onCreateViewHolder(ViewGroup parent) {
+        public BaseViewHolder<V> onCreateViewHolder(ViewGroup parent) {
             V view = mViewCreator.onCreateView(parent);
 
             setLayoutParams(view);
 
-            return new ViewHolder<>(view);
+            return new BaseViewHolder<>(view);
         }
 
         protected void setLayoutParams(View view) {
@@ -128,116 +156,113 @@ public abstract class BaseViewAdapter<B extends ViewCreatorChainer> extends Recy
 
     }
 
-    private final ViewCreatorChainerFactory<B> mViewCreatorChainerFactory;
-    private final Map<Integer, ViewHolderCreator> mViewHolderCreatorsMap = new HashMap<>();
-    private final Map<Integer, ViewHolderBinder> mViewHolderBindersMap = new HashMap<>();
+    public static class BaseViewBuilder<V extends View> extends BaseViewHolderBuilder<V, BaseViewHolder<V>> {
 
-    protected BaseViewAdapter(ViewCreatorChainerFactory<B> mViewCreatorChainerFactory) {
-        this.mViewCreatorChainerFactory = mViewCreatorChainerFactory;
-    }
+        private ViewBinder<V> viewBinder;
+        private Map<Integer, ViewClickListener<V>> viewClickListenersById = new HashMap<>();
 
-    @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        ViewHolderCreator viewHolderCreator = mViewHolderCreatorsMap.get(viewType);
+        public BaseViewBuilder(ViewHolderCreator<BaseViewHolder<V>> creator) {
+            super(creator);
+        }
 
-        if (viewHolderCreator == null) {
-            String className = null;
+        public BindClickViewClickChainer<V> getBaseViewChainer() {
+            return new BindClickViewClickChainer<>(this);
+        }
 
-            if (this instanceof ItemViewAdapter) {
-                className = ((ItemViewAdapter) this).findClassName(viewType);
+        public ViewBinder<V> getViewBinder() {
+            return viewBinder;
+        }
+
+        public void setViewBinder(ViewBinder<V> viewBinder) {
+            this.viewBinder = viewBinder;
+        }
+
+        public void addViewClickListener(@IdRes int resId, ViewClickListener<V> viewClickListener) {
+            viewClickListenersById.put(resId, viewClickListener);
+        }
+
+        public Map<Integer, ViewClickListener<V>> getViewClickListeners() {
+            return viewClickListenersById;
+        }
+
+
+        //region Chainers
+
+        /**
+         * this Chainer can chain addViewHolderClickListener, addViewHolderClickListener, addViewHolderBinder
+         *
+         * @param <V>
+         */
+        public static class BindClickViewClickChainer<V extends View> extends BindViewClickChainer<V> {
+
+            public BindClickViewClickChainer(BaseViewBuilder<V> builder) {
+                super(builder);
             }
 
-            throw new IllegalStateException("Can't create view of type " +
-                    viewType + (className != null ? " or '" + className : "'") + "." +
-                    " You should register " +
-                    ViewCreator.class.getSimpleName() +
-                    " or " +
-                    ViewHolderCreator.class.getSimpleName() +
-                    " for that type."
-            );
+            public BindViewClickChainer<V> addViewHolderClickListener(ViewHolderClickListener<V> viewHolderClickListener) {
+                getBuilder().addViewHolderClickListener(NO_ID_CLICK_LISTENER, viewHolderClickListener);
+                return new BindViewClickChainer<>(getBuilder());
+            }
+
+            public BindViewClickChainer<V> addViewClickListener(ViewClickListener<V> viewClickListener) {
+                getBuilder().addViewClickListener(NO_ID_CLICK_LISTENER, viewClickListener);
+                return new BindViewClickChainer<>(getBuilder());
+            }
+
         }
 
-        return viewHolderCreator.onCreateViewHolder(parent);
-    }
+        /**
+         * this Chainer can chain
+         * <p>addViewHolderClickListener, addViewClickListener,
+         * <p>addViewHolderBinder, addItemViewBinder
+         *
+         * @param <V>
+         */
+        public static class BindViewClickChainer<V extends View> extends BindChainer<V, BaseViewBuilder<V>> {
 
-    @SuppressWarnings("unchecked")
-    @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
-        ViewHolderBinder viewHolderBinder = mViewHolderBindersMap
-                .get(getItemViewType(position));
+            public BindViewClickChainer(BaseViewBuilder<V> builder) {
+                super(builder);
+            }
 
-        if (viewHolderBinder != null) {
-            viewHolderBinder.onBindViewHolder(holder);
-        } else {
-            // do nothing, don't bind a thing
+            public BindViewClickChainer<V> addViewHolderClickListener(@IdRes int resId, ViewHolderClickListener<V> viewHolderClickListener) {
+                getBuilder().addViewHolderClickListener(resId, viewHolderClickListener);
+                return new BindViewClickChainer<>(getBuilder());
+
+            }
+
+            public BindViewClickChainer<V> addViewClickListener(@IdRes int resId, ViewClickListener<V> viewClickListener) {
+                getBuilder().addViewClickListener(resId, viewClickListener);
+                return new BindViewClickChainer<>(getBuilder());
+            }
+
+
         }
-    }
 
-    @SuppressWarnings("unchecked")
-    protected B newCommandBuilder(int viewType) {
-        return mViewCreatorChainerFactory.newViewCreatorChainer(this, viewType);
-    }
+        /**
+         * this Chainer can chain addViewHolderBinder, addItemViewBinder
+         *
+         * @param <V>
+         */
+        public static class BindChainer<V extends View, B extends BaseViewBuilder<V>> extends BaseViewHolderBuilder.BindChainer<V, BaseViewHolder<V>, B> {
 
-    public interface ViewCreatorChainerFactory<C extends ViewCreatorChainer> {
-        C newViewCreatorChainer(BaseViewAdapter<C> adapter, int viewType);
-    }
+            public BindChainer(B builder) {
+                super(builder);
+            }
 
-    /**
-     * @param viewType view type to bind for
-     * @param binder   viewHolder binder which used in {@link #onBindViewHolder(ViewHolder, int)}
-     */
-    <V extends View>
-    /* package */ void addViewHolderBinder(int viewType, ViewHolderBinder<ViewHolder<V>> binder) {
-        mViewHolderBindersMap.put(viewType, binder);
-    }
+            public void addViewBinder(ViewBinder<V> viewBinder) {
+                getBuilder().setViewBinder(viewBinder);
+            }
 
-    /**
-     * The main method to add viewCreator to this class
-     *
-     * @param viewType    viewType for which <code>viewCreator</code> will be used
-     * @param viewCreator creator of views
-     */
-    @Override
-    public <V extends View>
-    B addViewCreator(int viewType, ViewCreator<V> viewCreator) {
-        return addViewHolderCreator(viewType, new DefaultViewHolderCreator<>(viewCreator));
-    }
-
-    /**
-     * @param viewType          for which <code>viewHolderCreator</code> will be used
-     * @param viewHolderCreator creator of viewHolders
-     */
-    @Override
-    public <V extends View>
-    B addViewHolderCreator(int viewType, ViewHolderCreator<ViewHolder<V>> viewHolderCreator) {
-        mViewHolderCreatorsMap.put(viewType, viewHolderCreator);
-        return newCommandBuilder(viewType);
-    }
-
-    /**
-     * @return viewCreator associated with this <code>viewType</code> or null
-     */
-    protected ViewCreator<?> getViewCreator(int viewType) {
-        ViewHolderCreator viewHolderCreator = getViewHolderCreator(viewType);
-        if (viewHolderCreator instanceof DefaultViewHolderCreator) {
-            return ((DefaultViewHolderCreator) viewHolderCreator).getViewCreator();
-        } else {
-            throw new IllegalStateException("Can't find viewCreator");
         }
+
+
+        public interface ViewClickListener<V extends View> {
+            void onViewClick(V view, int position);
+        }
+
     }
 
-    /**
-     * @return viewHolderCreator associated with <code>viewType</code> or null
-     */
-    protected ViewHolderCreator getViewHolderCreator(int viewType) {
-        return mViewHolderCreatorsMap.get(viewType);
-    }
+    //endregion
 
-    /**
-     * @return viewHolderBinder associated with <code>viewType</code> or null
-     */
-    protected ViewHolderBinder<?> getViewHolderBinder(int viewType) {
-        return mViewHolderBindersMap.get(viewType);
-    }
 
 }

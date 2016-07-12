@@ -3,6 +3,7 @@ package com.m039.el_adapter.fragments;
 import android.app.Activity;
 import android.support.v7.widget.RecyclerView;
 
+import com.m039.el_adapter.ItemViewAdapter;
 import com.m039.el_adapter.ListItemAdapter;
 import com.m039.el_adapter.views.BlueTextView;
 import com.m039.el_adapter.views.GreenTextView;
@@ -30,14 +31,6 @@ public class TypesDemoFragment extends DemoFragment {
                 }
             }
 
-            @Override
-            protected int getTypeOfBind(int position) {
-                if (position >= 20 && position < 30) {
-                    return position % 3;
-                } else {
-                    return super.getTypeOfClass(position);
-                }
-            }
 
         };
 
@@ -45,17 +38,15 @@ public class TypesDemoFragment extends DemoFragment {
 
         listAdapter
                 .addViewCreator(Integer.class, 0, parent -> new RedTextView(activity))
-                .addViewBinder((view, item) -> view.setText(getText(0, -1, item)));
+                .addItemViewBinder((view, item) -> view.setText(getText(0, -1, item)));
 
         listAdapter
                 .addViewCreator(Integer.class, 1, parent -> new GreenTextView(activity))
-                .addViewBinder((view, item) -> view.setText(getText(1, -1, item)));
+                .addItemViewBinder((view, item) -> view.setText(getText(1, -1, item)));
 
         listAdapter
                 .addViewCreator(Integer.class, 2, parent -> new BlueTextView(activity))
-                .addViewBinder(0, (view, item) -> view.setText(getText(2, 0, item)))
-                .addViewBinder(1, (view, item) -> view.setText(getText(2, 1, item)))
-                .addViewBinder(2, (view, item) -> view.setText(getText(2, 2, item)));
+                .addItemViewBinder((view, item) -> view.setText(getText(2, 0, item)));
 
         for (int i = 0; i < 50; i++) {
             listAdapter.addItem(i);
