@@ -85,7 +85,7 @@ public abstract class ItemViewAdapter<B extends ItemViewAdapter.ItemViewHelper> 
         final View view = viewHolder.itemView;
 
         //item view click listener
-        for (Object entryO : getBuilder(viewType).getItemViewClickListenersById().entrySet()) {
+        for (Object entryO : getHelper(viewType).getItemViewClickListenersById().entrySet()) {
             Map.Entry<Integer, ItemViewHelper.ItemViewClickListener> entry = (Map.Entry<Integer, ItemViewHelper.ItemViewClickListener>) entryO; //todo wtf
             int id = entry.getKey();
             final ItemViewHelper.ItemViewClickListener viewClickListener = entry.getValue();
@@ -114,7 +114,7 @@ public abstract class ItemViewAdapter<B extends ItemViewAdapter.ItemViewHelper> 
 
         //todo DRY
         //item view holder click listener
-        for (Object entryO : getBuilder(viewType).getItemViewHolderClickListenersById().entrySet()) {
+        for (Object entryO : getHelper(viewType).getItemViewHolderClickListenersById().entrySet()) {
             Map.Entry<Integer, ItemViewHelper.ItemViewHolderClickListener> entry = (Map.Entry<Integer, ItemViewHelper.ItemViewHolderClickListener>) entryO; //todo wtf
             int id = entry.getKey();
             final ItemViewHelper.ItemViewHolderClickListener viewClickListener = entry.getValue();
@@ -190,7 +190,7 @@ public abstract class ItemViewAdapter<B extends ItemViewAdapter.ItemViewHelper> 
     BindClickViewClickChainer<I, V> addViewCreator(Class<I> clazz, int typeOfClass, ViewCreator<V> viewCreator) {
         int viewType = getItemViewType(clazz, typeOfClass);
         addViewCreator(viewType, viewCreator);
-        ItemViewHelper builder = getBuilder(viewType);
+        ItemViewHelper builder = getHelper(viewType);
         return (BindClickViewClickChainer<I, V>) builder.getItemViewChainer();
     }
 
@@ -204,7 +204,7 @@ public abstract class ItemViewAdapter<B extends ItemViewAdapter.ItemViewHelper> 
     BindClickViewClickChainer<I, V> addViewHolderCreator(Class<I> clazz, int typeOfClass, ViewHolderCreator<BaseViewHolder<V>> viewHolderCreator) {
         int viewType = getItemViewType(clazz, typeOfClass);
         addViewHolderCreator(viewType, viewHolderCreator);
-        ItemViewHelper builder = getBuilder(viewType);
+        ItemViewHelper builder = getHelper(viewType);
         return (BindClickViewClickChainer<I, V>) builder.getItemViewChainer();
     }
 
@@ -249,7 +249,7 @@ public abstract class ItemViewAdapter<B extends ItemViewAdapter.ItemViewHelper> 
     //endregion
 
     protected <I, V extends View> ItemViewHolderBinder<I, V> getItemViewHolderBinder(int viewType) {
-        return (ItemViewHolderBinder<I, V>) getBuilder(viewType).getItemViewHolderBinder();
+        return (ItemViewHolderBinder<I, V>) getHelper(viewType).getItemViewHolderBinder();
     }
 
 
@@ -321,7 +321,7 @@ public abstract class ItemViewAdapter<B extends ItemViewAdapter.ItemViewHelper> 
         /**
          * this Chainer can chain
          * <p>addOnViewHolderClickListener, addViewClickListener,
-         * <p>addViewHolderBinder, addItemViewBinder
+         * <p>addViewHolderBinder, addViewBinder
          *
          * @param <V>
          */
@@ -346,17 +346,17 @@ public abstract class ItemViewAdapter<B extends ItemViewAdapter.ItemViewHelper> 
 
 
         /**
-         * this Chainer can chain addViewHolderBinder, addItemViewBinder
+         * this Chainer can chain addViewHolderBinder, addViewBinder
          *
          * @param <V>
          */
-        public static class BindChainer<I, V extends View> extends BaseViewHelper.BindChainer<V, ItemViewHelper<I, V>> {
+        public static class BindChainer<I, V extends View> extends BaseViewHelper.BaseChainer<V, BaseViewHolder<V>, ItemViewHelper<I, V>> {
 
             public BindChainer(ItemViewHelper<I, V> builder) {
                 super(builder);
             }
 
-            public ClickViewClickChainer<I, V> addItemViewBinder(ItemViewBinder<I, V> itemViewBinder) {
+            public ClickViewClickChainer<I, V> addViewBinder(ItemViewBinder<I, V> itemViewBinder) {
                 getHelper().setViewBinder(new DefaultItemViewHolderBinder<>(itemViewBinder));
                 return new ClickViewClickChainer<>(getHelper());
             }

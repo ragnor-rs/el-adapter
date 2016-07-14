@@ -67,7 +67,7 @@ public abstract class BaseViewAdapter<B extends BaseViewAdapter.BaseViewHelper> 
         final BaseViewHolder viewHolder = super.onCreateViewHolder(parent, viewType);
 
         final View view = viewHolder.itemView;
-        for (Object entryO : getBuilder(viewType).getViewClickListeners().entrySet()) {
+        for (Object entryO : getHelper(viewType).getViewClickListeners().entrySet()) {
             Map.Entry<Integer, BaseViewHelper.ViewClickListener> entry = (Map.Entry<Integer, BaseViewHelper.ViewClickListener>) entryO; //todo wtf
             int id = entry.getKey();
             final BaseViewHelper.ViewClickListener viewClickListener = entry.getValue();
@@ -118,11 +118,15 @@ public abstract class BaseViewAdapter<B extends BaseViewAdapter.BaseViewHelper> 
 
     public <V extends View> BaseViewHelper.BindClickViewClickChainer<V> addViewCreator(int viewType, ViewCreator<V> viewCreator) {
         addViewHolderCreator(viewType, new DefaultViewHolderCreator<>(viewCreator));
-        return (BaseViewHelper.BindClickViewClickChainer<V>) getBuilder(viewType).getBaseViewChainer();
+        return (BaseViewHelper.BindClickViewClickChainer<V>) getHelper(viewType).getBaseViewChainer();
     }
 
     protected <V extends View> ViewBinder<V> getViewBinder(int viewType) {
-        return (ViewBinder<V>) getBuilder(viewType).getViewBinder();
+        return (ViewBinder<V>) getHelper(viewType).getViewBinder();
+    }
+
+    protected <V extends View, VH extends BaseViewHolder<V>>ViewHolderCreator<VH> getViewHolderCreator(int viewType){
+        return getHelper(viewType).getViewHolderCreator();
     }
 
     protected static class DefaultViewHolderCreator<V extends View> implements ViewHolderCreator<BaseViewHolder<V>> {
@@ -185,7 +189,6 @@ public abstract class BaseViewAdapter<B extends BaseViewAdapter.BaseViewHelper> 
             return viewClickListenersById;
         }
 
-
         //region Chainers
 
         /**
@@ -214,7 +217,7 @@ public abstract class BaseViewAdapter<B extends BaseViewAdapter.BaseViewHelper> 
         /**
          * this Chainer can chain
          * <p>addOnViewHolderClickListener, addViewClickListener,
-         * <p>addViewHolderBinder, addItemViewBinder
+         * <p>addViewHolderBinder, addViewBinder
          *
          * @param <V>
          */
@@ -238,7 +241,7 @@ public abstract class BaseViewAdapter<B extends BaseViewAdapter.BaseViewHelper> 
         }
 
         /**
-         * this Chainer can chain addViewHolderBinder, addItemViewBinder
+         * this Chainer can chain addViewHolderBinder, addViewBinder
          *
          * @param <V>
          */

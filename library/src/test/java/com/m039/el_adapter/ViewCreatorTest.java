@@ -75,7 +75,7 @@ public class ViewCreatorTest {
                             }
                         }
                 )
-                .addItemViewBinder(
+                .addViewBinder(
                         new ItemViewAdapter.ItemViewBinder<ElEntityOne, TestWidgetOne>() {
                             @Override
                             public void onBindView(TestWidgetOne view, ElEntityOne item) {
@@ -94,7 +94,7 @@ public class ViewCreatorTest {
                             }
                         }
                 )
-                .addItemViewBinder(
+                .addViewBinder(
                         new ItemViewAdapter.ItemViewBinder<ElEntityTwo, TestWidgetTwo>() {
                             @Override
                             public void onBindView(TestWidgetTwo view, ElEntityTwo item) {
