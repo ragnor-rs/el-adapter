@@ -307,13 +307,13 @@ public abstract class ItemViewAdapter<B extends ItemViewAdapter.ItemViewHelper> 
             }
 
             public BindViewClickChainer<I, V> addOnItemViewHolderClickListener(ItemViewHolderClickListener<I, V> itemViewHolderClickListener) {
-                getBuilder().addItemViewHolderClickListener(NO_ID_CLICK_LISTENER, itemViewHolderClickListener);
-                return new BindViewClickChainer<>(getBuilder());
+                getHelper().addItemViewHolderClickListener(NO_ID_CLICK_LISTENER, itemViewHolderClickListener);
+                return new BindViewClickChainer<>(getHelper());
             }
 
             public BindViewClickChainer<I, V> addOnItemViewClickListener(ItemViewClickListener<I, V> itemViewClickListener) {
-                getBuilder().addItemViewClickListener(NO_ID_CLICK_LISTENER, itemViewClickListener);
-                return new BindViewClickChainer<>(getBuilder());
+                getHelper().addItemViewClickListener(NO_ID_CLICK_LISTENER, itemViewClickListener);
+                return new BindViewClickChainer<>(getHelper());
             }
 
         }
@@ -332,14 +332,14 @@ public abstract class ItemViewAdapter<B extends ItemViewAdapter.ItemViewHelper> 
             }
 
             public BindViewClickChainer<I, V> addOnItemViewHolderClickListener(@IdRes int resId, ItemViewHolderClickListener<I, V> itemViewHolderClickListener) {
-                getBuilder().addItemViewHolderClickListener(resId, itemViewHolderClickListener);
-                return new BindViewClickChainer<>(getBuilder());
+                getHelper().addItemViewHolderClickListener(resId, itemViewHolderClickListener);
+                return new BindViewClickChainer<>(getHelper());
 
             }
 
             public BindViewClickChainer<I, V> addOnItemViewClickListener(@IdRes int resId, ItemViewClickListener<I, V> itemViewClickListener) {
-                getBuilder().addItemViewClickListener(resId, itemViewClickListener);
-                return new BindViewClickChainer<>(getBuilder());
+                getHelper().addItemViewClickListener(resId, itemViewClickListener);
+                return new BindViewClickChainer<>(getHelper());
             }
 
 
@@ -358,11 +358,11 @@ public abstract class ItemViewAdapter<B extends ItemViewAdapter.ItemViewHelper> 
             }
 
             public void addItemViewBinder(ItemViewBinder<I, V> itemViewBinder) {
-                getBuilder().setViewBinder(new DefaultItemViewHolderBinder<>(itemViewBinder));
+                getHelper().setViewBinder(new DefaultItemViewHolderBinder<>(itemViewBinder));
             }
 
             public void addViewHolderBinder(ItemViewHolderBinder<I, V> itemViewHolderBinder) {
-                getBuilder().setViewBinder(itemViewHolderBinder);
+                getHelper().setViewBinder(itemViewHolderBinder);
             }
 
         }

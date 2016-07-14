@@ -48,6 +48,10 @@ public class BaseViewHolderAdapterDemoFragment extends DemoFragment {
                             return new BaseViewHolder<>(greenTextView);
                         }
                 )
+                .addViewHolderBinder(viewHolder -> {
+                    Integer item = listAdapter.getItemAt(viewHolder.getAdapterPosition());
+                    viewHolder.itemView.setText(Integer.toString(item));
+                })
                 .addViewHolderClickListener(
                         GREEN_TEXT_WIDGET_RES_ID,
                         viewHolder1 -> Toast.makeText(getActivity(), "green widget clicked", Toast.LENGTH_SHORT).show()
@@ -55,11 +59,7 @@ public class BaseViewHolderAdapterDemoFragment extends DemoFragment {
                 .addViewHolderClickListener(
                         GREEN_TEXT_WIDGET_RES_ID,
                         viewHolder1 -> Toast.makeText(getActivity(), "green widget clicked really", Toast.LENGTH_SHORT).show()
-                )
-                .addViewHolderBinder(viewHolder -> {
-                    Integer item = listAdapter.getItemAt(viewHolder.getAdapterPosition());
-                    viewHolder.itemView.setText(Integer.toString(item));
-                });
+                );
 
         for (int i = 0; i < 1000; i++) {
             listAdapter.addItem(i);

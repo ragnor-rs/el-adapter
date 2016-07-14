@@ -200,13 +200,13 @@ public abstract class BaseViewAdapter<B extends BaseViewAdapter.BaseViewHelper> 
             }
 
             public BindViewClickChainer<V> addViewHolderClickListener(ViewHolderClickListener<V> viewHolderClickListener) {
-                getBuilder().addViewHolderClickListener(NO_ID_CLICK_LISTENER, viewHolderClickListener);
-                return new BindViewClickChainer<>(getBuilder());
+                getHelper().addViewHolderClickListener(NO_ID_CLICK_LISTENER, viewHolderClickListener);
+                return new BindViewClickChainer<>(getHelper());
             }
 
             public BindViewClickChainer<V> addViewClickListener(ViewClickListener<V> viewClickListener) {
-                getBuilder().addViewClickListener(NO_ID_CLICK_LISTENER, viewClickListener);
-                return new BindViewClickChainer<>(getBuilder());
+                getHelper().addViewClickListener(NO_ID_CLICK_LISTENER, viewClickListener);
+                return new BindViewClickChainer<>(getHelper());
             }
 
         }
@@ -225,14 +225,14 @@ public abstract class BaseViewAdapter<B extends BaseViewAdapter.BaseViewHelper> 
             }
 
             public BindViewClickChainer<V> addViewHolderClickListener(@IdRes int resId, ViewHolderClickListener<V> viewHolderClickListener) {
-                getBuilder().addViewHolderClickListener(resId, viewHolderClickListener);
-                return new BindViewClickChainer<>(getBuilder());
+                getHelper().addViewHolderClickListener(resId, viewHolderClickListener);
+                return new BindViewClickChainer<>(getHelper());
 
             }
 
             public BindViewClickChainer<V> addViewClickListener(@IdRes int resId, ViewClickListener<V> viewClickListener) {
-                getBuilder().addViewClickListener(resId, viewClickListener);
-                return new BindViewClickChainer<>(getBuilder());
+                getHelper().addViewClickListener(resId, viewClickListener);
+                return new BindViewClickChainer<>(getHelper());
             }
 
 
@@ -250,7 +250,7 @@ public abstract class BaseViewAdapter<B extends BaseViewAdapter.BaseViewHelper> 
             }
 
             public void addViewBinder(ViewBinder<V> viewBinder) {
-                getBuilder().setViewBinder(viewBinder);
+                getHelper().setViewBinder(viewBinder);
             }
 
         }
