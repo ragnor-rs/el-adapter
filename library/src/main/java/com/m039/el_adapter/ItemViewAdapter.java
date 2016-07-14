@@ -296,7 +296,7 @@ public abstract class ItemViewAdapter<B extends ItemViewAdapter.ItemViewHelper> 
         //region Chainers
 
         /**
-         * this Chainer can chain addViewHolderClickListener, addViewHolderClickListener, addViewHolderBinder
+         * this Chainer can chain addOnViewHolderClickListener, addOnViewHolderClickListener, addViewHolderBinder
          *
          * @param <V>
          */
@@ -320,7 +320,7 @@ public abstract class ItemViewAdapter<B extends ItemViewAdapter.ItemViewHelper> 
 
         /**
          * this Chainer can chain
-         * <p>addViewHolderClickListener, addViewClickListener,
+         * <p>addOnViewHolderClickListener, addViewClickListener,
          * <p>addViewHolderBinder, addItemViewBinder
          *
          * @param <V>
@@ -369,7 +369,7 @@ public abstract class ItemViewAdapter<B extends ItemViewAdapter.ItemViewHelper> 
         }
 
         /**
-         * this Chainer can chain addViewHolderClickListener, addViewClickListener
+         * this Chainer can chain addOnViewHolderClickListener, addViewClickListener
          *
          * @param <V>
          */
