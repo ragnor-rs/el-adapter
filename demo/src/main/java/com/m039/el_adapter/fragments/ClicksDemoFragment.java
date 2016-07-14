@@ -30,6 +30,11 @@ public class ClicksDemoFragment extends DemoFragment {
 
                     return inflater.inflate(R.layout.two_items, parent, false);
                 })
+                .addItemViewBinder((view, item) -> {
+                    ((TextView) view.findViewById(R.id.first)).setText("->");
+                    ((TextView) view.findViewById(R.id.second)).setText(item);
+                    view.findViewById(R.id.divider).setBackgroundColor(Color.GREEN);
+                })
                 .addOnItemViewClickListener((view, item) -> {
                     toast("Click on whole item");
                 })
@@ -39,12 +44,7 @@ public class ClicksDemoFragment extends DemoFragment {
                 .addOnItemViewClickListener(R.id.second, (view, item) -> {
                     toast("Click on second");
                 })
-
-                .addViewBinder((view, item) -> {
-                    ((TextView) view.findViewById(R.id.first)).setText("->");
-                    ((TextView) view.findViewById(R.id.second)).setText(item);
-                    view.findViewById(R.id.divider).setBackgroundColor(Color.GREEN);
-                });
+        ;
 
 
         listAdapter
