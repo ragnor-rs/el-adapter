@@ -109,7 +109,7 @@ public class BaseViewHolderHelper<V extends View, VH extends BaseViewHolder<V>> 
     }
 
     /**
-     * this Chainer can chain addViewHolderBinder
+     * this Chainer can chain addViewHolderClickListener, addViewClickListener
      *
      * @param <V>
      * @param <VH>
