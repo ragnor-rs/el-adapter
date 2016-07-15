@@ -45,7 +45,7 @@ public class DemosFragment extends DemoFragment {
                         .replace(android.R.id.content, (Fragment) item.second)
                         .addToBackStack(null)
                         .commit())
-                .addItemViewBinder((view, item) -> view.setText((String) item.first));
+                .addViewBinder((view, item) -> view.setText((String) item.first));
 
         listAdapter.addItems(DEMOS);
 

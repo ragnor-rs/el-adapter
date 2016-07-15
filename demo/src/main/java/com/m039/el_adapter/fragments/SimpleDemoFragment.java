@@ -17,7 +17,7 @@ public class SimpleDemoFragment extends DemoFragment {
 
         listAdapter
                 .addViewCreator(Integer.class, parent -> new TextView(getActivity()))
-                .addItemViewBinder((view, item) -> view.setText(String.valueOf(item)));
+                .addViewBinder((view, item) -> view.setText(String.valueOf(item)));
 
         for (int i = 0; i < 1000; i++) {
             listAdapter.addItem(i);

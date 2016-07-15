@@ -42,15 +42,15 @@ public class TypeOfClassWrapperDemoFragment extends TypeOfClassDemoFragment {
 
         listAdapter
                 .addViewCreator(IntegerWrapper.class, 0, parent -> new RedTextView(getActivity()))
-                .addItemViewBinder((view, item) -> view.setText(String.valueOf(item.value)));
+                .addViewBinder((view, item) -> view.setText(String.valueOf(item.value)));
 
         listAdapter
                 .addViewCreator(IntegerWrapper.class, 1, parent -> new GreenTextView(getActivity()))
-                .addItemViewBinder((view, item) -> view.setText(String.valueOf(item.value)));
+                .addViewBinder((view, item) -> view.setText(String.valueOf(item.value)));
 
         listAdapter
                 .addViewCreator(IntegerWrapper.class, 2, parent -> new BlueTextView(getActivity()))
-                .addItemViewBinder((view, item) -> view.setText(String.valueOf(item.value)));
+                .addViewBinder((view, item) -> view.setText(String.valueOf(item.value)));
 
         for (int i = 0; i < 1000; i++) {
             listAdapter.addItem(new IntegerWrapper(i, i % 3));

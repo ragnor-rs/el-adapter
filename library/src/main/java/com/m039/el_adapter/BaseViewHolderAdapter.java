@@ -94,7 +94,7 @@ public abstract class BaseViewHolderAdapter<B extends BaseViewHolderHelper> exte
 
     @Override
     public BaseViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        B builder = getBuilder(viewType);
+        B builder = getHelper(viewType);
         ViewHolderCreator viewHolderCreator = builder.getViewHolderCreator();
 
         if (viewHolderCreator == null) {
@@ -137,7 +137,7 @@ public abstract class BaseViewHolderAdapter<B extends BaseViewHolderHelper> exte
     @SuppressWarnings("unchecked")
     @Override
     public void onBindViewHolder(BaseViewHolder holder, int position) {
-        ViewHolderBinder viewHolderBinder = getBuilder(getItemViewType(position)).getViewHolderBinder();
+        ViewHolderBinder viewHolderBinder = getHelper(getItemViewType(position)).getViewHolderBinder();
 
         if (viewHolderBinder != null) {
             viewHolderBinder.onBindViewHolder(holder);
@@ -148,7 +148,7 @@ public abstract class BaseViewHolderAdapter<B extends BaseViewHolderHelper> exte
 
     //endregion
 
-    protected B getBuilder(int viewType) {
+    protected B getHelper(int viewType) {
         return builderMap.get(viewType);
     }
 }
