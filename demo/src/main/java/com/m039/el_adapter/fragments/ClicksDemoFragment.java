@@ -30,7 +30,7 @@ public class ClicksDemoFragment extends DemoFragment {
 
                     return inflater.inflate(R.layout.two_items, parent, false);
                 })
-                .addItemViewBinder((view, item) -> {
+                .addViewBinder((view, item) -> {
                     ((TextView) view.findViewById(R.id.first)).setText("->");
                     ((TextView) view.findViewById(R.id.second)).setText(item);
                     view.findViewById(R.id.divider).setBackgroundColor(Color.GREEN);

@@ -38,15 +38,15 @@ public class TypesDemoFragment extends DemoFragment {
 
         listAdapter
                 .addViewCreator(Integer.class, 0, parent -> new RedTextView(activity))
-                .addItemViewBinder((view, item) -> view.setText(getText(0, -1, item)));
+                .addViewBinder((view, item) -> view.setText(getText(0, -1, item)));
 
         listAdapter
                 .addViewCreator(Integer.class, 1, parent -> new GreenTextView(activity))
-                .addItemViewBinder((view, item) -> view.setText(getText(1, -1, item)));
+                .addViewBinder((view, item) -> view.setText(getText(1, -1, item)));
 
         listAdapter
                 .addViewCreator(Integer.class, 2, parent -> new BlueTextView(activity))
-                .addItemViewBinder((view, item) -> view.setText(getText(2, 0, item)));
+                .addViewBinder((view, item) -> view.setText(getText(2, 0, item)));
 
         for (int i = 0; i < 50; i++) {
             listAdapter.addItem(i);

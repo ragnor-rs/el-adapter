@@ -52,11 +52,11 @@ public class BaseViewHolderAdapterDemoFragment extends DemoFragment {
                     Integer item = listAdapter.getItemAt(viewHolder.getAdapterPosition());
                     viewHolder.itemView.setText(Integer.toString(item));
                 })
-                .addViewHolderClickListener(
+                .addOnViewHolderClickListener(
                         GREEN_TEXT_WIDGET_RES_ID,
                         viewHolder1 -> Toast.makeText(getActivity(), "green widget clicked", Toast.LENGTH_SHORT).show()
                 )
-                .addViewHolderClickListener(
+                .addOnViewHolderClickListener(
                         GREEN_TEXT_WIDGET_RES_ID,
                         viewHolder1 -> Toast.makeText(getActivity(), "green widget clicked really", Toast.LENGTH_SHORT).show()
                 );
