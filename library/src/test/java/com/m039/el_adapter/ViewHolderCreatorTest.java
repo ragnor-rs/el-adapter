@@ -33,7 +33,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
-import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.annotation.Config;
 
 import static org.junit.Assert.assertNotNull;
@@ -42,7 +41,7 @@ import static org.junit.Assert.assertNotNull;
 /**
  * Created by defuera on 04/07/2016.
  */
-@RunWith(RobolectricGradleTestRunner.class)
+@RunWith(RobolectricGradle3TestRunner.class)
 @Config(constants = BuildConfig.class, sdk = Build.VERSION_CODES.LOLLIPOP)
 public class ViewHolderCreatorTest {
 
