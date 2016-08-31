@@ -95,15 +95,15 @@ public abstract class BaseViewHolderAdapter<B extends BaseViewHolderHelper> exte
     @Override
     public BaseViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         B builder = getHelper(viewType);
-        ViewHolderCreator viewHolderCreator = builder.getViewHolderCreator();
 
-        if (viewHolderCreator == null) {
+        if (builder == null) {
             throw new UnknownViewType("Can't create view of type " + viewType + ".");
         }
 
-
+        final ViewHolderCreator viewHolderCreator = builder.getViewHolderCreator();
         final BaseViewHolder viewHolder = viewHolderCreator.onCreateViewHolder(parent);
         final View view = viewHolder.itemView;
+
         for (Object entryO : builder.getViewHolderClickListeners().entrySet()){
             Map.Entry<Integer, ViewHolderClickListener> entry = (Map.Entry<Integer, ViewHolderClickListener>) entryO; //todo wtf
             int id = entry.getKey();
