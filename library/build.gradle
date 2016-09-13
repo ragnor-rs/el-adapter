@@ -26,7 +26,7 @@ android {
 
 }
 
-def supportVersion = '24.2.0'
+def supportVersion = '24.2.1'
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
