@@ -91,10 +91,11 @@ public class PerPageWithFooterLoaderItemViewAdapter extends PerPageItemViewAdapt
     }
 
     public void showEmptyView() {
+        showFooterLoader(true);
         mFooterView.showEmptyView();
     }
 
-    protected void showFooterLoader(boolean show) {
+    public void showFooterLoader(boolean show) {
         if (showingFooterLoader == show)
             return;
 
