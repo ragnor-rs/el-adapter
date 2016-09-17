@@ -28,7 +28,7 @@ public class PerPageWithFooterLoaderItemViewAdapter extends PerPageItemViewAdapt
     private FooterLoaderWidget mFooterView;
     private boolean showingFooterLoader;
 
-    public PerPageWithFooterLoaderItemViewAdapter(PageLoader pageLoader, FooterLoaderWidget footerView) {
+    public PerPageWithFooterLoaderItemViewAdapter(@Nullable PageLoader pageLoader, FooterLoaderWidget footerView) {
         super(pageLoader);
         this.mFooterView = footerView;
 
