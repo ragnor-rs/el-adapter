@@ -28,7 +28,7 @@ public class PerPageWithFooterLoaderItemViewAdapter extends PerPageItemViewAdapt
     private FooterLoaderWidget mFooterView;
     private boolean showingFooterLoader;
 
-    public PerPageWithFooterLoaderItemViewAdapter(PageLoader pageLoader, FooterLoaderWidget footerView) {
+    public PerPageWithFooterLoaderItemViewAdapter(@Nullable PageLoader pageLoader, FooterLoaderWidget footerView) {
         super(pageLoader);
         this.mFooterView = footerView;
 
@@ -91,10 +91,11 @@ public class PerPageWithFooterLoaderItemViewAdapter extends PerPageItemViewAdapt
     }
 
     public void showEmptyView() {
+        showFooterLoader(true);
         mFooterView.showEmptyView();
     }
 
-    protected void showFooterLoader(boolean show) {
+    public void showFooterLoader(boolean show) {
         if (showingFooterLoader == show)
             return;
 
