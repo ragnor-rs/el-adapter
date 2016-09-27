@@ -2,6 +2,7 @@ package com.m039.el_adapter.perpage;
 
 import android.support.annotation.CallSuper;
 import android.support.annotation.Nullable;
+import android.support.annotation.StringRes;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -93,6 +94,10 @@ public class PerPageWithFooterLoaderItemViewAdapter extends PerPageItemViewAdapt
     public void showEmptyView() {
         showFooterLoader(true);
         mFooterView.showEmptyView();
+    }
+
+    public void setFooterMessage(@StringRes int message) {
+        mFooterView.setMessage(message);
     }
 
     public void showFooterLoader(boolean show) {
