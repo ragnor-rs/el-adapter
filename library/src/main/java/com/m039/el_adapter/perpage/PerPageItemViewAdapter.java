@@ -4,8 +4,8 @@ import android.support.annotation.Nullable;
 
 import com.m039.el_adapter.ArrayListItemManager;
 import com.m039.el_adapter.BaseViewHolder;
-import com.m039.el_adapter.ManagingAdapter;
 import com.m039.el_adapter.ItemManager;
+import com.m039.el_adapter.ManagingAdapter;
 
 /**
  * Created by m039 on 3/22/16.
@@ -27,7 +27,7 @@ public class PerPageItemViewAdapter extends ManagingAdapter {
     public static final int LIMIT = 20;
 
     @Nullable
-    private final PageLoader mPageLoader;
+    private PageLoader mPageLoader;
 
     public PerPageItemViewAdapter(@Nullable PageLoader pageLoader) {
         super(new ArrayListItemManager());
@@ -37,6 +37,10 @@ public class PerPageItemViewAdapter extends ManagingAdapter {
     public PerPageItemViewAdapter(@Nullable PageLoader pageLoader, ItemManager itemManager) {
         super(itemManager);
         mPageLoader = pageLoader;
+    }
+
+    public void setPageLoader(PageLoader pageLoader) {
+        this.mPageLoader = pageLoader;
     }
 
     @Override
