@@ -18,9 +18,17 @@ public abstract class FooterLoaderWidget extends FrameLayout {
         super(context);
     }
 
-    public abstract void showNetworkError();
+    public abstract void showState(State state);
 
-    public abstract void showEmptyView();
+    /**
+     * @param errorMessage message to be displayed on state == ERROR
+     */
+    public void setErrorMessage(String errorMessage) {
+    }
+
+    public enum State {
+        LOADING, HIDDEN, ERROR
+    }
 
     public abstract void setMessage(@StringRes int message);
 }

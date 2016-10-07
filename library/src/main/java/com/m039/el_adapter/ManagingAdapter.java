@@ -21,17 +21,18 @@ import java.util.List;
  */
 public class ManagingAdapter extends ItemViewAdapter<ItemViewAdapter.ItemViewHelper> implements ItemManager {
 
+    @NonNull
     private ItemManager itemManager;
 
     public ManagingAdapter() {
         this.itemManager = new ArrayListItemManager();
     }
 
-    public ManagingAdapter(ItemManager itemManager) {
+    public ManagingAdapter(@NonNull ItemManager itemManager) {
         this.itemManager = itemManager;
     }
 
-    public void setItemManager(ItemManager itemManager) {
+    public void setItemManager(@NonNull ItemManager itemManager) {
         this.itemManager = itemManager;
     }
 

@@ -23,26 +23,41 @@ import java.util.List;
  * <li>Only list of items can be added</li>
  * </ul>
  */
+@SuppressWarnings("unused")
 public class PerPageWithFooterLoaderItemViewAdapter extends PerPageItemViewAdapter {
 
-    protected static final int VIEW_TYPE_FOOTER = 0;
-    private FooterLoaderWidget mFooterView;
+    protected static final int VIEW_TYPE_FOOTER = Integer.MAX_VALUE;
     private boolean showingFooterLoader;
 
-    public PerPageWithFooterLoaderItemViewAdapter(@Nullable PageLoader pageLoader, FooterLoaderWidget footerView) {
-        super(pageLoader);
-        this.mFooterView = footerView;
+    @Nullable
+    private volatile FooterLoaderWidget mFooterView;
+    private PageLoader pageLoader;
 
-        addViewCreator(VIEW_TYPE_FOOTER, new ViewCreator<View>() {
-            @Override
-            public View onCreateView(ViewGroup parent) {
-                return mFooterView;
-            }
-        });
+    public PerPageWithFooterLoaderItemViewAdapter(
+            @Nullable PageLoader pageLoader,
+            @Nullable FooterLoaderWidget footerView
+    ) {
+        super(pageLoader);
+
+        if (footerView != null) {
+            setFooterView(footerView);
+        }
     }
 
-    public PerPageWithFooterLoaderItemViewAdapter(PageLoader pageLoader, ItemManager itemManager, FooterLoaderWidget footerView) {
+    public PerPageWithFooterLoaderItemViewAdapter(
+            @Nullable PageLoader pageLoader,
+            @Nullable FooterLoaderWidget footerView,
+            ItemManager itemManager
+    ) {
         super(pageLoader, itemManager);
+
+        if (footerView != null) {
+            setFooterView(footerView);
+        }
+    }
+
+    @SuppressWarnings("WeakerAccess")
+    public void setFooterView(@Nullable FooterLoaderWidget footerView) {
         this.mFooterView = footerView;
 
         addViewCreator(VIEW_TYPE_FOOTER, new ViewCreator<View>() {
@@ -87,35 +102,47 @@ public class PerPageWithFooterLoaderItemViewAdapter extends PerPageItemViewAdapt
         }
     }
 
-    public void showNetworkError() {
-        mFooterView.showNetworkError();
-    }
-
-    public void showEmptyView() {
-        showFooterLoader(true);
-        mFooterView.showEmptyView();
+    @SuppressWarnings("WeakerAccess")
+    public void showFooterLoader(boolean show) {
+        setFooterState(show ? FooterLoaderWidget.State.LOADING : FooterLoaderWidget.State.HIDDEN);
     }
 
     public void setFooterMessage(@StringRes int message) {
         mFooterView.setMessage(message);
     }
 
-    public void showFooterLoader(boolean show) {
-        if (showingFooterLoader == show)
-            return;
-
-        showingFooterLoader = show;
-        if (show) {
-            notifyItemInserted(getFooterPosition());
-        } else {
-            notifyItemRemoved(getFooterPosition());
+    @SuppressWarnings({"ConstantConditions", "WeakerAccess"})
+    public void setFooterState(FooterLoaderWidget.State state) {
+        if (mFooterView == null) {
+            throw new IllegalArgumentException("setFooterWidget before calling this method");
         }
+
+        switch (state) {
+            case LOADING:
+                if (!showingFooterLoader) {
+                    notifyItemInserted(getFooterPosition());
+                }
+
+                break;
+            case HIDDEN:
+                if (showingFooterLoader) {
+                    notifyItemRemoved(getFooterPosition());
+                }
+
+            case ERROR:
+                break;
+
+        }
+
+        showingFooterLoader = (state != FooterLoaderWidget.State.HIDDEN);
+        mFooterView.showState(state);
     }
 
     public boolean isFooter(int position) {
         return getItemViewType(position) == VIEW_TYPE_FOOTER;
     }
 
+    @SuppressWarnings("WeakerAccess")
     public int getFooterPosition() {
         return super.getItemCount();
     }
@@ -140,4 +167,5 @@ public class PerPageWithFooterLoaderItemViewAdapter extends PerPageItemViewAdapt
     protected int getViewTypeOffset() {
         return 1;
     }
+
 }
