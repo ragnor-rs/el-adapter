@@ -302,4 +302,12 @@ public abstract class BaseViewAdapter<B extends BaseViewAdapter.BaseViewHelper> 
     //endregion
 
 
+    @Override
+    public void onViewRecycled(BaseViewHolder<?> holder) {
+        super.onViewRecycled(holder);
+
+        if (holder.itemView instanceof Recyclable) {
+            ((Recyclable) holder.itemView).recycle();
+        }
+    }
 }

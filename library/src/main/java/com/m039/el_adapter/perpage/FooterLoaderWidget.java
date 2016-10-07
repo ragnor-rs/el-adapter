@@ -1,6 +1,7 @@
 package com.m039.el_adapter.perpage;
 
 import android.content.Context;
+import android.support.annotation.StringRes;
 import android.util.AttributeSet;
 import android.widget.FrameLayout;
 
@@ -29,4 +30,5 @@ public abstract class FooterLoaderWidget extends FrameLayout {
         LOADING, HIDDEN, ERROR
     }
 
+    public abstract void setMessage(@StringRes int message);
 }
