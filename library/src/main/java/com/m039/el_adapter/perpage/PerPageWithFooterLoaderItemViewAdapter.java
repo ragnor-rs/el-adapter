@@ -26,7 +26,7 @@ import java.util.List;
 @SuppressWarnings("unused")
 public class PerPageWithFooterLoaderItemViewAdapter extends PerPageItemViewAdapter {
 
-    protected static final int VIEW_TYPE_FOOTER = 13130;
+    protected static final int VIEW_TYPE_FOOTER = Integer.MAX_VALUE;
     private boolean showingFooterLoader;
 
     @Nullable
