@@ -104,7 +104,18 @@ public class PerPageWithFooterLoaderItemViewAdapter extends PerPageItemViewAdapt
 
     @SuppressWarnings("WeakerAccess")
     public void showFooterLoader(boolean show) {
-        setFooterState(show ? FooterLoaderWidget.State.LOADING : FooterLoaderWidget.State.HIDDEN);
+
+        if (show != showingFooterLoader) {
+            if (show) {
+                notifyItemInserted(getFooterPosition());
+            } else {
+                notifyItemRemoved(getFooterPosition());
+            }
+
+
+            showingFooterLoader = show;
+        }
+
     }
 
     public void setFooterMessage(@StringRes int message) {
@@ -119,22 +130,19 @@ public class PerPageWithFooterLoaderItemViewAdapter extends PerPageItemViewAdapt
 
         switch (state) {
             case LOADING:
-                if (!showingFooterLoader) {
-                    notifyItemInserted(getFooterPosition());
-                }
+                showFooterLoader(true);
 
                 break;
             case HIDDEN:
-                if (showingFooterLoader) {
-                    notifyItemRemoved(getFooterPosition());
-                }
+                showFooterLoader(false);
+                break;
 
             case ERROR:
+                showFooterLoader(true);
                 break;
 
         }
 
-        showingFooterLoader = (state != FooterLoaderWidget.State.HIDDEN);
         mFooterView.showState(state);
     }
 
