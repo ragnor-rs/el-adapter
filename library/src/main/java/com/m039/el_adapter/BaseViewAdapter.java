@@ -109,8 +109,7 @@ public abstract class BaseViewAdapter<B extends BaseViewAdapter.BaseViewHelper> 
 
                 @Override
                 public boolean onLongClick(View v) {
-                    viewLongClickListener.onViewLongClick(view, viewHolder.getAdapterPosition());
-                    return true;
+                    return viewLongClickListener.onViewLongClick(view, viewHolder.getAdapterPosition());
                 }
 
             };
@@ -340,7 +339,7 @@ public abstract class BaseViewAdapter<B extends BaseViewAdapter.BaseViewHelper> 
         }
 
         public interface ViewLongClickListener<V extends View> {
-            void onViewLongClick(V view, int position);
+            boolean onViewLongClick(V view, int position);
         }
 
     }

@@ -36,7 +36,10 @@ public class BaseViewAdapterDemoFragment extends DemoFragment {
                         (view, position) -> toast("blue widget clicked " + listAdapter.getItemAt(position))
                 )
                 .addViewLongClickListener(
-                        (view, position) -> toast("blue widget long clicked " + listAdapter.getItemAt(position))
+                        (view, position) -> {
+                            toast("blue widget long clicked " + listAdapter.getItemAt(position));
+                            return true;
+                        }
                 )
                 .addViewBinder((view, position) -> {
                     String item = listAdapter.getItemAt(position);
