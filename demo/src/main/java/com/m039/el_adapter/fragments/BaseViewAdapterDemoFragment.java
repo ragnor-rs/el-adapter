@@ -33,7 +33,10 @@ public class BaseViewAdapterDemoFragment extends DemoFragment {
                         parent -> new BlueTextView(parent.getContext())
                 )
                 .addViewClickListener(
-                        (view, position) -> Toast.makeText(getActivity(), "blue widget clicked " + listAdapter.getItemAt(position), Toast.LENGTH_SHORT).show()
+                        (view, position) -> toast("blue widget clicked " + listAdapter.getItemAt(position))
+                )
+                .addViewLongClickListener(
+                        (view, position) -> toast("blue widget long clicked " + listAdapter.getItemAt(position))
                 )
                 .addViewBinder((view, position) -> {
                     String item = listAdapter.getItemAt(position);
@@ -51,15 +54,11 @@ public class BaseViewAdapterDemoFragment extends DemoFragment {
                 )
                 .addViewHolderClickListener(
                         GREEN_TEXT_WIDGET_RES_ID,
-                        viewHolder1 -> Toast.makeText(getActivity(), "green widget clicked", Toast.LENGTH_SHORT).show()
+                        viewHolder1 -> toast("green widget clicked")
                 )
                 .addViewHolderClickListener(
                         GREEN_TEXT_WIDGET_RES_ID,
-                        viewHolder1 -> Toast.makeText(
-                                getActivity(),
-                                "green widget clicked really " + listAdapter.getItemAt(viewHolder1.getAdapterPosition()),
-                                Toast.LENGTH_SHORT
-                        ).show()
+                        viewHolder1 -> toast("green widget clicked really " + listAdapter.getItemAt(viewHolder1.getAdapterPosition()))
                 )
                 .addViewHolderBinder(viewHolder -> {
                     String item = listAdapter.getItemAt(viewHolder.getAdapterPosition());

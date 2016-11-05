@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 /**
  * Created by m039 on 6/1/16.
@@ -36,5 +37,9 @@ public abstract class DemoFragment extends Fragment {
     }
 
     protected abstract void showDemo(RecyclerView recycler);
+
+    protected void toast(String text) {
+        Toast.makeText(getActivity(), text, Toast.LENGTH_SHORT).show();
+    }
 
 }

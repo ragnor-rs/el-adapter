@@ -94,6 +94,34 @@ public abstract class BaseViewAdapter<B extends BaseViewAdapter.BaseViewHelper> 
             }
         }
 
+        for (Object entryO : getHelper(viewType).getViewLongClickListeners().entrySet()) {
+            Map.Entry<Integer, BaseViewHelper.ViewLongClickListener> entry = (Map.Entry<Integer, BaseViewHelper.ViewLongClickListener>) entryO; //todo wtf
+            int id = entry.getKey();
+            final BaseViewHelper.ViewLongClickListener viewLongClickListener = entry.getValue();
+
+            /**
+             * WARN:
+             *
+             * Performance bottleneck - a lot of calls to new
+             */
+
+            View.OnLongClickListener clickListener = new View.OnLongClickListener() {
+
+                @Override
+                public boolean onLongClick(View v) {
+                    viewLongClickListener.onViewLongClick(view, viewHolder.getAdapterPosition());
+                    return true;
+                }
+
+            };
+
+            if (id == BaseViewHelper.NO_ID_CLICK_LISTENER) {
+                view.setOnLongClickListener(clickListener);
+            } else {
+                view.findViewById(id).setOnLongClickListener(clickListener);
+            }
+        }
+
         return viewHolder;
 
 
@@ -164,6 +192,7 @@ public abstract class BaseViewAdapter<B extends BaseViewAdapter.BaseViewHelper> 
 
         private ViewBinder<V> viewBinder;
         private Map<Integer, ViewClickListener<V>> viewClickListenersById = new HashMap<>();
+        private Map<Integer, ViewLongClickListener<V>> viewLongClickListenersById = new HashMap<>();
 
         public BaseViewHelper(ViewHolderCreator<BaseViewHolder<V>> creator) {
             super(creator);
@@ -185,8 +214,16 @@ public abstract class BaseViewAdapter<B extends BaseViewAdapter.BaseViewHelper> 
             viewClickListenersById.put(resId, viewClickListener);
         }
 
+        public void addViewLongClickListener(@IdRes int resId, ViewLongClickListener<V> viewClickListener) {
+            viewLongClickListenersById.put(resId, viewClickListener);
+        }
+
         public Map<Integer, ViewClickListener<V>> getViewClickListeners() {
             return viewClickListenersById;
+        }
+
+        public Map<Integer, ViewLongClickListener<V>> getViewLongClickListeners() {
+            return viewLongClickListenersById;
         }
 
         //region Chainers
@@ -207,9 +244,14 @@ public abstract class BaseViewAdapter<B extends BaseViewAdapter.BaseViewHelper> 
                 return new BindViewClickChainer<>(getHelper());
             }
 
-            public BindViewClickChainer<V> addViewClickListener(ViewClickListener<V> viewClickListener) {
+            public BindClickViewClickChainer<V> addViewClickListener(ViewClickListener<V> viewClickListener) {
                 getHelper().addViewClickListener(NO_ID_CLICK_LISTENER, viewClickListener);
-                return new BindViewClickChainer<>(getHelper());
+                return new BindClickViewClickChainer<>(getHelper());
+            }
+
+            public BindClickViewClickChainer<V> addViewLongClickListener(ViewLongClickListener<V> viewClickListener) {
+                getHelper().addViewLongClickListener(NO_ID_CLICK_LISTENER, viewClickListener);
+                return new BindClickViewClickChainer<>(getHelper());
             }
 
         }
@@ -295,6 +337,10 @@ public abstract class BaseViewAdapter<B extends BaseViewAdapter.BaseViewHelper> 
 
         public interface ViewClickListener<V extends View> {
             void onViewClick(V view, int position);
+        }
+
+        public interface ViewLongClickListener<V extends View> {
+            void onViewLongClick(V view, int position);
         }
 
     }

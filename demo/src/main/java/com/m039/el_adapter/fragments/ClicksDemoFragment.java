@@ -43,9 +43,7 @@ public class ClicksDemoFragment extends DemoFragment {
                 })
                 .addOnItemViewClickListener(R.id.second, (view, item) -> {
                     toast("Click on second");
-                })
-        ;
-
+                });
 
         listAdapter
                 .addViewCreator(Integer.class, parent -> {
@@ -66,10 +64,6 @@ public class ClicksDemoFragment extends DemoFragment {
         recycler.setAdapter(listAdapter);
 
         listAdapter.addItems(Arrays.asList("One", 1, "Two", 2, "Three", 3));
-    }
-
-    private void toast(String message) {
-        Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
     }
 
 }
