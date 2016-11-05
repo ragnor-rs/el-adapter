@@ -4,11 +4,8 @@ import android.content.Context;
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.m039.el_adapter.ItemViewAdapter;
 import com.m039.el_adapter.ListItemAdapter;
 import com.m039.el_adapter.demo.R;
 
@@ -43,7 +40,21 @@ public class ClicksDemoFragment extends DemoFragment {
                 })
                 .addOnItemViewClickListener(R.id.second, (view, item) -> {
                     toast("Click on second");
-                });
+                })
+                .addOnItemViewLongClickListener(
+                        R.id.first,
+                        (view, item) -> {
+                            toast("first long clicked");
+                            return true;
+                        }
+                )
+                .addOnItemViewHolderLongClickListener(
+                        R.id.second,
+                        (view, item) -> {
+                            toast("second holder long clicked");
+                            return true;
+                        }
+                );
 
         listAdapter
                 .addViewCreator(Integer.class, parent -> {

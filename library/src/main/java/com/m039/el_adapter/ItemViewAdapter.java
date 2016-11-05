@@ -144,6 +144,66 @@ public abstract class ItemViewAdapter<B extends ItemViewAdapter.ItemViewHelper> 
             }
         }
 
+        //item view long click listener
+        for (Object entryO : getHelper(viewType).getItemViewLongClickListenersById().entrySet()) {
+            Map.Entry<Integer, ItemViewHelper.OnItemViewLongClickListener> entry = (Map.Entry<Integer, ItemViewHelper.OnItemViewLongClickListener>) entryO; //todo wtf
+            int id = entry.getKey();
+            final ItemViewHelper.OnItemViewLongClickListener viewLongClickListener = entry.getValue();
+
+            /**
+             * WARN:
+             *
+             * Performance bottleneck - a lot of calls to new
+             */
+
+            View.OnLongClickListener clickListener = new View.OnLongClickListener() {
+
+                @Override
+                public boolean onLongClick(View v) {
+                    return viewLongClickListener.onItemViewLongClick(view, getItemAt(viewHolder.getAdapterPosition()));
+                }
+
+            };
+
+            if (id == BaseViewHelper.NO_ID_CLICK_LISTENER) {
+                view.setOnLongClickListener(clickListener);
+            } else {
+                View v = view.findViewById(id);
+                if (v != null) {
+                    v.setOnLongClickListener(clickListener);
+                }
+            }
+        }
+
+        //todo DRY
+        //item view holder long click listener
+        for (Object entryO : getHelper(viewType).getItemViewHolderLongClickListenersById().entrySet()) {
+            Map.Entry<Integer, ItemViewHelper.OnItemViewHolderLongClickListener> entry = (Map.Entry<Integer, ItemViewHelper.OnItemViewHolderLongClickListener>) entryO; //todo wtf
+            int id = entry.getKey();
+            final ItemViewHelper.OnItemViewHolderLongClickListener viewLongClickListener = entry.getValue();
+
+            /**
+             * WARN:
+             *
+             * Performance bottleneck - a lot of calls to new
+             */
+
+            View.OnLongClickListener clickListener = new View.OnLongClickListener() {
+
+                @Override
+                public boolean onLongClick(View v) {
+                    return viewLongClickListener.onItemViewLongClick(viewHolder, getItemAt(viewHolder.getAdapterPosition()));
+                }
+
+            };
+
+            if (id == BaseViewHelper.NO_ID_CLICK_LISTENER) {
+                view.setOnLongClickListener(clickListener);
+            } else {
+                view.findViewById(id).setOnLongClickListener(clickListener);
+            }
+        }
+
         return viewHolder;
 
 
@@ -262,6 +322,9 @@ public abstract class ItemViewAdapter<B extends ItemViewAdapter.ItemViewHelper> 
         private Map<Integer, OnItemViewClickListener<I, V>> itemViewClickListenersById = new HashMap<>();
         private Map<Integer, OnItemViewHolderClickListener<I, V>> itemViewHolderClickListenersById = new HashMap<>();
 
+        private Map<Integer, OnItemViewLongClickListener<I, V>> itemViewLongClickListenersById = new HashMap<>();
+        private Map<Integer, OnItemViewHolderLongClickListener<I, V>> itemViewHolderLongClickListenersById = new HashMap<>();
+
         public ItemViewHelper(ViewHolderCreator<BaseViewHolder<V>> creator) {
             super(creator);
         }
@@ -279,11 +342,11 @@ public abstract class ItemViewAdapter<B extends ItemViewAdapter.ItemViewHelper> 
         }
 
 
+        //region clickListener
         private void addItemViewHolderClickListener(@IdRes int resId, OnItemViewHolderClickListener<I, V> onItemViewHolderClickListener) {
             itemViewHolderClickListenersById.put(resId, onItemViewHolderClickListener);
         }
-
-
+        
         private void addItemViewClickListener(@IdRes int resId, OnItemViewClickListener<I, V> onItemViewClickListener) {
             itemViewClickListenersById.put(resId, onItemViewClickListener);
         }
@@ -295,6 +358,24 @@ public abstract class ItemViewAdapter<B extends ItemViewAdapter.ItemViewHelper> 
         public Map<Integer, OnItemViewHolderClickListener<I, V>> getItemViewHolderClickListenersById() {
             return itemViewHolderClickListenersById;
         }
+
+        //region longLongClickListener
+        private void addItemViewHolderLongClickListener(@IdRes int resId, OnItemViewHolderLongClickListener<I, V> onItemViewHolderLongClickListener) {
+            itemViewHolderLongClickListenersById.put(resId, onItemViewHolderLongClickListener);
+        }
+
+        private void addItemViewLongClickListener(@IdRes int resId, OnItemViewLongClickListener<I, V> onItemViewLongClickListener) {
+            itemViewLongClickListenersById.put(resId, onItemViewLongClickListener);
+        }
+
+        public Map<Integer, OnItemViewLongClickListener<I, V>> getItemViewLongClickListenersById() {
+            return itemViewLongClickListenersById;
+        }
+
+        public Map<Integer, OnItemViewHolderLongClickListener<I, V>> getItemViewHolderLongClickListenersById() {
+            return itemViewHolderLongClickListenersById;
+        }
+
 
         //region Chainers
 
@@ -384,26 +465,51 @@ public abstract class ItemViewAdapter<B extends ItemViewAdapter.ItemViewHelper> 
                 this.helper = helper;
             }
 
-            public BindViewClickChainer<I, V> addOnItemViewHolderClickListener(OnItemViewHolderClickListener<I, V> onItemViewHolderClickListener) {
+            
+            //Click listeners
+            public ClickViewClickChainer<I, V> addOnItemViewHolderClickListener(OnItemViewHolderClickListener<I, V> onItemViewHolderClickListener) {
                 helper.addItemViewHolderClickListener(NO_ID_CLICK_LISTENER, onItemViewHolderClickListener);
-                return new BindViewClickChainer<>(helper);
+                return new ClickViewClickChainer<>(helper);
             }
 
-            public BindViewClickChainer<I, V> addOnItemViewClickListener(OnItemViewClickListener<I, V> onItemViewClickListener) {
+            public ClickViewClickChainer<I, V> addOnItemViewClickListener(OnItemViewClickListener<I, V> onItemViewClickListener) {
                 helper.addItemViewClickListener(NO_ID_CLICK_LISTENER, onItemViewClickListener);
-                return new BindViewClickChainer<>(helper);
+                return new ClickViewClickChainer<>(helper);
             }
 
 
-            public BindViewClickChainer<I, V> addOnItemViewHolderClickListener(@IdRes int resId, OnItemViewHolderClickListener<I, V> onItemViewHolderClickListener) {
+            public ClickViewClickChainer<I, V> addOnItemViewHolderClickListener(@IdRes int resId, OnItemViewHolderClickListener<I, V> onItemViewHolderClickListener) {
                 helper.addItemViewHolderClickListener(resId, onItemViewHolderClickListener);
-                return new BindViewClickChainer<>(helper);
+                return new ClickViewClickChainer<>(helper);
 
             }
 
-            public BindViewClickChainer<I, V> addOnItemViewClickListener(@IdRes int resId, OnItemViewClickListener<I, V> onItemViewClickListener) {
+            public ClickViewClickChainer<I, V> addOnItemViewClickListener(@IdRes int resId, OnItemViewClickListener<I, V> onItemViewClickListener) {
                 helper.addItemViewClickListener(resId, onItemViewClickListener);
-                return new BindViewClickChainer<>(helper);
+                return new ClickViewClickChainer<>(helper);
+            }
+
+            //LONG Click listeners
+            public ClickViewClickChainer<I, V> addOnItemViewHolderLongClickListener(OnItemViewHolderLongClickListener<I, V> onItemViewHolderLongClickListener) {
+                helper.addItemViewHolderLongClickListener(NO_ID_CLICK_LISTENER, onItemViewHolderLongClickListener);
+                return new ClickViewClickChainer<>(helper);
+            }
+
+            public ClickViewClickChainer<I, V> addOnItemViewLongClickListener(OnItemViewLongClickListener<I, V> onItemViewLongClickListener) {
+                helper.addItemViewLongClickListener(NO_ID_CLICK_LISTENER, onItemViewLongClickListener);
+                return new ClickViewClickChainer<>(helper);
+            }
+
+
+            public ClickViewClickChainer<I, V> addOnItemViewHolderLongClickListener(@IdRes int resId, OnItemViewHolderLongClickListener<I, V> onItemViewHolderLongClickListener) {
+                helper.addItemViewHolderLongClickListener(resId, onItemViewHolderLongClickListener);
+                return new ClickViewClickChainer<>(helper);
+
+            }
+
+            public ClickViewClickChainer<I, V> addOnItemViewLongClickListener(@IdRes int resId, OnItemViewLongClickListener<I, V> onItemViewLongClickListener) {
+                helper.addItemViewLongClickListener(resId, onItemViewLongClickListener);
+                return new ClickViewClickChainer<>(helper);
             }
         }
 
@@ -416,6 +522,14 @@ public abstract class ItemViewAdapter<B extends ItemViewAdapter.ItemViewHelper> 
 
         public interface OnItemViewHolderClickListener<I, V extends View> {
             void onItemViewClick(BaseViewHolder<V> view, I item);
+        }
+
+        public interface OnItemViewLongClickListener<I, V extends View> {
+            boolean onItemViewLongClick(V view, I item);
+        }
+
+        public interface OnItemViewHolderLongClickListener<I, V extends View> {
+            boolean onItemViewLongClick(BaseViewHolder<V> view, I item);
         }
 
         private static class DefaultItemViewHolderBinder<I, V extends View>
