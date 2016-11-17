@@ -20,6 +20,10 @@ public class DemosFragment extends DemoFragment {
     private static List<Pair<String, DemoFragment>> DEMOS = new ArrayList<>();
 
     static {
+        DEMOS.add(create("PerPageFragment",
+                new PerPageFragment()));
+        DEMOS.add(create("PerPageViewFragment",
+                new PerPageViewFragment()));
         DEMOS.add(create("BaseViewHolderAdapter test",
                 new BaseViewHolderAdapterDemoFragment()));
         DEMOS.add(create("BaseViewAdapter test",

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:id="@+id/network_error"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/padding_normal"
+                android:background="@color/widget_error_background"
+                android:orientation="horizontal"
+                android:padding="@dimen/padding_normal"
+                tools:ignore="Overdraw">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_toLeftOf="@+id/retry"
+        android:layout_toStartOf="@+id/retry"
+        android:maxLines="1"
+        android:textColor="@android:color/white"
+        android:text="@string/no_internet_connection" />
+
+    <TextView
+        android:id="@+id/retry"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:maxLines="1"
+        android:text="@string/retry"
+        android:textAllCaps="true"
+        android:textColor="#4CD3B4" />
+
+</RelativeLayout>
