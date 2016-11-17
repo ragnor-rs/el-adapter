@@ -62,9 +62,9 @@ public class FooterLoaderWidgetTest {
 
     private Entity[] testEntities;
 
-    public static Entity[] createEntities(int size){
+    public static Entity[] createEntities(int size) {
         Entity[] elEntities = new Entity[size];
-        for(int i = 0; i < size; i++){
+        for (int i = 0; i < size; i++) {
             elEntities[i] = new Entity(String.valueOf(i));
         }
         return elEntities;
@@ -81,30 +81,22 @@ public class FooterLoaderWidgetTest {
                 .get();
 
         recycler = (RecyclerView) activity.findViewById(SimpleTestActivity.RECYCLER_VIEW_ID);
-        testAdapter = new PerPageWithFooterLoaderItemViewAdapter(pageLoader, footerLoaderWidget , new ListItemAdapter());
+        testAdapter = new PerPageWithFooterLoaderItemViewAdapter(pageLoader, footerLoaderWidget, new ListItemAdapter());
         recycler.setAdapter(testAdapter);
 
+        testAdapter.addViewHolderCreator(Entity.class, new BaseViewHolderAdapter.ViewHolderCreator<BaseViewHolder<TestWidget>>() {
+            @Override
+            public BaseViewHolder<TestWidget> onCreateViewHolder(ViewGroup parent) {
+                return new BaseViewHolder<>(new TestWidget(parent.getContext()));
+            }
+        }).addViewHolderBinder(new ItemViewAdapter.ItemViewHolderBinder<Entity, TestWidget>() {
+            @Override
+            public void onBindViewHolder(BaseViewHolder<TestWidget> viewHolder, Entity item) {
+                viewHolder.itemView.setText(item.id);
+            }
+        });
 
-        testAdapter
-                .addViewHolderCreator(
-                    Entity.class,
-                    new BaseViewHolderAdapter.ViewHolderCreator<BaseViewHolder<TestWidget>>() {
-                        @Override
-                        public BaseViewHolder<TestWidget> onCreateViewHolder(ViewGroup parent) {
-                            return new BaseViewHolder<>(new TestWidget(parent.getContext()));
-                        }
-                    })
-                .addViewHolderBinder(
-                    new ItemViewAdapter.ItemViewHolderBinder<Entity, TestWidget>() {
-                        @Override
-                        public void onBindViewHolder(BaseViewHolder<TestWidget> viewHolder, Entity item) {
-                            viewHolder.itemView.setText(item.id);
-
-                        }
-                    }
-                );
-
-        testEntities = createEntities(100);
+        testEntities = createEntities(5);
     }
 
     @Test
@@ -129,8 +121,6 @@ public class FooterLoaderWidgetTest {
         testAdapter.setFooterState(FooterLoaderWidget.State.ERROR);
         verify(footerLoaderWidget).showState(FooterLoaderWidget.State.ERROR);
 
-
-
         lastPosition = testAdapter.getItemCount() - 1;
         //test penultimate item have to be TestWidget
         Assert.assertEquals(TestWidget.class, recycler.getChildAt(lastPosition - 1).getClass());
@@ -147,17 +137,13 @@ public class FooterLoaderWidgetTest {
         @StringRes int messageRes = 1;
         testAdapter.setFooterMessage(messageRes);
         verify(footerLoaderWidget).setMessage(messageRes);
-
     }
 
     private void onItemsChanged() {
         testAdapter.notifyDataSetChanged();
-        recycler.measure(
-                View.MeasureSpec.makeMeasureSpec(480, View.MeasureSpec.EXACTLY),
-                View.MeasureSpec.makeMeasureSpec(800, View.MeasureSpec.EXACTLY));
+        recycler.measure(View.MeasureSpec.makeMeasureSpec(480, View.MeasureSpec.EXACTLY), View.MeasureSpec.makeMeasureSpec(800, View.MeasureSpec.EXACTLY));
         recycler.layout(0, 0, 480, 800);
     }
-
 
     public static class Entity {
         private final String id;
@@ -166,7 +152,6 @@ public class FooterLoaderWidgetTest {
             this.id = id;
         }
     }
-
 
     public static final class TestWidget extends TextView {
 

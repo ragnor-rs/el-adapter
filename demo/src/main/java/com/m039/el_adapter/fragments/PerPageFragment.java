@@ -14,7 +14,7 @@ import com.m039.el_adapter.perpage.PerPageItemViewAdapter;
 /**
  * Created by 4xes on 11/11/16.
  */
-public class PerPageFragment extends DemoFragment implements PagesSource.LoadingListener, PerPageItemViewAdapter.PageLoader{
+public class PerPageFragment extends DemoFragment implements PagesSource.LoadingListener, PerPageItemViewAdapter.PageLoader {
 
     private PerPageItemViewAdapter listAdapter;
     private PagesSource pagesSource;
@@ -29,26 +29,26 @@ public class PerPageFragment extends DemoFragment implements PagesSource.Loading
         listAdapter = new PerPageItemViewAdapter(this, new ListItemAdapter());
 
         listAdapter
-            .addViewCreator(Integer.class, parent -> {
-                LayoutInflater inflater = (LayoutInflater) getActivity()
-                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                .addViewCreator(Integer.class, parent -> {
+                    LayoutInflater inflater = (LayoutInflater) getActivity()
+                            .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
-                return inflater.inflate(R.layout.page_header_item, parent, false);
-            })
-            .addViewBinder((view, item) -> {
-                ((TextView) view).setText(String.format("Page %d", item));
-            });
+                    return inflater.inflate(R.layout.page_header_item, parent, false);
+                })
+                .addViewBinder((view, item) -> {
+                    ((TextView) view).setText(String.format("Page %d", item));
+                });
 
         listAdapter
-            .addViewCreator(String.class, parent -> {
-                LayoutInflater inflater = (LayoutInflater) getActivity()
-                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                .addViewCreator(String.class, parent -> {
+                    LayoutInflater inflater = (LayoutInflater) getActivity()
+                            .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
-                return inflater.inflate(R.layout.page_text_item, parent, false);
-            })
-            .addViewBinder((view, item) -> {
-                ((TextView) view).setText(item);
-            })
+                    return inflater.inflate(R.layout.page_text_item, parent, false);
+                })
+                .addViewBinder((view, item) -> {
+                    ((TextView) view).setText(item);
+                })
         ;
         recycler.setAdapter(listAdapter);
 
@@ -56,7 +56,7 @@ public class PerPageFragment extends DemoFragment implements PagesSource.Loading
         addPage(pagesSource.getNextPage());
     }
 
-    public void addPage(Page page){
+    public void addPage(Page page) {
         int countItems = listAdapter.getItemCount();
         listAdapter.addItem(page.num);
         listAdapter.addItems(page.items);

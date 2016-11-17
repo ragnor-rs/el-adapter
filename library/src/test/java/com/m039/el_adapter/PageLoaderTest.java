@@ -51,17 +51,15 @@ import static org.mockito.Mockito.verify;
 @Config(constants = BuildConfig.class, sdk = Build.VERSION_CODES.LOLLIPOP)
 public class PageLoaderTest {
 
+    public Entity[] testEntities;
     private RecyclerView recycler;
     private PerPageItemViewAdapter testAdapter;
-
     @Mock
     private PerPageItemViewAdapter.PageLoader pageLoader;
 
-    public Entity[] testEntities;
-
-    public static Entity[] createEntities(int size){
+    public static Entity[] createEntities(int size) {
         Entity[] elEntities = new Entity[size];
-        for(int i = 0; i < size; i++){
+        for (int i = 0; i < size; i++) {
             elEntities[i] = new Entity(String.valueOf(i));
         }
         return elEntities;
@@ -81,24 +79,20 @@ public class PageLoaderTest {
         testAdapter = new PerPageItemViewAdapter(pageLoader, new ListItemAdapter());
         recycler.setAdapter(testAdapter);
 
-
-        testAdapter
-            .addViewHolderCreator(Entity.class, new BaseViewHolderAdapter.ViewHolderCreator<BaseViewHolder<TestWidget>>() {
-                @Override
-                public BaseViewHolder<TestWidget> onCreateViewHolder(ViewGroup parent) {
-                    return new BaseViewHolder<>(new TestWidget(parent.getContext()));
-                }
-            })
-            .addViewHolderBinder(new ItemViewAdapter.ItemViewHolderBinder<Entity, TestWidget>() {
-                @Override
-                public void onBindViewHolder(BaseViewHolder<TestWidget> viewHolder, Entity item) {
-                    viewHolder.itemView.setText(item.id);
-                }
-            });
+        testAdapter.addViewHolderCreator(Entity.class, new BaseViewHolderAdapter.ViewHolderCreator<BaseViewHolder<TestWidget>>() {
+            @Override
+            public BaseViewHolder<TestWidget> onCreateViewHolder(ViewGroup parent) {
+                return new BaseViewHolder<>(new TestWidget(parent.getContext()));
+            }
+        }).addViewHolderBinder(new ItemViewAdapter.ItemViewHolderBinder<Entity, TestWidget>() {
+            @Override
+            public void onBindViewHolder(BaseViewHolder<TestWidget> viewHolder, Entity item) {
+                viewHolder.itemView.setText(item.id);
+            }
+        });
 
         testEntities = createEntities(30);
     }
-
 
     @Test
     public void testPageLoader() {
@@ -125,12 +119,9 @@ public class PageLoaderTest {
 
     private void onItemsChanged() {
         testAdapter.notifyDataSetChanged();
-        recycler.measure(
-                View.MeasureSpec.makeMeasureSpec(480, View.MeasureSpec.EXACTLY),
-                View.MeasureSpec.makeMeasureSpec(800, View.MeasureSpec.EXACTLY));
+        recycler.measure(View.MeasureSpec.makeMeasureSpec(480, View.MeasureSpec.EXACTLY), View.MeasureSpec.makeMeasureSpec(800, View.MeasureSpec.EXACTLY));
         recycler.layout(0, 0, 480, 800);
     }
-
 
     public static class Entity {
         private final String id;
@@ -139,7 +130,6 @@ public class PageLoaderTest {
             this.id = id;
         }
     }
-
 
     public static final class TestWidget extends TextView {
 
