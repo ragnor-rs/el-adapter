@@ -6,7 +6,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'me.tatarka:gradle-retrolambda:3.2.2'
+        classpath 'me.tatarka:gradle-retrolambda:3.3.1'
         classpath 'me.tatarka.retrolambda.projectlombok:lombok.ast:0.2.3.a2'
     }
 
@@ -19,8 +19,8 @@ apply plugin: 'me.tatarka.retrolambda'
 
 android {
 
-    compileSdkVersion 24
-    buildToolsVersion "24.0.2"
+    compileSdkVersion 25
+    buildToolsVersion "25.0.1"
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -30,7 +30,7 @@ android {
     defaultConfig {
         applicationId "com.m039.el_adapter"
         minSdkVersion 16
-        targetSdkVersion 24
+        targetSdkVersion 25
         versionCode 1
         versionName "1.0"
     }
@@ -47,6 +47,6 @@ android {
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     testCompile 'junit:junit:4.12'
-    compile 'com.android.support:appcompat-v7:24.2.1'
+    compile 'com.android.support:appcompat-v7:25.0.1'
     compile project(':library')
 }
