@@ -1,6 +1,6 @@
 package com.m039.el_adapter;
 
-import org.assertj.core.api.Assertions;
+import org.assertj.core.api.Java6Assertions;
 import org.junit.Test;
 
 /**
@@ -10,6 +10,6 @@ public class GoodTest {
 
     @Test
     public void good() {
-        Assertions.assertThat(true).isTrue();
+        Java6Assertions.assertThat(true).isTrue();
     }
 }
