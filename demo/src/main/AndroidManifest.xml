@@ -2,6 +2,8 @@
 <manifest package="com.m039.el_adapter.demo"
           xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
     <application
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
