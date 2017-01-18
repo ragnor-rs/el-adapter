@@ -18,6 +18,7 @@ package com.m039.el_adapter;
 
 import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -67,7 +68,7 @@ public abstract class BaseViewAdapter<B extends BaseViewAdapter.BaseViewHelper> 
         final BaseViewHolder viewHolder = super.onCreateViewHolder(parent, viewType);
 
         final View view = viewHolder.itemView;
-        for (Object entryO : getHelper(viewType).getViewClickListeners().entrySet()) {
+        for (Object entryO : getBuilder(viewType).getViewClickListeners().entrySet()) {
             Map.Entry<Integer, BaseViewHelper.ViewClickListener> entry = (Map.Entry<Integer, BaseViewHelper.ViewClickListener>) entryO; //todo wtf
             int id = entry.getKey();
             final BaseViewHelper.ViewClickListener viewClickListener = entry.getValue();
@@ -82,7 +83,10 @@ public abstract class BaseViewAdapter<B extends BaseViewAdapter.BaseViewHelper> 
 
                 @Override
                 public void onClick(View v) {
-                    viewClickListener.onViewClick(view, viewHolder.getAdapterPosition());
+                    int adapterPosition = viewHolder.getAdapterPosition();
+                    if (adapterPosition != RecyclerView.NO_POSITION) {
+                        viewClickListener.onViewClick(view, adapterPosition);
+                    }
                 }
 
             };
@@ -118,15 +122,15 @@ public abstract class BaseViewAdapter<B extends BaseViewAdapter.BaseViewHelper> 
 
     public <V extends View> BaseViewHelper.BindClickViewClickChainer<V> addViewCreator(int viewType, ViewCreator<V> viewCreator) {
         addViewHolderCreator(viewType, new DefaultViewHolderCreator<>(viewCreator));
-        return (BaseViewHelper.BindClickViewClickChainer<V>) getHelper(viewType).getBaseViewChainer();
+        return (BaseViewHelper.BindClickViewClickChainer<V>) getBuilder(viewType).getBaseViewChainer();
     }
 
     protected <V extends View> ViewBinder<V> getViewBinder(int viewType) {
-        return (ViewBinder<V>) getHelper(viewType).getViewBinder();
+        return (ViewBinder<V>) getBuilder(viewType).getViewBinder();
     }
 
     protected <V extends View, VH extends BaseViewHolder<V>>ViewHolderCreator<VH> getViewHolderCreator(int viewType){
-        return getHelper(viewType).getViewHolderCreator();
+        return getBuilder(viewType).getViewHolderCreator();
     }
 
     protected static class DefaultViewHolderCreator<V extends View> implements ViewHolderCreator<BaseViewHolder<V>> {
@@ -160,7 +164,7 @@ public abstract class BaseViewAdapter<B extends BaseViewAdapter.BaseViewHelper> 
 
     }
 
-    public static class BaseViewHelper<V extends View> extends BaseViewHolderHelper<V, BaseViewHolder<V>> {
+    public static class BaseViewHelper<V extends View> extends BaseViewHolderBuilder<V, BaseViewHolder<V>> {
 
         private ViewBinder<V> viewBinder;
         private Map<Integer, ViewClickListener<V>> viewClickListenersById = new HashMap<>();
@@ -245,7 +249,7 @@ public abstract class BaseViewAdapter<B extends BaseViewAdapter.BaseViewHelper> 
          *
          * @param <V>
          */
-        public static class BindChainer<V extends View, B extends BaseViewHelper<V>> extends BaseViewHolderHelper.BindChainer<V, BaseViewHolder<V>, B> {
+        public static class BindChainer<V extends View, B extends BaseViewHelper<V>> extends BaseViewHolderBuilder.BindChainer<V, BaseViewHolder<V>, B> {
 
             public BindChainer(B helper) {
                 super(helper);
