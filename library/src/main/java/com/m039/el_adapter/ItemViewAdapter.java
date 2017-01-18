@@ -18,6 +18,7 @@ package com.m039.el_adapter;
 
 import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -85,7 +86,7 @@ public abstract class ItemViewAdapter<B extends ItemViewAdapter.ItemViewHelper> 
         final View view = viewHolder.itemView;
 
         //item view click listener
-        for (Object entryO : getHelper(viewType).getItemViewClickListenersById().entrySet()) {
+        for (Object entryO : getBuilder(viewType).getItemViewClickListenersById().entrySet()) {
             Map.Entry<Integer, ItemViewHelper.OnItemViewClickListener> entry = (Map.Entry<Integer, ItemViewHelper.OnItemViewClickListener>) entryO; //todo wtf
             int id = entry.getKey();
             final ItemViewHelper.OnItemViewClickListener viewClickListener = entry.getValue();
@@ -100,7 +101,10 @@ public abstract class ItemViewAdapter<B extends ItemViewAdapter.ItemViewHelper> 
 
                 @Override
                 public void onClick(View v) {
-                    viewClickListener.onItemViewClick(view, getItemAt(viewHolder.getAdapterPosition()));
+                    int adapterPosition = viewHolder.getAdapterPosition();
+                    if (adapterPosition != RecyclerView.NO_POSITION) {
+                        viewClickListener.onItemViewClick(view, getItemAt(adapterPosition));
+                    }
                 }
 
             };
@@ -117,7 +121,7 @@ public abstract class ItemViewAdapter<B extends ItemViewAdapter.ItemViewHelper> 
 
         //todo DRY
         //item view holder click listener
-        for (Object entryO : getHelper(viewType).getItemViewHolderClickListenersById().entrySet()) {
+        for (Object entryO : getBuilder(viewType).getItemViewHolderClickListenersById().entrySet()) {
             Map.Entry<Integer, ItemViewHelper.OnItemViewHolderClickListener> entry = (Map.Entry<Integer, ItemViewHelper.OnItemViewHolderClickListener>) entryO; //todo wtf
             int id = entry.getKey();
             final ItemViewHelper.OnItemViewHolderClickListener viewClickListener = entry.getValue();
@@ -193,7 +197,7 @@ public abstract class ItemViewAdapter<B extends ItemViewAdapter.ItemViewHelper> 
     BindClickViewClickChainer<I, V> addViewCreator(Class<I> clazz, int typeOfClass, ViewCreator<V> viewCreator) {
         int viewType = getItemViewType(clazz, typeOfClass);
         addViewCreator(viewType, viewCreator);
-        ItemViewHelper builder = getHelper(viewType);
+        ItemViewHelper builder = getBuilder(viewType);
         return (BindClickViewClickChainer<I, V>) builder.getItemViewChainer();
     }
 
@@ -207,7 +211,7 @@ public abstract class ItemViewAdapter<B extends ItemViewAdapter.ItemViewHelper> 
     BindClickViewClickChainer<I, V> addViewHolderCreator(Class<I> clazz, int typeOfClass, ViewHolderCreator<BaseViewHolder<V>> viewHolderCreator) {
         int viewType = getItemViewType(clazz, typeOfClass);
         addViewHolderCreator(viewType, viewHolderCreator);
-        ItemViewHelper builder = getHelper(viewType);
+        ItemViewHelper builder = getBuilder(viewType);
         return (BindClickViewClickChainer<I, V>) builder.getItemViewChainer();
     }
 
@@ -252,7 +256,7 @@ public abstract class ItemViewAdapter<B extends ItemViewAdapter.ItemViewHelper> 
     //endregion
 
     protected <I, V extends View> ItemViewHolderBinder<I, V> getItemViewHolderBinder(int viewType) {
-        return (ItemViewHolderBinder<I, V>) getHelper(viewType).getItemViewHolderBinder();
+        return (ItemViewHolderBinder<I, V>) getBuilder(viewType).getItemViewHolderBinder();
     }
 
 

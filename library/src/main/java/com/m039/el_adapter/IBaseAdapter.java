@@ -11,6 +11,6 @@ public interface IBaseAdapter {
      * @param viewType is used to bind Item with its ViewCreator and ViewBinder
      */
      <V extends View, VH extends BaseViewHolder<V>>
-     BaseViewHolderHelper.BindClickViewClickChainer addViewHolderCreator(int viewType, BaseViewHolderAdapter.ViewHolderCreator<VH> creator);
+     BaseViewHolderBuilder.BindClickViewClickChainer addViewHolderCreator(int viewType, BaseViewHolderAdapter.ViewHolderCreator<VH> creator);
 
 }

@@ -20,7 +20,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.m039.el_adapter.BaseViewHolderHelper.ViewHolderClickListener;
+import com.m039.el_adapter.BaseViewHolderBuilder.ViewHolderClickListener;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -40,7 +40,7 @@ import java.util.Map;
  * <p>
  * Created by m039 on 3/3/16.
  */
-public abstract class BaseViewHolderAdapter<B extends BaseViewHolderHelper> extends RecyclerView.Adapter<BaseViewHolder<?>>
+public abstract class BaseViewHolderAdapter<B extends BaseViewHolderBuilder> extends RecyclerView.Adapter<BaseViewHolder<?>>
         implements IBaseAdapter {
 
     public static final int DEFAULT_VIEW_TYPE = 0;
@@ -80,13 +80,13 @@ public abstract class BaseViewHolderAdapter<B extends BaseViewHolderHelper> exte
     protected abstract <V extends View, VH extends BaseViewHolder<V>> B createBuilder(ViewHolderCreator<VH> creator);
 
     @Override
-    public <V extends View, VH extends BaseViewHolder<V>> BaseViewHolderHelper.BindClickViewClickChainer<V, VH>
+    public <V extends View, VH extends BaseViewHolder<V>> BaseViewHolderBuilder.BindClickViewClickChainer<V, VH>
     addViewHolderCreator(int viewType, ViewHolderCreator<VH> creator) {
 
         B elBuilder = createBuilder(creator);
         builderMap.put(viewType, elBuilder);
 
-        return (BaseViewHolderHelper.BindClickViewClickChainer<V, VH>) elBuilder.getBaseViewHolderChainer();
+        return (BaseViewHolderBuilder.BindClickViewClickChainer<V, VH>) elBuilder.getBaseViewHolderChainer();
     }
 
 
@@ -94,7 +94,7 @@ public abstract class BaseViewHolderAdapter<B extends BaseViewHolderHelper> exte
 
     @Override
     public BaseViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        B builder = getHelper(viewType);
+        B builder = getBuilder(viewType);
 
         if (builder == null) {
             throw new UnknownViewType("Can't create view of type " + viewType + ".");
@@ -119,12 +119,14 @@ public abstract class BaseViewHolderAdapter<B extends BaseViewHolderHelper> exte
 
                 @Override
                 public void onClick(View v) {
-                    viewHolderClickListener.onViewHolderClick(viewHolder);
+                    if (viewHolder.getAdapterPosition() != RecyclerView.NO_POSITION) {
+                        viewHolderClickListener.onViewHolderClick(viewHolder);
+                    }
                 }
 
             };
 
-            if (id == BaseViewHolderHelper.NO_ID_CLICK_LISTENER) {
+            if (id == BaseViewHolderBuilder.NO_ID_CLICK_LISTENER) {
                 view.setOnClickListener(clickListener);
             } else {
                 view.findViewById(id).setOnClickListener(clickListener);
@@ -137,7 +139,7 @@ public abstract class BaseViewHolderAdapter<B extends BaseViewHolderHelper> exte
     @SuppressWarnings("unchecked")
     @Override
     public void onBindViewHolder(BaseViewHolder holder, int position) {
-        ViewHolderBinder viewHolderBinder = getHelper(getItemViewType(position)).getViewHolderBinder();
+        ViewHolderBinder viewHolderBinder = getBuilder(getItemViewType(position)).getViewHolderBinder();
 
         if (viewHolderBinder != null) {
             viewHolderBinder.onBindViewHolder(holder);
@@ -148,7 +150,7 @@ public abstract class BaseViewHolderAdapter<B extends BaseViewHolderHelper> exte
 
     //endregion
 
-    protected B getHelper(int viewType) {
+    protected B getBuilder(int viewType) {
         return builderMap.get(viewType);
     }
 }
