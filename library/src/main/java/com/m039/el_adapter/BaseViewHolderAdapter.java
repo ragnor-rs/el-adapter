@@ -47,7 +47,7 @@ public abstract class BaseViewHolderAdapter<B extends BaseViewHolderBuilder>
 
     public static final int DEFAULT_VIEW_TYPE = 0;
 
-    private boolean clicksEnabled;
+    private boolean clicksEnabled = true;
 
     /**
      * This interface is used to create views in {@link #onCreateViewHolder(ViewGroup)}
