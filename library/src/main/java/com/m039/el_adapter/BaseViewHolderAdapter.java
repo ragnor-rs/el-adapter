@@ -148,11 +148,6 @@ public abstract class BaseViewHolderAdapter<B extends BaseViewHolderBuilder>
     ) {
 
         final View view = holder.getItemView();
-        final int adapterPosition = holder.getAdapterPosition();
-
-        if (adapterPosition == RecyclerView.NO_POSITION) {
-            return;
-        }
 
         Map<?, L> clickListeners = clickListenerSource.getClickListeners(getBuilder(holder.getItemViewType()));
         Set<? extends Map.Entry<?, L>> viewClickListeners = clickListeners.entrySet();
@@ -170,9 +165,11 @@ public abstract class BaseViewHolderAdapter<B extends BaseViewHolderBuilder>
                 @SuppressWarnings("unchecked")
                 @Override
                 public void onClick(View v) {
-                    if (clicksEnabled) {
-                        clickListenerWrapper.onClick(viewClickListener, holder);
+                    final int adapterPosition = holder.getAdapterPosition();
+                    if (!clicksEnabled || adapterPosition == RecyclerView.NO_POSITION) {
+                        return;
                     }
+                    clickListenerWrapper.onClick(viewClickListener, holder);
                 }
 
             };
