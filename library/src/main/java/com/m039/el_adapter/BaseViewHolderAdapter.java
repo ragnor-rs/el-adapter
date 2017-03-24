@@ -149,7 +149,11 @@ public abstract class BaseViewHolderAdapter<B extends BaseViewHolderBuilder>
 
         final View view = holder.getItemView();
 
-        Map<?, L> clickListeners = clickListenerSource.getClickListeners(getBuilder(holder.getItemViewType()));
+        B builder = getBuilder(holder.getItemViewType());
+        if (builder == null) {
+            return;
+        }
+        Map<?, L> clickListeners = clickListenerSource.getClickListeners(builder);
         Set<? extends Map.Entry<?, L>> viewClickListeners = clickListeners.entrySet();
 
 //        List<Integer> viewIds = holder.getViewsWithListenersIds();
