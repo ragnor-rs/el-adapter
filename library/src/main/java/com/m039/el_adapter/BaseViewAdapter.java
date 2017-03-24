@@ -18,7 +18,6 @@ package com.m039.el_adapter;
 
 import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -62,59 +61,39 @@ public abstract class BaseViewAdapter<B extends BaseViewAdapter.BaseViewHelper> 
 
     //region RecyclerView#Adapter
 
-
     @Override
-    public BaseViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        final BaseViewHolder viewHolder = super.onCreateViewHolder(parent, viewType);
+    public void onViewAttachedToWindow(final BaseViewHolder<?> holder) {
+        super.onViewAttachedToWindow(holder);
+        attachListeners(
+                holder,
+                new ClickListenerSource<BaseViewHelper.ViewClickListener, B>() {
 
-        final View view = viewHolder.itemView;
-        for (Object entryO : getBuilder(viewType).getViewClickListeners().entrySet()) {
-            Map.Entry<Integer, BaseViewHelper.ViewClickListener> entry = (Map.Entry<Integer, BaseViewHelper.ViewClickListener>) entryO; //todo wtf
-            int id = entry.getKey();
-            final BaseViewHelper.ViewClickListener viewClickListener = entry.getValue();
-
-            /**
-             * WARN:
-             *
-             * Performance bottleneck - a lot of calls to new
-             */
-
-            View.OnClickListener clickListener = new View.OnClickListener() {
-
-                @Override
-                public void onClick(View v) {
-                    int adapterPosition = viewHolder.getAdapterPosition();
-                    if (adapterPosition != RecyclerView.NO_POSITION) {
-                        viewClickListener.onViewClick(view, adapterPosition);
+                    @SuppressWarnings("unchecked")
+                    @Override
+                    public Map<?, BaseViewHelper.ViewClickListener> getClickListeners(B builder) {
+                        return builder.getViewClickListeners();
                     }
+
+                },
+                new ClickListenerWrapper<BaseViewHelper.ViewClickListener>() {
+
+                    @SuppressWarnings("unchecked")
+                    @Override
+                    public void onClick(BaseViewHelper.ViewClickListener viewClickListener, BaseViewHolder<?> holder) {
+                        viewClickListener.onViewClick(holder.getItemView(), holder.getAdapterPosition());
+                    }
+
                 }
-
-            };
-
-            if (id == BaseViewHelper.NO_ID_CLICK_LISTENER) {
-                view.setOnClickListener(clickListener);
-            } else {
-                view.findViewById(id).setOnClickListener(clickListener);
-            }
-        }
-
-        return viewHolder;
-
-
+        );
     }
 
     @Override
     public void onBindViewHolder(BaseViewHolder holder, int position) {
         super.onBindViewHolder(holder, position);
-
         ViewBinder<View> viewBinder = getViewBinder(getItemViewType(position));
-
         if (viewBinder != null) {
-            viewBinder.onBindView(holder.itemView, holder.getAdapterPosition());
-        } else {
-            // do nothing, don't bind a thing
+            viewBinder.onBindView(holder.getItemView(), holder.getAdapterPosition());
         }
-
     }
 
     //endregion
@@ -156,6 +135,7 @@ public abstract class BaseViewAdapter<B extends BaseViewAdapter.BaseViewHelper> 
             return new BaseViewHolder<>(view);
         }
 
+        @SuppressWarnings("ResourceType")
         protected void setLayoutParams(View view) {
             if (view.getLayoutParams() == null) {
                 view.setLayoutParams(new ViewGroup.MarginLayoutParams(MATCH_PARENT, WRAP_CONTENT));
@@ -309,9 +289,10 @@ public abstract class BaseViewAdapter<B extends BaseViewAdapter.BaseViewHelper> 
     @Override
     public void onViewRecycled(BaseViewHolder<?> holder) {
         super.onViewRecycled(holder);
-
-        if (holder.itemView instanceof Recyclable) {
-            ((Recyclable) holder.itemView).recycle();
+        Object itemView = holder.getItemView();
+        if (itemView instanceof Recyclable) {
+            ((Recyclable) itemView).recycle();
         }
     }
+
 }

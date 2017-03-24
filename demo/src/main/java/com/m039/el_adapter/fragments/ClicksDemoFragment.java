@@ -19,6 +19,7 @@ package com.m039.el_adapter.fragments;
 import android.content.Context;
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
@@ -86,6 +87,7 @@ public class ClicksDemoFragment extends DemoFragment {
 
     private void toast(String message) {
         Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+        Log.w("CLICK", Long.toString(System.currentTimeMillis()));
     }
 
 }

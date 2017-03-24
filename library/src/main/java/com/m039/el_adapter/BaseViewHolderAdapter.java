@@ -22,8 +22,11 @@ import android.view.ViewGroup;
 
 import com.m039.el_adapter.BaseViewHolderBuilder.ViewHolderClickListener;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Base class for adapters.
@@ -40,7 +43,8 @@ import java.util.Map;
  * <p>
  * Created by m039 on 3/3/16.
  */
-public abstract class BaseViewHolderAdapter<B extends BaseViewHolderBuilder> extends RecyclerView.Adapter<BaseViewHolder<?>>
+public abstract class BaseViewHolderAdapter<B extends BaseViewHolderBuilder>
+        extends RecyclerView.Adapter<BaseViewHolder<?>>
         implements IBaseAdapter {
 
     public static final int DEFAULT_VIEW_TYPE = 0;
@@ -80,13 +84,13 @@ public abstract class BaseViewHolderAdapter<B extends BaseViewHolderBuilder> ext
     protected abstract <V extends View, VH extends BaseViewHolder<V>> B createBuilder(ViewHolderCreator<VH> creator);
 
     @Override
-    public <V extends View, VH extends BaseViewHolder<V>> BaseViewHolderBuilder.BindClickViewClickChainer<V, VH>
-    addViewHolderCreator(int viewType, ViewHolderCreator<VH> creator) {
+    public <V extends View, VH extends BaseViewHolder<V>> BaseViewHolderBuilder.BindClickViewClickChainer<V, VH> addViewHolderCreator(int viewType, ViewHolderCreator<VH> creator) {
 
         B elBuilder = createBuilder(creator);
         builderMap.put(viewType, elBuilder);
 
         return (BaseViewHolderBuilder.BindClickViewClickChainer<V, VH>) elBuilder.getBaseViewHolderChainer();
+
     }
 
 
@@ -95,62 +99,130 @@ public abstract class BaseViewHolderAdapter<B extends BaseViewHolderBuilder> ext
     @Override
     public BaseViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         B builder = getBuilder(viewType);
-
         if (builder == null) {
             throw new UnknownViewType("Can't create view of type " + viewType + ".");
         }
+        return builder.getViewHolderCreator().onCreateViewHolder(parent);
+    }
 
-        final ViewHolderCreator viewHolderCreator = builder.getViewHolderCreator();
-        final BaseViewHolder viewHolder = viewHolderCreator.onCreateViewHolder(parent);
-        final View view = viewHolder.itemView;
+    @Override
+    public void onViewAttachedToWindow(final BaseViewHolder<?> holder) {
+        super.onViewAttachedToWindow(holder);
+        attachListeners(
+                holder,
+                new ClickListenerSource<ViewHolderClickListener, B>() {
 
-        for (Object entryO : builder.getViewHolderClickListeners().entrySet()){
-            Map.Entry<Integer, ViewHolderClickListener> entry = (Map.Entry<Integer, ViewHolderClickListener>) entryO; //todo wtf
-            int id = entry.getKey();
-            final ViewHolderClickListener viewHolderClickListener = entry.getValue();
+                    @SuppressWarnings("unchecked")
+                    @Override
+                    public Map<?, ViewHolderClickListener> getClickListeners(B builder) {
+                        return builder.getViewHolderClickListeners();
+                    }
 
-            /**
-             * WARN:
-             *
-             * Performance bottleneck - a lot of calls to new
-             */
+                },
+                new ClickListenerWrapper<ViewHolderClickListener>() {
 
+                    @SuppressWarnings("unchecked")
+                    @Override
+                    public void onClick(ViewHolderClickListener viewClickListener, BaseViewHolder<?> holder) {
+                        viewClickListener.onViewHolderClick(holder);
+                    }
+
+                }
+        );
+    }
+
+    interface ClickListenerSource<L, B> {
+        Map<?, L> getClickListeners(B builder);
+    }
+
+    interface ClickListenerWrapper<L> {
+        void onClick(L viewClickListener, BaseViewHolder<?> holder);
+    }
+
+    <L> void attachListeners(
+            final BaseViewHolder<?> holder,
+            final ClickListenerSource<L, B> clickListenerSource,
+            final ClickListenerWrapper<L> clickListenerWrapper
+    ) {
+
+        final View view = holder.getItemView();
+        final int adapterPosition = holder.getAdapterPosition();
+
+        if (adapterPosition == RecyclerView.NO_POSITION) {
+            return;
+        }
+
+        Map<?, L> clickListeners = clickListenerSource.getClickListeners(getBuilder(holder.getItemViewType()));
+        Set<? extends Map.Entry<?, L>> viewClickListeners = clickListeners.entrySet();
+
+        List<Integer> viewIds = holder.getViewsWithListenersIds();
+        if (viewIds == null) {
+            holder.setViewsWithListenersIds(viewIds = new ArrayList<>());
+        }
+
+        for (Map.Entry<?, L> clickListenerEntry : viewClickListeners) {
+
+            final L viewClickListener = clickListenerEntry.getValue();
             View.OnClickListener clickListener = new View.OnClickListener() {
 
+                @SuppressWarnings("unchecked")
                 @Override
                 public void onClick(View v) {
-                    if (viewHolder.getAdapterPosition() != RecyclerView.NO_POSITION) {
-                        viewHolderClickListener.onViewHolderClick(viewHolder);
-                    }
+                    clickListenerWrapper.onClick(viewClickListener, holder);
                 }
 
             };
 
-            if (id == BaseViewHolderBuilder.NO_ID_CLICK_LISTENER) {
+            final Integer id = (Integer) clickListenerEntry.getKey();
+            if (id.equals(BaseViewAdapter.BaseViewHelper.NO_ID_CLICK_LISTENER)) {
                 view.setOnClickListener(clickListener);
             } else {
                 view.findViewById(id).setOnClickListener(clickListener);
             }
+
+            viewIds.add(id);
+
         }
 
-        return viewHolder;
+    }
+
+    @Override
+    public void onViewDetachedFromWindow(BaseViewHolder<?> holder) {
+
+        /*
+         * To fix https://zvooq1.atlassian.net/browse/ZAN-1558, we have to detach all the listeners
+         */
+
+        final View view = holder.getItemView();
+
+        List<Integer> viewsWithListenersIds = holder.getViewsWithListenersIds();
+
+        for (Integer id : viewsWithListenersIds) {
+            if (id.equals(BaseViewAdapter.BaseViewHelper.NO_ID_CLICK_LISTENER)) {
+                view.setOnClickListener(null);
+            } else {
+                view.findViewById(id).setOnClickListener(null);
+            }
+        }
+
+        holder.setViewsWithListenersIds(null);
+
     }
 
     @SuppressWarnings("unchecked")
     @Override
     public void onBindViewHolder(BaseViewHolder holder, int position) {
-        ViewHolderBinder viewHolderBinder = getBuilder(getItemViewType(position)).getViewHolderBinder();
-
-        if (viewHolderBinder != null) {
-            viewHolderBinder.onBindViewHolder(holder);
-        } else {
-            // do nothing, don't bind a thing
+        ViewHolderBinder viewBinder = getBuilder(getItemViewType(position)).getViewHolderBinder();
+        if (viewBinder != null) {
+            viewBinder.onBindViewHolder(holder);
         }
     }
 
     //endregion
 
+
     protected B getBuilder(int viewType) {
         return builderMap.get(viewType);
     }
+
 }

@@ -17,12 +17,13 @@
 package com.m039.el_adapter.views;
 
 import android.content.Context;
+import android.support.v7.widget.AppCompatTextView;
 import android.widget.TextView;
 
 /**
  * Created by m039 on 6/1/16.
  */
-/* package */ class ColoredTextView extends TextView {
+/* package */ class ColoredTextView extends AppCompatTextView {
 
     public ColoredTextView(Context context, int color) {
         super(context);

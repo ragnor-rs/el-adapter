@@ -18,7 +18,6 @@ package com.m039.el_adapter;
 
 import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -64,16 +63,12 @@ public abstract class ItemViewAdapter<B extends ItemViewAdapter.ItemViewHelper> 
 
     @Override
     public BaseViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        final BaseViewHolder viewHolder;
-
         try {
-
-            viewHolder = super.onCreateViewHolder(parent, viewType);
-
+            return super.onCreateViewHolder(parent, viewType);
         } catch (UnknownViewType e) {
             String className = mViewTypeHelper.findClassName(viewType);
-
-            throw new UnknownViewType("Can't create view of type " +
+            throw new UnknownViewType(
+                    "Can't create view of type " +
                     viewType + (className != null ? " or '" + className : "'") + "." +
                     " You should register " +
                     ViewCreator.class.getSimpleName() +
@@ -82,74 +77,56 @@ public abstract class ItemViewAdapter<B extends ItemViewAdapter.ItemViewHelper> 
                     " for that type."
             );
         }
+    }
 
-        final View view = viewHolder.itemView;
+    @Override
+    public void onViewAttachedToWindow(BaseViewHolder<?> holder) {
 
-        //item view click listener
-        for (Object entryO : getBuilder(viewType).getItemViewClickListenersById().entrySet()) {
-            Map.Entry<Integer, ItemViewHelper.OnItemViewClickListener> entry = (Map.Entry<Integer, ItemViewHelper.OnItemViewClickListener>) entryO; //todo wtf
-            int id = entry.getKey();
-            final ItemViewHelper.OnItemViewClickListener viewClickListener = entry.getValue();
+        super.onViewAttachedToWindow(holder);
 
-            /**
-             * WARN:
-             *
-             * Performance bottleneck - a lot of calls to new
-             */
+        attachListeners(
+                holder,
+                new ClickListenerSource<ItemViewHelper.OnItemViewClickListener, B>() {
 
-            View.OnClickListener clickListener = new View.OnClickListener() {
-
-                @Override
-                public void onClick(View v) {
-                    int adapterPosition = viewHolder.getAdapterPosition();
-                    if (adapterPosition != RecyclerView.NO_POSITION) {
-                        viewClickListener.onItemViewClick(view, getItemAt(adapterPosition));
+                    @SuppressWarnings("unchecked")
+                    @Override
+                    public Map<?, ItemViewHelper.OnItemViewClickListener> getClickListeners(B builder) {
+                        return builder.getItemViewClickListenersById();
                     }
+
+                },
+                new ClickListenerWrapper<ItemViewHelper.OnItemViewClickListener>() {
+
+                    @SuppressWarnings("unchecked")
+                    @Override
+                    public void onClick(ItemViewHelper.OnItemViewClickListener viewClickListener, BaseViewHolder<?> holder) {
+                        viewClickListener.onItemViewClick(holder.getItemView(), getItemAt(holder.getAdapterPosition()));
+                    }
+
                 }
+        );
 
-            };
+        attachListeners(
+                holder,
+                new ClickListenerSource<ItemViewHelper.OnItemViewHolderClickListener, B>() {
 
-            if (id == BaseViewHelper.NO_ID_CLICK_LISTENER) {
-                view.setOnClickListener(clickListener);
-            } else {
-                View v = view.findViewById(id);
-                if (v != null) {
-                    v.setOnClickListener(clickListener);
+                    @SuppressWarnings("unchecked")
+                    @Override
+                    public Map<?, ItemViewHelper.OnItemViewHolderClickListener> getClickListeners(B builder) {
+                        return builder.getItemViewHolderClickListenersById();
+                    }
+
+                },
+                new ClickListenerWrapper<ItemViewHelper.OnItemViewHolderClickListener>() {
+
+                    @SuppressWarnings("unchecked")
+                    @Override
+                    public void onClick(ItemViewHelper.OnItemViewHolderClickListener viewClickListener, BaseViewHolder<?> holder) {
+                        viewClickListener.onItemViewClick(holder, getItemAt(holder.getAdapterPosition()));
+                    }
+
                 }
-            }
-        }
-
-        //todo DRY
-        //item view holder click listener
-        for (Object entryO : getBuilder(viewType).getItemViewHolderClickListenersById().entrySet()) {
-            Map.Entry<Integer, ItemViewHelper.OnItemViewHolderClickListener> entry = (Map.Entry<Integer, ItemViewHelper.OnItemViewHolderClickListener>) entryO; //todo wtf
-            int id = entry.getKey();
-            final ItemViewHelper.OnItemViewHolderClickListener viewClickListener = entry.getValue();
-
-            /**
-             * WARN:
-             *
-             * Performance bottleneck - a lot of calls to new
-             */
-
-            View.OnClickListener clickListener = new View.OnClickListener() {
-
-                @Override
-                public void onClick(View v) {
-                    viewClickListener.onItemViewClick(viewHolder, getItemAt(viewHolder.getAdapterPosition()));
-                }
-
-            };
-
-            if (id == BaseViewHelper.NO_ID_CLICK_LISTENER) {
-                view.setOnClickListener(clickListener);
-            } else {
-                view.findViewById(id).setOnClickListener(clickListener);
-            }
-        }
-
-        return viewHolder;
-
+        );
 
     }
 
@@ -157,16 +134,10 @@ public abstract class ItemViewAdapter<B extends ItemViewAdapter.ItemViewHelper> 
     @Override
     public void onBindViewHolder(BaseViewHolder holder, int position) {
         super.onBindViewHolder(holder, position);
-
         ItemViewHolderBinder<Object, View> viewBinder = getItemViewHolderBinder(getItemViewType(position));
-
         if (viewBinder != null) {
             viewBinder.onBindViewHolder(holder, getItemAt(position));
-        } else {
-            // do nothing, don't bind a thing
         }
-
-
     }
 
     //endregion
@@ -435,7 +406,7 @@ public abstract class ItemViewAdapter<B extends ItemViewAdapter.ItemViewHelper> 
             @SuppressWarnings("unchecked")
             @Override
             public void onBindViewHolder(BaseViewHolder<V> viewHolder, I item) {
-                mItemViewBinder.onBindView(viewHolder.itemView, item);
+                mItemViewBinder.onBindView(viewHolder.getItemView(), item);
             }
 
         }

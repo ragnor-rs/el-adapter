@@ -83,7 +83,7 @@ public class ViewHolderCreatorTest {
                         new ItemViewAdapter.ItemViewHolderBinder<ElEntityOne, TestWidgetOne>() {
                             @Override
                             public void onBindViewHolder(BaseViewHolder<TestWidgetOne> viewHolder, ElEntityOne item) {
-                                viewHolder.itemView.setText(item.id + TEST_ONE_POSTFIX);
+                                viewHolder.getItemView().setText(item.id + TEST_ONE_POSTFIX);
                             }
                         }
                 );
@@ -104,7 +104,7 @@ public class ViewHolderCreatorTest {
                         new ItemViewAdapter.ItemViewHolderBinder<ElEntityTwo, TestWidgetTwo>() {
                             @Override
                             public void onBindViewHolder(BaseViewHolder<TestWidgetTwo> viewHolder, ElEntityTwo item) {
-                                viewHolder.itemView.setText(item.id + TEST_TWO_POSTFIX);
+                                viewHolder.getItemView().setText(item.id + TEST_TWO_POSTFIX);
                             }
                         }
                 );

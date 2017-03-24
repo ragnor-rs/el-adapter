@@ -9,7 +9,7 @@
     <TextView
         android:id="@+id/first"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_weight="1"
         tools:text="First"
         />
@@ -23,7 +23,7 @@
     <TextView
         android:id="@+id/second"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_weight="1"
         tools:text="Second"
         />

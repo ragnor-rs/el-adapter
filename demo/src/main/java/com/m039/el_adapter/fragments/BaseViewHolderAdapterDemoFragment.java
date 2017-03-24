@@ -52,7 +52,7 @@ public class BaseViewHolderAdapterDemoFragment extends DemoFragment {
                 )
                 .addViewHolderBinder(viewHolder -> {
                     Integer item = listAdapter.getItemAt(viewHolder.getAdapterPosition());
-                    viewHolder.itemView.setText(Integer.toString(item));
+                    viewHolder.getItemView().setText(Integer.toString(item));
                 });
 
         listAdapter
@@ -66,7 +66,7 @@ public class BaseViewHolderAdapterDemoFragment extends DemoFragment {
                 )
                 .addViewHolderBinder(viewHolder -> {
                     Integer item = listAdapter.getItemAt(viewHolder.getAdapterPosition());
-                    viewHolder.itemView.setText(Integer.toString(item));
+                    viewHolder.getItemView().setText(Integer.toString(item));
                 })
                 .addOnViewHolderClickListener(
                         GREEN_TEXT_WIDGET_RES_ID,

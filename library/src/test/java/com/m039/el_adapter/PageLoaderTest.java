@@ -88,7 +88,7 @@ public class PageLoaderTest {
         }).addViewHolderBinder(new ItemViewAdapter.ItemViewHolderBinder<Entity, TestWidget>() {
             @Override
             public void onBindViewHolder(BaseViewHolder<TestWidget> viewHolder, Entity item) {
-                viewHolder.itemView.setText(item.id);
+                viewHolder.getItemView().setText(item.id);
             }
         });
 

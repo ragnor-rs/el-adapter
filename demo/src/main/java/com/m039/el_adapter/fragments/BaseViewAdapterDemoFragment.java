@@ -79,7 +79,7 @@ public class BaseViewAdapterDemoFragment extends DemoFragment {
                 )
                 .addViewHolderBinder(viewHolder -> {
                     String item = listAdapter.getItemAt(viewHolder.getAdapterPosition());
-                    viewHolder.itemView.setText(item);
+                    viewHolder.getItemView().setText(item);
                 });
 
         for (int i = 0; i < 1000; i++) {
