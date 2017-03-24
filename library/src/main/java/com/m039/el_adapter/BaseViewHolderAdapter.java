@@ -177,7 +177,10 @@ public abstract class BaseViewHolderAdapter<B extends BaseViewHolderBuilder>
             if (id.equals(BaseViewAdapter.BaseViewHelper.NO_ID_CLICK_LISTENER)) {
                 view.setOnClickListener(clickListener);
             } else {
-                view.findViewById(id).setOnClickListener(clickListener);
+                View targetView = view.findViewById(id);
+                if (targetView != null) {
+                    targetView.setOnClickListener(clickListener);
+                }
             }
 
             viewIds.add(id);
