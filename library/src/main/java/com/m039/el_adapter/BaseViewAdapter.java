@@ -86,7 +86,8 @@ public abstract class BaseViewAdapter<B extends BaseViewAdapter.BaseViewHelper> 
                         viewClickListener.onViewClick(holder.getItemView(), holder.getAdapterPosition());
                     }
 
-                }
+                },
+                viewType
         );
 
         return holder;

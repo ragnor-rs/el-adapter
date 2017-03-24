@@ -102,7 +102,8 @@ public abstract class ItemViewAdapter<B extends ItemViewAdapter.ItemViewHelper> 
                         viewClickListener.onItemViewClick(holder.getItemView(), getItemAt(holder.getAdapterPosition()));
                     }
 
-                }
+                },
+                viewType
         );
 
         attachListeners(
@@ -124,7 +125,8 @@ public abstract class ItemViewAdapter<B extends ItemViewAdapter.ItemViewHelper> 
                         viewClickListener.onItemViewClick(holder, getItemAt(holder.getAdapterPosition()));
                     }
 
-                }
+                },
+                viewType
         );
 
         return holder;

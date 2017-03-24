@@ -85,12 +85,9 @@ public abstract class BaseViewHolderAdapter<B extends BaseViewHolderBuilder>
 
     @Override
     public <V extends View, VH extends BaseViewHolder<V>> BaseViewHolderBuilder.BindClickViewClickChainer<V, VH> addViewHolderCreator(int viewType, ViewHolderCreator<VH> creator) {
-
         B elBuilder = createBuilder(creator);
         builderMap.put(viewType, elBuilder);
-
-        return (BaseViewHolderBuilder.BindClickViewClickChainer<V, VH>) elBuilder.getBaseViewHolderChainer();
-
+        return elBuilder.getBaseViewHolderChainer();
     }
 
 
@@ -126,7 +123,8 @@ public abstract class BaseViewHolderAdapter<B extends BaseViewHolderBuilder>
                         viewClickListener.onViewHolderClick(holder);
                     }
 
-                }
+                },
+                viewType
         );
 
         return holder;
@@ -144,12 +142,13 @@ public abstract class BaseViewHolderAdapter<B extends BaseViewHolderBuilder>
     <L> void attachListeners(
             final BaseViewHolder<?> holder,
             final ClickListenerSource<L, B> clickListenerSource,
-            final ClickListenerWrapper<L> clickListenerWrapper
+            final ClickListenerWrapper<L> clickListenerWrapper,
+            final int viewType
     ) {
 
         final View view = holder.getItemView();
 
-        B builder = getBuilder(holder.getItemViewType());
+        B builder = getBuilder(viewType);
         if (builder == null) {
             return;
         }
