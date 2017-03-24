@@ -18,6 +18,7 @@ package com.m039.el_adapter;
 
 import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -63,8 +64,11 @@ public abstract class ItemViewAdapter<B extends ItemViewAdapter.ItemViewHelper> 
 
     @Override
     public BaseViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+
+        BaseViewHolder holder;
+
         try {
-            return super.onCreateViewHolder(parent, viewType);
+            holder = super.onCreateViewHolder(parent, viewType);
         } catch (UnknownViewType e) {
             String className = mViewTypeHelper.findClassName(viewType);
             throw new UnknownViewType(
@@ -77,12 +81,6 @@ public abstract class ItemViewAdapter<B extends ItemViewAdapter.ItemViewHelper> 
                     " for that type."
             );
         }
-    }
-
-    @Override
-    public void onViewAttachedToWindow(BaseViewHolder<?> holder) {
-
-        super.onViewAttachedToWindow(holder);
 
         attachListeners(
                 holder,
@@ -100,6 +98,7 @@ public abstract class ItemViewAdapter<B extends ItemViewAdapter.ItemViewHelper> 
                     @SuppressWarnings("unchecked")
                     @Override
                     public void onClick(ItemViewHelper.OnItemViewClickListener viewClickListener, BaseViewHolder<?> holder) {
+                        Log.e("DOUBLE-TAP", "clicked " + holder.getItemView());
                         viewClickListener.onItemViewClick(holder.getItemView(), getItemAt(holder.getAdapterPosition()));
                     }
 
@@ -127,6 +126,8 @@ public abstract class ItemViewAdapter<B extends ItemViewAdapter.ItemViewHelper> 
 
                 }
         );
+
+        return holder;
 
     }
 
@@ -412,6 +413,5 @@ public abstract class ItemViewAdapter<B extends ItemViewAdapter.ItemViewHelper> 
         }
 
     }
-
 
 }

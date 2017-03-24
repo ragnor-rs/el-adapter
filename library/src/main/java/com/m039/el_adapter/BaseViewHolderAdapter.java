@@ -22,9 +22,7 @@ import android.view.ViewGroup;
 
 import com.m039.el_adapter.BaseViewHolderBuilder.ViewHolderClickListener;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -48,6 +46,8 @@ public abstract class BaseViewHolderAdapter<B extends BaseViewHolderBuilder>
         implements IBaseAdapter {
 
     public static final int DEFAULT_VIEW_TYPE = 0;
+
+    private boolean clicksEnabled;
 
     /**
      * This interface is used to create views in {@link #onCreateViewHolder(ViewGroup)}
@@ -98,16 +98,15 @@ public abstract class BaseViewHolderAdapter<B extends BaseViewHolderBuilder>
 
     @Override
     public BaseViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+
         B builder = getBuilder(viewType);
+
         if (builder == null) {
             throw new UnknownViewType("Can't create view of type " + viewType + ".");
         }
-        return builder.getViewHolderCreator().onCreateViewHolder(parent);
-    }
 
-    @Override
-    public void onViewAttachedToWindow(final BaseViewHolder<?> holder) {
-        super.onViewAttachedToWindow(holder);
+        BaseViewHolder holder = builder.getViewHolderCreator().onCreateViewHolder(parent);
+
         attachListeners(
                 holder,
                 new ClickListenerSource<ViewHolderClickListener, B>() {
@@ -129,6 +128,9 @@ public abstract class BaseViewHolderAdapter<B extends BaseViewHolderBuilder>
 
                 }
         );
+
+        return holder;
+
     }
 
     interface ClickListenerSource<L, B> {
@@ -155,10 +157,10 @@ public abstract class BaseViewHolderAdapter<B extends BaseViewHolderBuilder>
         Map<?, L> clickListeners = clickListenerSource.getClickListeners(getBuilder(holder.getItemViewType()));
         Set<? extends Map.Entry<?, L>> viewClickListeners = clickListeners.entrySet();
 
-        List<Integer> viewIds = holder.getViewsWithListenersIds();
-        if (viewIds == null) {
-            holder.setViewsWithListenersIds(viewIds = new ArrayList<>());
-        }
+//        List<Integer> viewIds = holder.getViewsWithListenersIds();
+//        if (viewIds == null) {
+//            holder.setViewsWithListenersIds(viewIds = new ArrayList<>());
+//        }
 
         for (Map.Entry<?, L> clickListenerEntry : viewClickListeners) {
 
@@ -168,7 +170,9 @@ public abstract class BaseViewHolderAdapter<B extends BaseViewHolderBuilder>
                 @SuppressWarnings("unchecked")
                 @Override
                 public void onClick(View v) {
-                    clickListenerWrapper.onClick(viewClickListener, holder);
+                    if (clicksEnabled) {
+                        clickListenerWrapper.onClick(viewClickListener, holder);
+                    }
                 }
 
             };
@@ -183,18 +187,16 @@ public abstract class BaseViewHolderAdapter<B extends BaseViewHolderBuilder>
                 }
             }
 
-            viewIds.add(id);
+//            viewIds.add(id);
 
         }
 
     }
 
+    /*
+    @SuppressWarnings("unchecked")
     @Override
-    public void onViewDetachedFromWindow(BaseViewHolder<?> holder) {
-
-        /*
-         * To fix https://zvooq1.atlassian.net/browse/ZAN-1558, we have to detach all the listeners
-         */
+    public void onViewDetachedFromWindow(BaseViewHolder holder) {
 
         final View view = holder.getItemView();
 
@@ -214,6 +216,7 @@ public abstract class BaseViewHolderAdapter<B extends BaseViewHolderBuilder>
         holder.setViewsWithListenersIds(null);
 
     }
+    */
 
     @SuppressWarnings("unchecked")
     @Override
@@ -229,6 +232,10 @@ public abstract class BaseViewHolderAdapter<B extends BaseViewHolderBuilder>
 
     protected B getBuilder(int viewType) {
         return builderMap.get(viewType);
+    }
+
+    public void setClicksEnabled(boolean clicksEnabled) {
+        this.clicksEnabled = clicksEnabled;
     }
 
 }

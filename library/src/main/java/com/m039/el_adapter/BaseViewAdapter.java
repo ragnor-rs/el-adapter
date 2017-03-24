@@ -61,9 +61,12 @@ public abstract class BaseViewAdapter<B extends BaseViewAdapter.BaseViewHelper> 
 
     //region RecyclerView#Adapter
 
+
     @Override
-    public void onViewAttachedToWindow(final BaseViewHolder<?> holder) {
-        super.onViewAttachedToWindow(holder);
+    public BaseViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+
+        BaseViewHolder holder = super.onCreateViewHolder(parent, viewType);
+
         attachListeners(
                 holder,
                 new ClickListenerSource<BaseViewHelper.ViewClickListener, B>() {
@@ -85,6 +88,9 @@ public abstract class BaseViewAdapter<B extends BaseViewAdapter.BaseViewHelper> 
 
                 }
         );
+
+        return holder;
+
     }
 
     @Override
