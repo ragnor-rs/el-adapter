@@ -18,7 +18,6 @@ package com.m039.el_adapter;
 
 import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -98,7 +97,6 @@ public abstract class ItemViewAdapter<B extends ItemViewAdapter.ItemViewHelper> 
                     @SuppressWarnings("unchecked")
                     @Override
                     public void onClick(ItemViewHelper.OnItemViewClickListener viewClickListener, BaseViewHolder<?> holder) {
-                        Log.e("DOUBLE-TAP", "clicked " + holder.getItemView());
                         viewClickListener.onItemViewClick(holder.getItemView(), getItemAt(holder.getAdapterPosition()));
                     }
 
