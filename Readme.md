@@ -1,7 +1,7 @@
 ElAdapter
 =========
-[![Build Status](https://travis-ci.org/m039/el-adapter.svg?branch=develop)](https://travis-ci.org/m039/el-adapter)
-[![Release](https://jitpack.io/v/m039/el-adapter.svg)](https://jitpack.io/#m039/el-adapter)
+[![Build Status](https://travis-ci.org/ragnor-rs/el-adapter.svg?branch=develop)](https://travis-ci.org/ragnor-rs/el-adapter)
+[![Release](https://jitpack.io/v/ragnor-rs/el-adapter.svg)](https://jitpack.io/#ragnor-rs/el-adapter)
 
 ElAdapter library allows you to decouple RecylerView's adapters code in more handy, simple and beatiful way.
 
@@ -69,7 +69,7 @@ ElAdapter is intended to use with java 8 (or retrolambda)
 License
 =======
 
-    Copyright 2016 Dmitry Mozgin.
+    Copyright 2016 Dmitry Mozgin (https://github.com/m039)
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
