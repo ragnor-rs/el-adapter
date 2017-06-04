@@ -128,7 +128,6 @@ public class PerPageWithFooterLoaderItemViewAdapter extends PerPageItemViewAdapt
                 notifyItemRemoved(getFooterPosition());
             }
 
-
             showingFooterLoader = show;
         }
 
@@ -166,9 +165,17 @@ public class PerPageWithFooterLoaderItemViewAdapter extends PerPageItemViewAdapt
         return getItemViewType(position) == VIEW_TYPE_FOOTER;
     }
 
+    /**
+     *
+     * @return footer position or -1 of footer is not showing
+     */
     @SuppressWarnings("WeakerAccess")
     public int getFooterPosition() {
-        return super.getItemCount();
+        return showingFooterLoader ? super.getItemCount() : -1;
+    }
+
+    public boolean isShowingFooterLoader() {
+        return showingFooterLoader;
     }
 
     @Override
@@ -176,6 +183,10 @@ public class PerPageWithFooterLoaderItemViewAdapter extends PerPageItemViewAdapt
         return super.getItemCount() + (showingFooterLoader ? 1 : 0);
     }
 
+    /**
+     * @deprecated use {@link PerPageWithFooterLoaderItemViewAdapter#isFooter(int)}
+     */
+    @Deprecated
     private boolean isFooterPosition(int position) {
         return position == getFooterPosition();
     }
