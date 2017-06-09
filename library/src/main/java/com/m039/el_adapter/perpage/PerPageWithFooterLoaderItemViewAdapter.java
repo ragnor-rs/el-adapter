@@ -121,7 +121,7 @@ public class PerPageWithFooterLoaderItemViewAdapter extends PerPageItemViewAdapt
     @SuppressWarnings("WeakerAccess")
     public void showFooterLoader(boolean show) {
 
-        if (show != showingFooterLoader) {
+        if (show != isShowingFooterLoader()) {
             if (show) {
                 notifyItemInserted(getFooterPosition());
             } else {
@@ -182,7 +182,7 @@ public class PerPageWithFooterLoaderItemViewAdapter extends PerPageItemViewAdapt
      * @return items count without considering footer loader
      */
     public int getItemCountWithoutFooter() {
-        return super.getItemCount() - (showingFooterLoader ? 1 : 0);
+        return super.getItemCount() - (isShowingFooterLoader() ? 1 : 0);
     }
 
     /**
@@ -195,7 +195,7 @@ public class PerPageWithFooterLoaderItemViewAdapter extends PerPageItemViewAdapt
 
     @Override
     public int getItemViewType(int position) {
-        return (showingFooterLoader && isFooterPosition(position)) ?
+        return (isShowingFooterLoader() && isFooter(position)) ?
                 VIEW_TYPE_FOOTER :
                 super.getItemViewType(position);
     }
