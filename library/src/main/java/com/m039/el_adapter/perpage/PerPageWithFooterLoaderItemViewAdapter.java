@@ -171,16 +171,18 @@ public class PerPageWithFooterLoaderItemViewAdapter extends PerPageItemViewAdapt
      */
     @SuppressWarnings("WeakerAccess")
     public int getFooterPosition() {
-        return showingFooterLoader ? super.getItemCount() : -1;
+        return isShowingFooterLoader() ? super.getItemCount() : -1;
     }
 
     public boolean isShowingFooterLoader() {
         return showingFooterLoader;
     }
 
-    @Override
-    public int getItemCount() {
-        return super.getItemCount() + (showingFooterLoader ? 1 : 0);
+    /**
+     * @return items count without considering footer loader
+     */
+    public int getItemCountWithoutFooter() {
+        return super.getItemCount() - (showingFooterLoader ? 1 : 0);
     }
 
     /**
