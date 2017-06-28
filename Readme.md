@@ -38,11 +38,11 @@ allprojects {
     }
 }
 ```
-Add the dependency:
+Add the dependency with the latest commit hash as version:
 
 ```gradle
 dependencies {
-    compile 'com.github.m039:el-adapter:v0.1'
+    compile 'com.github.ragnor-rs:el-adapter:f5202db'
 }
 ```
 
