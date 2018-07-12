@@ -122,13 +122,13 @@ public class PerPageWithFooterLoaderItemViewAdapter extends PerPageItemViewAdapt
     public void showFooterLoader(boolean show) {
 
         if (show != showingFooterLoader) {
+            showingFooterLoader = show;
+
             if (show) {
                 notifyItemInserted(getFooterPosition());
             } else {
                 notifyItemRemoved(getFooterPosition());
             }
-
-            showingFooterLoader = show;
         }
 
     }
