@@ -120,17 +120,14 @@ public class PerPageWithFooterLoaderItemViewAdapter extends PerPageItemViewAdapt
 
     @SuppressWarnings("WeakerAccess")
     public void showFooterLoader(boolean show) {
-
         if (show != showingFooterLoader) {
+            showingFooterLoader = show;
             if (show) {
                 notifyItemInserted(getFooterPosition());
             } else {
                 notifyItemRemoved(getFooterPosition());
             }
-
-            showingFooterLoader = show;
         }
-
     }
 
     public void setFooterMessage(@StringRes int message) {
